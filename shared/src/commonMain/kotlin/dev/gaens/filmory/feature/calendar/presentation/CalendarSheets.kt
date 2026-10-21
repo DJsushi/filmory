@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +25,7 @@ import dev.gaens.filmory.core.presentation.designsystem.components.FilmorySegmen
 import dev.gaens.filmory.core.presentation.designsystem.components.PosterArt
 import dev.gaens.filmory.core.presentation.designsystem.components.SettingSwitch
 import dev.gaens.filmory.core.presentation.designsystem.components.StarRating
+import dev.gaens.filmory.core.presentation.designsystem.components.rememberSheetListScrollEnabled
 import dev.gaens.filmory.core.presentation.ui.formatDayMonthYear
 import dev.gaens.filmory.feature.calendar.domain.CalendarEntry
 import dev.gaens.filmory.feature.settings.domain.CalendarDayLayout
@@ -97,13 +100,20 @@ fun CalendarSettingsSheet(settings: CalendarSettings, onAction: (CalendarAction)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DaySheet(date: LocalDate, entries: List<CalendarEntry>, onAction: (CalendarAction) -> Unit) {
+    val sheetState = rememberModalBottomSheetState()
+    val listState = rememberLazyListState()
     ModalBottomSheet(
         onDismissRequest = { onAction(CalendarAction.OnSheetDismiss) },
+        sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) {
         // Lazy, so a long day scrolls inside the sheet. A plain Column taller than the sheet squeezed its last
         // row and made the sheet fight the drag.
-        LazyColumn(contentPadding = PaddingValues(bottom = 32.dp)) {
+        LazyColumn(
+            state = listState,
+            userScrollEnabled = rememberSheetListScrollEnabled(sheetState, listState),
+            contentPadding = PaddingValues(bottom = 32.dp),
+        ) {
             item(key = "date") {
                 Text(
                     text = date.formatDayMonthYear(),

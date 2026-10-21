@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.ChipRow
 import dev.gaens.filmory.core.presentation.designsystem.components.TitleListRow
+import dev.gaens.filmory.core.presentation.designsystem.components.rememberSheetListScrollEnabled
 import dev.gaens.filmory.core.presentation.ui.label
 import dev.gaens.filmory.feature.library.presentation.components.CollectionFilterChip
 import dev.gaens.filmory.feature.library.presentation.components.StatusFilterChip
@@ -39,9 +41,11 @@ private const val SHEET_HEIGHT_FRACTION = 0.9f
 @Composable
 fun TitlePickerSheet(state: NotesState, onAction: (NotesAction) -> Unit) {
     val filters = state.pickerFilters
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val listState = rememberLazyListState()
     ModalBottomSheet(
         onDismissRequest = { onAction(NotesAction.OnTitlePickerDismiss) },
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) {
         Column(Modifier.fillMaxHeight(SHEET_HEIGHT_FRACTION).imePadding()) {
@@ -67,7 +71,12 @@ fun TitlePickerSheet(state: NotesState, onAction: (NotesAction) -> Unit) {
                     onAction(NotesAction.OnPickerCollectionChange(it))
                 }
             }
-            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(bottom = 24.dp)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                state = listState,
+                userScrollEnabled = rememberSheetListScrollEnabled(sheetState, listState),
+                contentPadding = PaddingValues(bottom = 24.dp),
+            ) {
                 if (state.titles.isEmpty()) {
                     item(key = "noMatch") { EmptyMessage(stringResource(Res.string.notes_pick_title_no_match)) }
                 }
