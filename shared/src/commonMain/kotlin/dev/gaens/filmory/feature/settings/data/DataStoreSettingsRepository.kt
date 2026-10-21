@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.gaens.filmory.feature.settings.domain.AppSettings
 import dev.gaens.filmory.feature.settings.domain.CalendarSettings
 import dev.gaens.filmory.feature.settings.domain.LibrarySettings
+import dev.gaens.filmory.feature.settings.domain.homeLayoutOf
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -31,6 +32,7 @@ private object Keys {
     val calendarBadge = booleanPreferencesKey("calendar_state_badge")
     val calendarLayout = stringPreferencesKey("calendar_day_layout")
     val calendarWeekStart = stringPreferencesKey("calendar_week_start")
+    val homeLayout = stringPreferencesKey("home_layout")
 }
 
 class DataStoreSettingsRepository(
@@ -71,6 +73,7 @@ private fun Preferences.toAppSettings(): AppSettings {
             dayLayout = enum(Keys.calendarLayout, calendar.dayLayout),
             weekStart = enum(Keys.calendarWeekStart, calendar.weekStart),
         ),
+        homeLayout = homeLayoutOf(this[Keys.homeLayout]?.split(",").orEmpty()),
     )
 }
 
@@ -90,4 +93,5 @@ private fun MutablePreferences.write(settings: AppSettings) {
     this[Keys.calendarBadge] = settings.calendar.showStateBadge
     this[Keys.calendarLayout] = settings.calendar.dayLayout.name
     this[Keys.calendarWeekStart] = settings.calendar.weekStart.name
+    this[Keys.homeLayout] = settings.homeLayout.joinToString(",") { it.name }
 }

@@ -5,9 +5,30 @@ data class AppSettings(
     val useDynamicColor: Boolean = false,
     val library: LibrarySettings = LibrarySettings(),
     val calendar: CalendarSettings = CalendarSettings(),
+    val homeLayout: List<HomeBlock> = HomeBlock.entries,
 )
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
+/** Blocks Home shows below the header. Declaration order is the default layout. */
+enum class HomeBlock(val isSection: Boolean) {
+    WATCH_LATER(isSection = true),
+    WISHLIST(isSection = false),
+    CALENDAR(isSection = false),
+    COLLECTIONS(isSection = true),
+    ON_HOLD(isSection = false),
+    DROPPED(isSection = false),
+    LIBRARY(isSection = false),
+}
+
+/**
+ * Turns saved block names into a layout that holds every block exactly once: unknown and repeated
+ * names are dropped, blocks added by a newer app version go last.
+ */
+fun homeLayoutOf(names: List<String>): List<HomeBlock> {
+    val saved = names.mapNotNull { name -> HomeBlock.entries.find { it.name == name } }.distinct()
+    return saved + (HomeBlock.entries - saved.toSet())
+}
 
 data class LibrarySettings(
     val layout: LibraryLayout = LibraryLayout.GRID,
