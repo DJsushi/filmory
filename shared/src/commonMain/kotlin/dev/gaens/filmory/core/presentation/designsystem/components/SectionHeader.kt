@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
+import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 
 /** A bold section title with a highlighter stroke behind its lower half, plus an optional action. */
 @Composable
@@ -27,7 +28,7 @@ fun SectionHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 20.dp, top = 28.dp, bottom = 10.dp),
+            .padding(start = ScreenPadding, end = ScreenPadding - 4.dp, top = 28.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val highlighter = FilmoryTheme.colors.highlighter

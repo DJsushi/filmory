@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
+import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 
 /** A shape whose bottom edge is half an ellipse [curveDepth] deep, like Bookmory's header. */
 class CurvedBottomShape(private val curveDepth: Dp) : Shape {
@@ -53,7 +54,7 @@ private val HeroShape = CurvedBottomShape(44.dp)
 fun HeroHeader(
     modifier: Modifier = Modifier,
     containerColor: Color = FilmoryTheme.colors.hero,
-    horizontalPadding: Dp = 24.dp,
+    horizontalPadding: Dp = ScreenPadding,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     CompositionLocalProvider(LocalContentColor provides FilmoryTheme.colors.onHero) {

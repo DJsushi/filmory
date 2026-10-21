@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.ic_check
 import org.jetbrains.compose.resources.DrawableResource
@@ -57,11 +58,11 @@ fun FilmoryChip(
     )
 }
 
-/** A horizontally scrolling row of chips with the screen's 24 dp side margins. */
+/** A horizontally scrolling row of chips with the screen's side margins. */
 @Composable
 fun ChipRow(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = ScreenPadding),
     content: @Composable RowScope.() -> Unit,
 ) {
     Row(

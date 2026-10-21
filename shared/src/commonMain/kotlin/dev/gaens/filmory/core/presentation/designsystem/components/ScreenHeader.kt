@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.rise
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.action_back
@@ -28,7 +29,8 @@ fun ScreenHeader(
     /** Replaces the headline text, for a title that can be edited in place. */
     titleContent: (@Composable () -> Unit)? = null,
 ) {
-    Column(modifier.fillMaxWidth().statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 8.dp)) {
+    // The 4 dp the icon button leaves at its edge and the title's own 4 dp start together make ScreenPadding.
+    Column(modifier.fillMaxWidth().statusBarsPadding().padding(start = ScreenPadding - 4.dp, end = ScreenPadding - 4.dp, top = 8.dp)) {
         FilmoryAppBar(
             navigationIcon = {
                 FilmoryIconButton(Res.drawable.ic_back, stringResource(Res.string.action_back), onBackClick)

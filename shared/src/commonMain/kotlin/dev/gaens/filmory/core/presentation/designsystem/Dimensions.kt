@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /** Side margin of every screen. */
-val ScreenPadding = 24.dp
+val ScreenPadding = 12.dp
 
 /** Space kept free at the end of tab screens so content clears the bottom bar. */
 val BottomBarClearance = 104.dp

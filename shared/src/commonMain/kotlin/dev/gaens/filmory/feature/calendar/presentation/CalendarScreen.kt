@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
+import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.ChipRow
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryChip
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryIconButton
@@ -146,7 +147,7 @@ fun CalendarScreen(
         }
         item(key = "month") {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(start = 28.dp, end = 12.dp, top = 12.dp, bottom = 8.dp).rise(3),
+                modifier = Modifier.fillMaxWidth().padding(start = ScreenPadding + 4.dp, end = ScreenPadding - 12.dp, top = 12.dp, bottom = 8.dp).rise(3),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
@@ -178,7 +179,7 @@ fun CalendarScreen(
                 text = stringResource(Res.string.calendar_legend),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                modifier = Modifier.padding(horizontal = ScreenPadding - 4.dp, vertical = 12.dp),
             )
         }
     }
