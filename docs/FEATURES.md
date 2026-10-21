@@ -52,7 +52,10 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 
 ### Collections
 
-- Movies and series (not episodes) can be organized into collections. There is a default "Favorites" collection.
+- Movies and series (not episodes) can be organized into collections. There is a default "Favorites" collection. It can be renamed but not deleted.
+- A collection has its own screen: the title list under a header with an editable name. Long-pressing the name edits it in place, a short tap says to press and hold. A new collection (Add on the Collections screen) is created at once as "New collection" (numbered if taken) and opens with its name selected and the keyboard up.
+- A collection can have an icon (one of 25 drawn symbols, an emoji or a photo) and a color (13 presets or any color). Text on the card switches between white and black so it stays readable. Tapping the icon in the header opens the icon and color sheet.
+- Collections have one global order and can be pinned. Pinned collections come first everywhere (Collections screen, Home row, add-to-collection sheet). In the add-to-collection sheet, Edit switches to management mode: drag to reorder, pin, rename, delete (with a confirm) and add.
 
 ### Calendar
 
