@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -98,9 +97,15 @@ class HomeViewModel(
     private fun observeData() {
         // While editing, the screen is the source of truth: a saved value arriving late would snap items back.
         settingsRepository.observeSettings()
-            .map { it.homeLayout }
             .distinctUntilChanged()
-            .onEach { layout -> _state.update { if (it.isEditingLayout) it else it.copy(layout = layout) } }
+            .onEach { settings ->
+                _state.update {
+                    it.copy(
+                        layout = if (it.isEditingLayout) it.layout else settings.homeLayout,
+                        tintHeader = settings.tintHomeHeader,
+                    )
+                }
+            }
             .launchIn(viewModelScope)
         val titles = titleRepository.observeTitles()
         val continueWatching = combine(titles, watchingRepository.observeAllWatchings(), findContinueWatching::invoke)

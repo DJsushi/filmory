@@ -25,6 +25,7 @@ class SettingsViewModel(
         SettingsState(
             themeMode = settings.themeMode,
             useDynamicColor = settings.useDynamicColor,
+            tintHomeHeader = settings.tintHomeHeader,
             titleCount = titles.size,
             watchedCount = titles.count { it.status == TitleStatus.WATCHED },
             noteCount = notes.size,
@@ -37,6 +38,8 @@ class SettingsViewModel(
                 is SettingsAction.OnThemeModeChange -> settingsRepository.update { it.copy(themeMode = action.mode) }
                 is SettingsAction.OnDynamicColorChange ->
                     settingsRepository.update { it.copy(useDynamicColor = action.enabled) }
+                is SettingsAction.OnTintHomeHeaderChange ->
+                    settingsRepository.update { it.copy(tintHomeHeader = action.enabled) }
             }
         }
     }

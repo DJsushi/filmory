@@ -36,9 +36,13 @@ private val PosterGradients = listOf(
     Color(0xFF263238) to Color(0xFF607D8B),
 )
 
+/** The two colors of a title's placeholder gradient, picked from its id. */
+fun posterGradientColors(seed: String): Pair<Color, Color> =
+    PosterGradients[seed.hashCode().absoluteValue % PosterGradients.size]
+
 /** A stable gradient for a title, picked from its id. */
 fun posterGradient(seed: String): Brush {
-    val (from, to) = PosterGradients[seed.hashCode().absoluteValue % PosterGradients.size]
+    val (from, to) = posterGradientColors(seed)
     return Brush.linearGradient(listOf(from, to))
 }
 

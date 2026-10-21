@@ -33,6 +33,7 @@ private object Keys {
     val calendarLayout = stringPreferencesKey("calendar_day_layout")
     val calendarWeekStart = stringPreferencesKey("calendar_week_start")
     val homeLayout = stringPreferencesKey("home_layout")
+    val tintHomeHeader = booleanPreferencesKey("tint_home_header")
 }
 
 class DataStoreSettingsRepository(
@@ -74,6 +75,7 @@ private fun Preferences.toAppSettings(): AppSettings {
             weekStart = enum(Keys.calendarWeekStart, calendar.weekStart),
         ),
         homeLayout = homeLayoutOf(this[Keys.homeLayout]?.split(",").orEmpty()),
+        tintHomeHeader = this[Keys.tintHomeHeader] ?: defaults.tintHomeHeader,
     )
 }
 
@@ -94,4 +96,5 @@ private fun MutablePreferences.write(settings: AppSettings) {
     this[Keys.calendarLayout] = settings.calendar.dayLayout.name
     this[Keys.calendarWeekStart] = settings.calendar.weekStart.name
     this[Keys.homeLayout] = settings.homeLayout.joinToString(",") { it.name }
+    this[Keys.tintHomeHeader] = settings.tintHomeHeader
 }

@@ -6,6 +6,8 @@ data class AppSettings(
     val library: LibrarySettings = LibrarySettings(),
     val calendar: CalendarSettings = CalendarSettings(),
     val homeLayout: List<HomeBlock> = HomeBlock.entries,
+    /** Home header takes a tint from the poster of the title in Continue watching. */
+    val tintHomeHeader: Boolean = true,
 )
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }

@@ -17,6 +17,7 @@ data class HomeState(
     val isEditingWatchLater: Boolean = false,
     val layout: List<HomeBlock> = HomeBlock.entries,
     val isEditingLayout: Boolean = false,
+    val tintHeader: Boolean = true,
 )
 
 enum class DayPeriod { MORNING, AFTERNOON, EVENING }

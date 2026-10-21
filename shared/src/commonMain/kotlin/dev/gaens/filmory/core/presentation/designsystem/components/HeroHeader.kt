@@ -12,6 +12,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -43,19 +44,25 @@ class CurvedBottomShape(private val curveDepth: Dp) : Shape {
 
 private val HeroShape = CurvedBottomShape(44.dp)
 
-/** The solid blue header with a deep curve. Content inside is white. */
+/**
+ * The solid blue header with a deep curve. Content inside is white. [containerColor] replaces the
+ * blue, the caller keeps the text readable on it. With a [horizontalPadding] of zero, children
+ * pad themselves and can reach the screen edge.
+ */
 @Composable
 fun HeroHeader(
     modifier: Modifier = Modifier,
+    containerColor: Color = FilmoryTheme.colors.hero,
+    horizontalPadding: Dp = 24.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     CompositionLocalProvider(LocalContentColor provides FilmoryTheme.colors.onHero) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .background(FilmoryTheme.colors.hero, HeroShape)
+                .background(containerColor, HeroShape)
                 .statusBarsPadding()
-                .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 40.dp),
+                .padding(start = horizontalPadding, end = horizontalPadding, top = 8.dp, bottom = 40.dp),
             content = content,
         )
     }

@@ -46,6 +46,7 @@ import dev.gaens.filmory.resources.settings_dynamic_color
 import dev.gaens.filmory.resources.settings_dynamic_color_unavailable
 import dev.gaens.filmory.resources.settings_local_first
 import dev.gaens.filmory.resources.settings_theme
+import dev.gaens.filmory.resources.settings_tint_home_header
 import dev.gaens.filmory.resources.settings_theme_dark
 import dev.gaens.filmory.resources.settings_theme_light
 import dev.gaens.filmory.resources.settings_theme_system
@@ -119,6 +120,11 @@ fun SettingsScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+            SettingSwitch(
+                label = stringResource(Res.string.settings_tint_home_header),
+                checked = state.tintHomeHeader,
+                onCheckedChange = { onAction(SettingsAction.OnTintHomeHeaderChange(it)) },
+            )
         }
         dataSection()
         SectionHeader(stringResource(Res.string.settings_about))

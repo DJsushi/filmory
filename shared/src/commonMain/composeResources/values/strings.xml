@@ -221,6 +221,7 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_dynamic_color">Material You colors</string>
     <string name="settings_dynamic_color_unavailable">Needs Android 12 or newer.</string>
+    <string name="settings_tint_home_header">Tint the Home header with the poster</string>
     <string name="settings_data">Your data</string>
     <string name="settings_about">About</string>
     <string name="settings_version">Filmory %1$s</string>
