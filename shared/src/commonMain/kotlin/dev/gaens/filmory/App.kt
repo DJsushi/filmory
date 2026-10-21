@@ -15,10 +15,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.components.BottomBarItem
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryBottomBar
+import dev.gaens.filmory.feature.collection.presentation.CollectionsScreenRoot
 import dev.gaens.filmory.feature.home.presentation.HomeScreenRoot
+import dev.gaens.filmory.feature.library.presentation.LibraryPreset
+import dev.gaens.filmory.feature.library.presentation.LibraryScreenRoot
 import dev.gaens.filmory.navigation.Route
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.ic_home
@@ -86,8 +90,22 @@ private fun FilmoryNavHost(navController: NavHostController) {
         composable<Route.Notes> {}
         composable<Route.Watched> {}
         composable<Route.Profile> {}
-        composable<Route.Library> {}
-        composable<Route.Collections> {}
+        composable<Route.Library> { entry ->
+            val route = entry.toRoute<Route.Library>()
+            LibraryScreenRoot(
+                preset = route.preset,
+                collectionId = route.collectionId,
+                onBackClick = navController::navigateUp,
+                onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
+                onAddTitleClick = {},
+            )
+        }
+        composable<Route.Collections> {
+            CollectionsScreenRoot(
+                onBackClick = navController::navigateUp,
+                onCollectionClick = { navController.navigate(Route.Library(LibraryPreset.COLLECTION, it)) },
+            )
+        }
         composable<Route.TitleDetail> {}
         composable<Route.Calendar> {}
     }

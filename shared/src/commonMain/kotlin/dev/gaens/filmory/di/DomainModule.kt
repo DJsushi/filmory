@@ -1,6 +1,7 @@
 package dev.gaens.filmory.di
 
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
+import dev.gaens.filmory.feature.library.domain.BuildLibrary
 import dev.gaens.filmory.feature.note.domain.AddNote
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
 import dev.gaens.filmory.feature.title.domain.MoveWatchLater
@@ -26,4 +27,5 @@ val domainModule = module {
     factoryOf(::FindContinueWatching)
     factoryOf(::ToggleWatchLater)
     factoryOf(::MoveWatchLater)
+    factoryOf(::BuildLibrary)
 }

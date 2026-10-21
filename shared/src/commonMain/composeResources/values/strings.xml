@@ -69,4 +69,39 @@
     <string name="home_library">My library</string>
     <string name="home_more">More</string>
     <string name="home_play">Open %1$s</string>
+
+    <!-- Library -->
+    <string name="library_title">My library</string>
+    <string name="library_wishlist_title">Wishlist</string>
+    <string name="library_on_hold_title">On hold</string>
+    <string name="library_dropped_title">Dropped</string>
+    <string name="library_status_all">Status: All</string>
+    <string name="library_status_filter">Status: %1$s</string>
+    <string name="library_movies">Movies</string>
+    <string name="library_series">Series</string>
+    <string name="library_sort">Sort: %1$s</string>
+    <string name="library_sort_updated">Updated</string>
+    <string name="library_sort_added">Added</string>
+    <string name="library_sort_name">Name</string>
+    <string name="library_sort_rating">Rating</string>
+    <string name="library_all_statuses">All statuses</string>
+    <string name="library_search_hint">Search titles</string>
+    <string name="library_settings">Library settings</string>
+    <string name="library_settings_title">Display</string>
+    <string name="library_layout_grid">Grid</string>
+    <string name="library_layout_list">List</string>
+    <string name="library_show_stars">Show stars</string>
+    <string name="library_show_status_icon">Show status icon</string>
+    <string name="library_include_wishlist">Include wishlist titles</string>
+    <string name="library_empty">Nothing here yet.</string>
+    <string name="library_add_title">Add title</string>
+    <string name="collection_rename">Rename collection</string>
+    <string name="collection_delete">Delete collection</string>
+    <string name="collection_delete_message">The titles stay in your library.</string>
+    <string name="collection_name">Name</string>
+
+    <!-- Collections -->
+    <string name="collections_title">Collections</string>
+    <string name="collections_add">Add collection</string>
+    <string name="collections_default_name">Favorites</string>
 </resources>

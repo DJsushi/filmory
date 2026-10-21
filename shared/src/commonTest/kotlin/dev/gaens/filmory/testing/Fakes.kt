@@ -9,6 +9,8 @@ import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
 import dev.gaens.filmory.feature.episode.domain.Season
 import dev.gaens.filmory.feature.note.domain.Note
+import dev.gaens.filmory.feature.settings.domain.AppSettings
+import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import dev.gaens.filmory.feature.note.domain.NoteComment
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.domain.Title
@@ -143,4 +145,11 @@ class FakeCollectionRepository(collections: List<TitleCollection> = emptyList())
         }
         return Saved
     }
+}
+
+class FakeSettingsRepository(settings: AppSettings = AppSettings()) : SettingsRepository {
+    val settings = MutableStateFlow(settings)
+
+    override fun observeSettings(): Flow<AppSettings> = settings
+    override suspend fun update(transform: (AppSettings) -> AppSettings) = settings.update(transform)
 }

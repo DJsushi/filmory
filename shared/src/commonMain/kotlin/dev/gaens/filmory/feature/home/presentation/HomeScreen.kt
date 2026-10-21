@@ -38,7 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.gaens.filmory.core.presentation.designsystem.BottomBarClearance
+import dev.gaens.filmory.core.presentation.designsystem.bottomBarContentPadding
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.SquircleShape
@@ -121,7 +121,7 @@ fun HomeScreen(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = BottomBarClearance),
+        contentPadding = bottomBarContentPadding(),
     ) {
         item(key = "hero") { HomeHero(state, onAction) }
         item(key = "watchLater") { WatchLaterSection(state, onAction) }
