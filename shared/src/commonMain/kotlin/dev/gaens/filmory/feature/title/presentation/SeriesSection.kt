@@ -1,6 +1,8 @@
 package dev.gaens.filmory.feature.title.presentation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -9,6 +11,9 @@ import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -38,6 +42,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.EmphasizedEasing
 import dev.gaens.filmory.core.presentation.designsystem.LocalReducedMotion
@@ -79,6 +84,7 @@ import org.jetbrains.compose.resources.stringResource
 
 private const val MARKER_KEY = "you-are-here"
 private const val MARKER_MOVE_MILLIS = 500
+private const val SEASON_SLIDE_MILLIS = 350
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun LazyListScope.seriesSection(
@@ -114,8 +120,29 @@ fun LazyListScope.seriesSection(
             }
         }
     }
-    val episodes = series.seasons.find { it.number == state.selectedSeasonNumber }?.episodes.orEmpty()
-    items(episodes, key = { "episode-${it.id}" }) { episode -> EpisodeRow(episode, sharedScope, onAction) }
+    item(key = "episodes") {
+        val isReducedMotion = LocalReducedMotion.current
+        // Switching season slides the list the way the chips are ordered: a later season comes in from the right.
+        AnimatedContent(
+            targetState = state.selectedSeasonNumber,
+            transitionSpec = { seasonSlide(initialState, targetState, isReducedMotion) },
+            label = "season episodes",
+        ) { seasonNumber ->
+            Column {
+                series.seasons.find { it.number == seasonNumber }?.episodes.orEmpty().forEach { episode ->
+                    EpisodeRow(episode, sharedScope, onAction)
+                }
+            }
+        }
+    }
+}
+
+private fun seasonSlide(from: Int?, to: Int?, isReducedMotion: Boolean): ContentTransform {
+    if (isReducedMotion) return EnterTransition.None togetherWith ExitTransition.None
+    val direction = if ((to ?: 0) >= (from ?: 0)) 1 else -1
+    val spec = tween<IntOffset>(SEASON_SLIDE_MILLIS, easing = EmphasizedEasing)
+    return (slideInHorizontally(spec) { it * direction } + fadeIn(tween(SEASON_SLIDE_MILLIS))) togetherWith
+        (slideOutHorizontally(spec) { -it * direction } + fadeOut(tween(SEASON_SLIDE_MILLIS)))
 }
 
 @Composable
