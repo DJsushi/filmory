@@ -23,7 +23,7 @@ A clickable mockup (ten screens) is in the "Filmory Mockup" artifact: https://cl
 
 ## Tech stack
 
-Kotlin Multiplatform, Compose Multiplatform (Material 3 components), Ktor, Koin, Room KMP. Navigation Compose, DataStore, Coil 3, coroutines + Flow, kotlinx.serialization, kotlinx-datetime, Okio, Gradle version catalog (`gradle/libs.versions.toml`). Do not add libraries outside this list without asking.
+Kotlin Multiplatform, Compose Multiplatform (Material 3 components), Ktor, Koin, Room KMP. Navigation Compose, DataStore, Coil 3, coroutines + Flow, kotlinx.serialization, kotlinx-datetime, Okio, `sh.calvin.reorderable` (Home drag and drop), Gradle version catalog (`gradle/libs.versions.toml`). Do not add libraries outside this list without asking.
 
 Current state: all four milestones are built and run on the Android emulator: every screen in the mockup, the list screens, Profile and Settings, TMDB search with manual add, and backup and restore. Not built: iOS app shell and iOS actuals for the photo picker and share sheet (stubs), the Xcode project. iOS targets are `iosArm64` and `iosSimulatorArm64` only (`sqlite-bundled` has no `iosX64`). iOS cannot be built on this machine.
 
