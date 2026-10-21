@@ -1,6 +1,6 @@
 # Implementation
 
-Kotlin Multiplatform with Compose Multiplatform, built as one KMP module with feature packages (not many Gradle modules).
+Kotlin Multiplatform with Compose Multiplatform, built as a `:shared` KMP module with feature packages, plus a thin `:androidApp` shell.
 Ktor for networking.
 Koin for dependency injection.
 Room (KMP) database.
@@ -10,8 +10,8 @@ Clean code principles; since this app will be pretty large, use Philipp Lackner'
 ## Platform and project layout
 
 - **Kotlin Multiplatform from the start**, targets Android and iOS, UI in Compose Multiplatform. Shared code lives in `commonMain`. Android-only code (dynamic color, platform file and image access, TMDB key injection) goes in `androidMain` behind `expect`/`actual` or an interface. iOS targets must be declared and kept compiling in common code, but only Android can be built and tested on this Linux machine.
-- **Single KMP module** with feature packages, as `CLEAN_CODE.md` section 4 allows: `dev.gaens.filmory.feature.<name>.{domain,data,presentation}` plus `dev.gaens.filmory.core.*`. Do not create many Gradle modules.
-- The current project is a plain Android app (`:app`, minSdk 24, targetSdk 37). The first task is to convert it into the KMP structure above. Keep applicationId `dev.gaens.filmory`.
+- **`:shared`** is the KMP library holding all code, with feature packages as `CLEAN_CODE.md` section 4 allows: `dev.gaens.filmory.feature.<name>.{domain,data,presentation}` plus `dev.gaens.filmory.core.*`. **`:androidApp`** is the Android application (applicationId `dev.gaens.filmory`, minSdk 24, targetSdk 37): `MainActivity`, `FilmoryApplication` (starts Koin), manifest, launcher icons and the `TMDB_API_KEY` `BuildConfig` field, passed to `:shared` as a `TmdbConfig` Koin binding. AGP 9 cannot combine the KMP plugin and the application plugin in one module, so this two-module split was chosen. Do not add more modules.
+- iOS targets are `iosArm64` and `iosSimulatorArm64` (`sqlite-bundled` has no `iosX64`). There is no Xcode project yet; `MainViewController()` in `iosMain` is the entry point for one.
 - Do not ask the user about KMP versus Android-only or module layout. Both are decided.
 
 ## Libraries

@@ -112,7 +112,7 @@ bookmory/
     └── presentation/
 ```
 
-**Filmory uses a single Kotlin Multiplatform module with the same package structure** (`dev.gaens.filmory.feature.<name>.{domain,data,presentation}` and `dev.gaens.filmory.core.*`), so splitting into modules later is trivial. This is decided. Do not ask, and do not create the multi-module layout above.
+**Filmory uses one Kotlin Multiplatform module, `:shared`, plus a thin `:androidApp`, with the same package structure** (`dev.gaens.filmory.feature.<name>.{domain,data,presentation}` and `dev.gaens.filmory.core.*`), so splitting into modules later is trivial. This is decided. Do not ask, and do not create the multi-module layout above.
 
 Package naming: `com.<yourname>.bookmory.<module>.<layer>` e.g. `com.example.bookmory.library.domain`.
 

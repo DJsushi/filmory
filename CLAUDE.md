@@ -17,7 +17,7 @@ A clickable mockup (ten screens) is in the "Filmory Mockup" artifact: https://cl
 ## Decided (do not ask the user again)
 
 - Kotlin Multiplatform from the start, Compose Multiplatform UI, targets Android and iOS. Only Android can be built and tested on this Linux machine.
-- One KMP module with feature packages, not many Gradle modules.
+- Two Gradle modules: `:shared` (all Kotlin Multiplatform code, organised in feature packages) and `:androidApp` (thin Android shell: `MainActivity`, `Application`, manifest, TMDB key `BuildConfig`). AGP 9 does not allow one module to be both the KMP code and the Android app. No further modules.
 - Bookmory-like cream and blue theme by default, optional dynamic color on Android 12+.
 - Statuses, watchings, notes, comments, wishlist and watch-later rules are in `docs/FEATURES.md`.
 
@@ -25,7 +25,7 @@ A clickable mockup (ten screens) is in the "Filmory Mockup" artifact: https://cl
 
 Kotlin Multiplatform, Compose Multiplatform (Material 3 components), Ktor, Koin, Room KMP. Navigation Compose, DataStore, Coil 3, coroutines + Flow, kotlinx.serialization, kotlinx-datetime, Okio, Gradle version catalog (`gradle/libs.versions.toml`). Do not add libraries outside this list without asking.
 
-Current state: fresh single-module Android project (`:app`, minSdk 24, targetSdk 37) with only the Compose template (`MainActivity`, `ui/theme`). First task: convert it to the KMP structure in `docs/IMPLEMENTATION.md`.
+Current state: converted to KMP (`:shared` + `:androidApp`, minSdk 24, targetSdk 37), with Koin, Room KMP, Ktor, theme and a placeholder Home. iOS targets are `iosArm64` and `iosSimulatorArm64` only (`sqlite-bundled` has no `iosX64`). iOS cannot be built on this machine.
 
 ## Product scope
 
@@ -70,8 +70,8 @@ The user has given standing permission to commit in this repository. Do not wait
 
 ## Commands
 
-- Build: `./gradlew assembleDebug`
-- Unit tests: `./gradlew test`
-- Install on device: `./gradlew installDebug`
+- Build: `./gradlew :androidApp:assembleDebug`
+- Unit tests: `./gradlew :shared:testAndroidHostTest`
+- Install on device: `./gradlew :androidApp:installDebug`
 
-These are the template commands. Update them after the KMP conversion if the task names change.
+Gradle needs network access (outside the Claude sandbox).
