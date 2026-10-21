@@ -1,5 +1,6 @@
 package dev.gaens.filmory.core.presentation.designsystem.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,8 @@ fun ScreenHeader(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    /** Replaces the headline text, for a title that can be edited in place. */
+    titleContent: (@Composable () -> Unit)? = null,
 ) {
     Column(modifier.fillMaxWidth().statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 8.dp)) {
         FilmoryAppBar(
@@ -32,11 +35,15 @@ fun ScreenHeader(
             },
             actions = actions,
         )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(start = 4.dp, top = 8.dp).rise(0),
-        )
+        if (titleContent != null) {
+            Box(Modifier.padding(start = 4.dp, top = 8.dp).rise(0)) { titleContent() }
+        } else {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(start = 4.dp, top = 8.dp).rise(0),
+            )
+        }
         if (subtitle != null) {
             Text(
                 text = subtitle,

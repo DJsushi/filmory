@@ -2,7 +2,6 @@ package dev.gaens.filmory.feature.collection.presentation
 
 data class CollectionsState(
     val collections: List<CollectionCardUi> = emptyList(),
-    val isAddDialogOpen: Boolean = false,
 )
 
 data class CollectionCardUi(
@@ -15,7 +14,11 @@ data class CollectionCardUi(
 sealed interface CollectionsAction {
     data object OnBackClick : CollectionsAction
     data class OnCollectionClick(val collectionId: String) : CollectionsAction
-    data object OnAddClick : CollectionsAction
-    data object OnAddDismiss : CollectionsAction
-    data class OnAddConfirm(val name: String) : CollectionsAction
+
+    /** Creates a collection called [newName] (numbered if taken) and opens it. */
+    data class OnAddClick(val newName: String) : CollectionsAction
+}
+
+sealed interface CollectionsEvent {
+    data class OpenNewCollection(val collectionId: String) : CollectionsEvent
 }

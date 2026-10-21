@@ -2,14 +2,17 @@ package dev.gaens.filmory.feature.collection.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.gaens.filmory.core.domain.util.onSuccess
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.collection.domain.CreateCollection
 import dev.gaens.filmory.feature.title.domain.TitleRepository
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,11 +35,12 @@ class CollectionsViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CollectionsState())
 
+    private val eventChannel = Channel<CollectionsEvent>()
+    val events = eventChannel.receiveAsFlow()
+
     fun onAction(action: CollectionsAction) {
         when (action) {
-            CollectionsAction.OnAddClick -> _state.update { it.copy(isAddDialogOpen = true) }
-            CollectionsAction.OnAddDismiss -> _state.update { it.copy(isAddDialogOpen = false) }
-            is CollectionsAction.OnAddConfirm -> addCollection(action.name)
+            is CollectionsAction.OnAddClick -> addCollection(action.newName)
             else -> Unit
         }
     }
@@ -57,7 +61,8 @@ class CollectionsViewModel(
     }
 
     private fun addCollection(name: String) {
-        _state.update { it.copy(isAddDialogOpen = false) }
-        viewModelScope.launch { createCollection(name) }
+        viewModelScope.launch {
+            createCollection(name).onSuccess { eventChannel.send(CollectionsEvent.OpenNewCollection(it)) }
+        }
     }
 }

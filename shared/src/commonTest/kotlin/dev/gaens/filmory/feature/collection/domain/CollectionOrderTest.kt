@@ -40,6 +40,16 @@ class CollectionOrderTest {
     }
 
     @Test
+    fun `a taken name gets the first free number`() {
+        assertEquals("New collection", uniqueCollectionName("New collection", listOf("Favorites")))
+        assertEquals("New collection 2", uniqueCollectionName("New collection", listOf("new collection")))
+        assertEquals(
+            "New collection 3",
+            uniqueCollectionName("New collection", listOf("New collection", "New collection 2")),
+        )
+    }
+
+    @Test
     fun `reordering puts the collections in the given order`() = runTest {
         val repository = FakeCollectionRepository(listOf(collection("a"), collection("b"), collection("c")))
 

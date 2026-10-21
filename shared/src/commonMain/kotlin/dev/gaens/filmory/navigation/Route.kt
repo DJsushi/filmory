@@ -23,7 +23,7 @@ sealed interface Route {
     data object Collections : Route
 
     @Serializable
-    data class CollectionDetail(val collectionId: String) : Route
+    data class CollectionDetail(val collectionId: String, val isNew: Boolean = false) : Route
 
     @Serializable
     data class TitleDetail(val titleId: String) : Route

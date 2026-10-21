@@ -109,7 +109,8 @@
     <!-- Collections -->
     <string name="collections_title">Collections</string>
     <string name="collections_add">Add collection</string>
-    <string name="collections_default_name">Favorites</string>
+    <string name="collection_new_name">New collection</string>
+    <string name="collection_rename_hint">To rename the collection, press and hold its name.</string>
 
     <!-- Errors -->
     <string name="error_disk_full">Your device is out of storage.</string>

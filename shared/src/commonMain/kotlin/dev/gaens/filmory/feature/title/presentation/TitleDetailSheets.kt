@@ -194,7 +194,7 @@ fun CollectionPickerSheet(collections: List<CollectionToggleUi>, onAction: (Titl
                         checked = collection.containsTitle,
                         onCheckedChange = { onAction(TitleDetailAction.OnCollectionToggle(collection.id)) },
                     )
-                    Text(collection.displayName(), style = MaterialTheme.typography.bodyLarge)
+                    Text(collection.name, style = MaterialTheme.typography.bodyLarge)
                 }
             }
         }

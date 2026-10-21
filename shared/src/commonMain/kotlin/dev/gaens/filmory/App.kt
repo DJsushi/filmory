@@ -168,11 +168,14 @@ private fun FilmoryNavHost(navController: NavHostController) {
             CollectionsScreenRoot(
                 onBackClick = navController::navigateUp,
                 onCollectionClick = { navController.navigate(Route.CollectionDetail(it)) },
+                onNewCollection = { navController.navigate(Route.CollectionDetail(it, isNew = true)) },
             )
         }
         composable<Route.CollectionDetail> { entry ->
+            val route = entry.toRoute<Route.CollectionDetail>()
             CollectionDetailScreenRoot(
-                collectionId = entry.toRoute<Route.CollectionDetail>().collectionId,
+                collectionId = route.collectionId,
+                isNew = route.isNew,
                 onBackClick = navController::navigateUp,
                 onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
                 onAddTitleClick = { navController.navigate(Route.Search) },

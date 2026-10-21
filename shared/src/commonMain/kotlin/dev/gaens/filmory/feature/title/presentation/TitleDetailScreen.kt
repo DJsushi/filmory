@@ -63,7 +63,6 @@ import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.action_back
 import dev.gaens.filmory.resources.action_delete
 import dev.gaens.filmory.resources.action_more
-import dev.gaens.filmory.resources.collections_default_name
 import dev.gaens.filmory.resources.detail_add_collection
 import dev.gaens.filmory.resources.detail_add_note
 import dev.gaens.filmory.resources.detail_add_watching
@@ -306,7 +305,7 @@ private fun CollectionChips(collections: List<CollectionToggleUi>, onAction: (Ti
     ChipRow(Modifier.padding(top = 12.dp).rise(4)) {
         collections.filter { it.containsTitle }.forEach { collection ->
             FilmoryChip(
-                label = collection.displayName(),
+                label = collection.name,
                 selected = false,
                 icon = Res.drawable.ic_folder,
                 onClick = { onAction(TitleDetailAction.OnCollectionPickerClick) },
@@ -319,10 +318,6 @@ private fun CollectionChips(collections: List<CollectionToggleUi>, onAction: (Ti
         )
     }
 }
-
-@Composable
-fun CollectionToggleUi.displayName(): String =
-    if (isDefault) stringResource(Res.string.collections_default_name) else name
 
 private fun LazyListScope.watchingsSection(state: TitleDetailState, onAction: (TitleDetailAction) -> Unit) {
     item(key = "watchingsHeader") {

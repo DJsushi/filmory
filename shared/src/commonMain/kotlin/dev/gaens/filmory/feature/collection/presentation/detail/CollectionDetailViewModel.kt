@@ -17,15 +17,19 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** The collection itself: its name and what can be done to it. Its titles are listed by the library part. */
+/**
+ * The collection itself: its name and what can be done to it. Its titles are listed by the library
+ * part. A [isNew] collection opens with its name already being edited.
+ */
 class CollectionDetailViewModel(
     private val collectionId: String,
+    isNew: Boolean,
     private val collectionRepository: CollectionRepository,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
-    private val _state = MutableStateFlow(CollectionDetailState())
+    private val _state = MutableStateFlow(CollectionDetailState(isEditingName = isNew))
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
@@ -33,16 +37,18 @@ class CollectionDetailViewModel(
                 observeCollection()
             }
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), CollectionDetailState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), _state.value)
 
     private val eventChannel = Channel<CollectionDetailEvent>()
     val events = eventChannel.receiveAsFlow()
 
     fun onAction(action: CollectionDetailAction) {
         when (action) {
-            is CollectionDetailAction.OnDialogOpen -> _state.update { it.copy(dialog = action.dialog) }
-            CollectionDetailAction.OnDialogDismiss -> _state.update { it.copy(dialog = null) }
-            is CollectionDetailAction.OnRenameConfirm -> rename(action.name)
+            CollectionDetailAction.OnNameTap -> viewModelScope.launch { eventChannel.send(CollectionDetailEvent.ShowRenameHint) }
+            CollectionDetailAction.OnEditNameStart -> _state.update { it.copy(isEditingName = true) }
+            is CollectionDetailAction.OnNameCommit -> commitName(action.name)
+            CollectionDetailAction.OnDeleteClick -> _state.update { it.copy(isDeleteDialogOpen = true) }
+            CollectionDetailAction.OnDeleteDismiss -> _state.update { it.copy(isDeleteDialogOpen = false) }
             CollectionDetailAction.OnDeleteConfirm -> delete()
         }
     }
@@ -56,16 +62,18 @@ class CollectionDetailViewModel(
             .launchIn(viewModelScope)
     }
 
-    private fun rename(name: String) {
-        _state.update { it.copy(dialog = null) }
+    private fun commitName(name: String) {
+        _state.update { it.copy(isEditingName = false) }
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) return
         viewModelScope.launch {
             val collection = collectionRepository.observeCollections().first().find { it.id == collectionId } ?: return@launch
-            collectionRepository.upsertCollection(collection.copy(name = name))
+            if (collection.name != trimmed) collectionRepository.upsertCollection(collection.copy(name = trimmed))
         }
     }
 
     private fun delete() {
-        _state.update { it.copy(dialog = null) }
+        _state.update { it.copy(isDeleteDialogOpen = false) }
         viewModelScope.launch {
             collectionRepository.deleteCollection(collectionId).onSuccess { eventChannel.send(CollectionDetailEvent.Deleted) }
         }

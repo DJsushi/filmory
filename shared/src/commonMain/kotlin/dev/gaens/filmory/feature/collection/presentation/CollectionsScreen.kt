@@ -33,15 +33,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.ScreenHeader
-import dev.gaens.filmory.core.presentation.designsystem.components.TextInputDialog
 import dev.gaens.filmory.core.presentation.designsystem.components.posterGradient
 import dev.gaens.filmory.core.presentation.designsystem.rise
+import dev.gaens.filmory.core.presentation.ui.ObserveAsEvents
 import dev.gaens.filmory.core.presentation.designsystem.softShadow
 import dev.gaens.filmory.core.presentation.designsystem.spanParentPadding
 import dev.gaens.filmory.resources.Res
-import dev.gaens.filmory.resources.collection_name
 import dev.gaens.filmory.resources.collections_add
-import dev.gaens.filmory.resources.collections_default_name
+import dev.gaens.filmory.resources.collection_new_name
 import dev.gaens.filmory.resources.collections_title
 import dev.gaens.filmory.resources.ic_add
 import dev.gaens.filmory.resources.title_count
@@ -54,9 +53,15 @@ import org.koin.compose.viewmodel.koinViewModel
 fun CollectionsScreenRoot(
     onBackClick: () -> Unit,
     onCollectionClick: (String) -> Unit,
+    onNewCollection: (String) -> Unit,
     viewModel: CollectionsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is CollectionsEvent.OpenNewCollection -> onNewCollection(event.collectionId)
+        }
+    }
     CollectionsScreen(
         state = state,
         onAction = { action ->
@@ -106,7 +111,7 @@ fun CollectionsScreen(
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 Text(
-                    text = if (collection.isDefault) stringResource(Res.string.collections_default_name) else collection.name,
+                    text = collection.name,
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White,
                     maxLines = 2,
@@ -118,15 +123,10 @@ fun CollectionsScreen(
                 )
             }
         }
-        item(key = "add") { AddCollectionTile { onAction(CollectionsAction.OnAddClick) } }
-    }
-    if (state.isAddDialogOpen) {
-        TextInputDialog(
-            title = stringResource(Res.string.collections_add),
-            label = stringResource(Res.string.collection_name),
-            onConfirm = { onAction(CollectionsAction.OnAddConfirm(it)) },
-            onDismiss = { onAction(CollectionsAction.OnAddDismiss) },
-        )
+        item(key = "add") {
+            val newName = stringResource(Res.string.collection_new_name)
+            AddCollectionTile { onAction(CollectionsAction.OnAddClick(newName)) }
+        }
     }
 }
 

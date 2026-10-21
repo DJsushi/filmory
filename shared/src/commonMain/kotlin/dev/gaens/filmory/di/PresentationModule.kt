@@ -26,7 +26,7 @@ val presentationModule = module {
         LibraryViewModel(preset, collectionId, get(), get(), get(), get(), get())
     }
     viewModelOf(::CollectionsViewModel)
-    viewModel { (collectionId: String) -> CollectionDetailViewModel(collectionId, get()) }
+    viewModel { (collectionId: String, isNew: Boolean) -> CollectionDetailViewModel(collectionId, isNew, get()) }
     viewModelOf(::WatchedViewModel)
     viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)
