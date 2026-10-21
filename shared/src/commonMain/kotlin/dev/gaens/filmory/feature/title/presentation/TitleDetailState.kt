@@ -1,5 +1,6 @@
 package dev.gaens.filmory.feature.title.presentation
 
+import dev.gaens.filmory.core.presentation.ui.UiText
 import dev.gaens.filmory.feature.note.presentation.NoteUi
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
@@ -88,7 +89,8 @@ sealed interface NoteEpisodeFilter {
 }
 
 sealed interface TitleDetailSheet {
-    data class EditWatching(val draft: Watching) : TitleDetailSheet
+    /** [error] is shown inside the sheet, because a snackbar would sit behind it. */
+    data class EditWatching(val draft: Watching, val error: UiText? = null) : TitleDetailSheet
     data object CollectionPicker : TitleDetailSheet
     data object DeleteTitle : TitleDetailSheet
     data class DeleteWatching(val watchingId: String) : TitleDetailSheet

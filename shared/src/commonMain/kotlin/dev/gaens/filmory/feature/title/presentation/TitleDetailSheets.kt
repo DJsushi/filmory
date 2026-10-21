@@ -17,6 +17,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -33,6 +34,7 @@ import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.ConfirmDialog
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmorySegmentedRow
 import dev.gaens.filmory.core.presentation.designsystem.components.RatingInputRow
+import dev.gaens.filmory.core.presentation.ui.UiText
 import dev.gaens.filmory.core.presentation.ui.formatDayMonthYear
 import dev.gaens.filmory.core.presentation.ui.label
 import dev.gaens.filmory.core.presentation.ui.toLocalDate
@@ -59,12 +61,15 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WatchingEditorSheet(draft: Watching, onAction: (TitleDetailAction) -> Unit) {
+fun WatchingEditorSheet(draft: Watching, error: UiText?, onAction: (TitleDetailAction) -> Unit) {
+    val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
     ModalBottomSheet(
         onDismissRequest = { onAction(TitleDetailAction.OnSheetDismiss) },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
@@ -83,10 +88,12 @@ fun WatchingEditorSheet(draft: Watching, onAction: (TitleDetailAction) -> Unit) 
                 selectedIndex = states.indexOf(draft.state),
                 onSelect = { onAction(TitleDetailAction.OnDraftStateChange(states[it])) },
             )
-            DateField(stringResource(Res.string.watching_started), draft.startedAt) {
+            val startedOn = draft.startedAt?.toLocalDate()
+            val finishedOn = draft.finishedAt?.toLocalDate()
+            DateField(stringResource(Res.string.watching_started), draft.startedAt, startDateLimits(finishedOn, today)) {
                 onAction(TitleDetailAction.OnDraftStartDateChange(it))
             }
-            DateField(stringResource(Res.string.watching_finished), draft.finishedAt) {
+            DateField(stringResource(Res.string.watching_finished), draft.finishedAt, finishDateLimits(startedOn, today)) {
                 onAction(TitleDetailAction.OnDraftFinishDateChange(it))
             }
             Text(stringResource(Res.string.watching_rating), style = MaterialTheme.typography.labelLarge)
@@ -105,6 +112,9 @@ fun WatchingEditorSheet(draft: Watching, onAction: (TitleDetailAction) -> Unit) 
                 minLines = 3,
                 modifier = Modifier.fillMaxWidth(),
             )
+            if (error != null) {
+                Text(error.asString(), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { onAction(TitleDetailAction.OnDraftDeleteClick) }) {
                     Text(stringResource(Res.string.watching_delete), color = MaterialTheme.colorScheme.error)
@@ -118,7 +128,7 @@ fun WatchingEditorSheet(draft: Watching, onAction: (TitleDetailAction) -> Unit) 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DateField(label: String, value: Instant?, onChange: (LocalDate?) -> Unit) {
+private fun DateField(label: String, value: Instant?, limits: DateLimits, onChange: (LocalDate?) -> Unit) {
     var isPickerOpen by remember { mutableStateOf(false) }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
@@ -132,7 +142,15 @@ private fun DateField(label: String, value: Instant?, onChange: (LocalDate?) -> 
     if (isPickerOpen) {
         // The date picker works in UTC midnights; convert through LocalDate so the day never shifts.
         val initialMillis = value?.toLocalDate()?.atStartOfDayIn(TimeZone.UTC)?.toEpochMilliseconds()
-        val pickerState = rememberDatePickerState(initialSelectedDateMillis = initialMillis)
+        val pickerState = rememberDatePickerState(
+            initialSelectedDateMillis = initialMillis,
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                    limits.allows(Instant.fromEpochMilliseconds(utcTimeMillis).toLocalDateTime(TimeZone.UTC).date)
+
+                override fun isSelectableYear(year: Int): Boolean = limits.allowsYear(year)
+            },
+        )
         DatePickerDialog(
             onDismissRequest = { isPickerOpen = false },
             confirmButton = {

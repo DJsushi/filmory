@@ -28,8 +28,11 @@ import dev.gaens.filmory.testing.aTitle
 import dev.gaens.filmory.testing.at
 import dev.gaens.filmory.testing.aWatching
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class TitleDetailViewModelTest : ViewModelTest() {
@@ -89,6 +92,23 @@ class TitleDetailViewModelTest : ViewModelTest() {
             val state = expectMostRecentItem()
             assertEquals(listOf("n1"), state.notes.map { it.id })
             assertEquals(2, state.noteCount)
+        }
+    }
+
+    @Test
+    fun `a finish date before the start date is reported inside the sheet`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w1", startedAt = at(10)))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(TitleDetailAction.OnWatchingClick("w1"))
+            viewModel.onAction(TitleDetailAction.OnDraftFinishDateChange(LocalDate(1970, 1, 1)))
+            viewModel.onAction(TitleDetailAction.OnDraftSave)
+
+            val sheet = expectMostRecentItem().sheet as TitleDetailSheet.EditWatching
+            assertNotNull(sheet.error)
+
+            viewModel.onAction(TitleDetailAction.OnDraftFinishDateChange(null))
+            assertNull((expectMostRecentItem().sheet as TitleDetailSheet.EditWatching).error)
         }
     }
 

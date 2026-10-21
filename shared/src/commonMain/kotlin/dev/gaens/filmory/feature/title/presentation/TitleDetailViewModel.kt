@@ -155,12 +155,14 @@ class TitleDetailViewModel(
         viewModelScope.launch {
             when (val result = saveWatching(draft)) {
                 is Result.Success -> _state.update { it.copy(sheet = null) }
-                is Result.Error -> showMessage(
-                    when (val error = result.error) {
+                is Result.Error -> {
+                    // The date pickers already rule out finishing before starting; this stays as a safety net.
+                    val message = when (val error = result.error) {
                         SaveWatchingError.FinishBeforeStart -> UiText.Resource(Res.string.error_finish_before_start)
                         is SaveWatchingError.Storage -> error.error.asUiText()
-                    },
-                )
+                    }
+                    openSheet(TitleDetailSheet.EditWatching(draft, message))
+                }
             }
         }
     }
