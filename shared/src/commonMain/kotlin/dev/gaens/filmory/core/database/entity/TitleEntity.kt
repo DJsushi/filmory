@@ -2,8 +2,10 @@ package dev.gaens.filmory.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "titles")
+@Serializable
 data class TitleEntity(
     @PrimaryKey val id: String,
     val type: String,

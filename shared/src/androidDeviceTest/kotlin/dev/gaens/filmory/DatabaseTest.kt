@@ -4,7 +4,14 @@ import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
+import dev.gaens.filmory.core.data.AppDirectories
 import dev.gaens.filmory.core.database.AppDatabase
+import dev.gaens.filmory.core.domain.util.Result
+import dev.gaens.filmory.feature.backup.data.ZipBackupRepository
+import dev.gaens.filmory.feature.backup.domain.BackupError
+import okio.FileSystem
+import okio.Path.Companion.toPath
+import kotlin.time.Clock
 import dev.gaens.filmory.feature.collection.data.CreateDefaultCollectionCallback
 import dev.gaens.filmory.feature.collection.data.OfflineFirstCollectionRepository
 import dev.gaens.filmory.feature.episode.data.OfflineFirstEpisodeRepository
@@ -163,6 +170,37 @@ class DatabaseTest {
         assertEquals(listOf("e1", "e2", "e3"), episodes.getSeasons("t").single().episodes.map { it.id })
         assertEquals(1, episodes.observeChecks("w").first().size)
         assertEquals("e1", notes.observeNote("n").first()?.episodeId)
+    }
+
+    @Test
+    fun backup_round_trip_restores_data_and_images_and_rejects_garbage() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val root = java.io.File(context.cacheDir, "backup-test").apply { deleteRecursively(); mkdirs() }.absolutePath.toPath()
+        val directories = AppDirectories(root / "files", root / "cache")
+        val image = directories.files / "note_images/a.jpg"
+        FileSystem.SYSTEM.createDirectories(image.parent!!)
+        FileSystem.SYSTEM.write(image) { write(byteArrayOf(7, 8, 9)) }
+        val backups = ZipBackupRepository(database.backupDao(), directories, FileSystem.SYSTEM, Clock.System)
+
+        seed()
+        notes.upsertNote(note.copy(imagePath = "note_images/a.jpg"))
+        episodes.checkEpisode(EpisodeCheck("c1", "w", "e1", now))
+        val file = (backups.createBackup() as Result.Success).data
+
+        titles.deleteTitle("t")
+        FileSystem.SYSTEM.delete(image)
+        assertTrue(titles.observeTitles().first().isEmpty())
+
+        assertEquals(Result.Success(Unit), backups.restore(file))
+        assertEquals(title, titles.getTitle("t"))
+        assertEquals(seasons, episodes.getSeasons("t"))
+        assertEquals(1, episodes.observeChecks("w").first().size)
+        assertEquals("note_images/a.jpg", notes.observeNote("n").first()?.imagePath)
+        assertEquals(listOf<Byte>(7, 8, 9), FileSystem.SYSTEM.read(image) { readByteArray() }.toList())
+
+        val garbage = (root / "garbage.filmorybkp").also { FileSystem.SYSTEM.write(it) { writeUtf8("not a zip") } }
+        assertEquals(Result.Error(BackupError.INVALID_FILE), backups.restore(garbage.toString()))
+        assertEquals(title, titles.getTitle("t"))
     }
 
     @Test

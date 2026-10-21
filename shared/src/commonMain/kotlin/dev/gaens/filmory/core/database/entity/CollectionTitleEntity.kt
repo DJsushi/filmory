@@ -3,6 +3,7 @@ package dev.gaens.filmory.core.database.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import kotlinx.serialization.Serializable
 
 @Entity(
     tableName = "collection_titles",
@@ -23,6 +24,7 @@ import androidx.room.Index
     ],
     indices = [Index("titleId")],
 )
+@Serializable
 data class CollectionTitleEntity(
     val collectionId: String,
     val titleId: String,

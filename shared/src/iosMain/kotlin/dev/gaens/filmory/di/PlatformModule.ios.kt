@@ -14,6 +14,7 @@ import okio.Path.Companion.toPath
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
+import platform.Foundation.NSTemporaryDirectory
 import platform.Foundation.NSUserDomainMask
 
 private fun documentsPath(): String {
@@ -31,7 +32,7 @@ actual val platformModule = module {
     single<RoomDatabase.Builder<AppDatabase>> {
         Room.databaseBuilder<AppDatabase>(name = documentsPath() + "/$DATABASE_NAME")
     }
-    single { AppDirectories(documentsPath().toPath()) }
+    single { AppDirectories(documentsPath().toPath(), NSTemporaryDirectory().toPath()) }
     single { FileSystem.SYSTEM }
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.createWithPath(produceFile = { (documentsPath() + "/$SETTINGS_FILE_NAME").toPath() })

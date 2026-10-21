@@ -25,6 +25,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.components.BottomBarItem
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryBottomBar
+import dev.gaens.filmory.feature.backup.presentation.BackupSection
 import dev.gaens.filmory.feature.calendar.presentation.CalendarScreenRoot
 import dev.gaens.filmory.feature.collection.presentation.CollectionsScreenRoot
 import dev.gaens.filmory.feature.home.presentation.HomeScreenRoot
@@ -144,7 +145,7 @@ private fun FilmoryNavHost(navController: NavHostController) {
         composable<Route.Watched> {
             WatchedScreenRoot(onTitleClick = { navController.navigate(Route.TitleDetail(it)) })
         }
-        composable<Route.Profile> { SettingsScreenRoot() }
+        composable<Route.Profile> { SettingsScreenRoot(dataSection = { BackupSection(it) }) }
         composable<Route.Library> { entry ->
             val route = entry.toRoute<Route.Library>()
             LibraryScreenRoot(

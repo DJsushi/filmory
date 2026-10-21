@@ -22,7 +22,7 @@ actual val platformModule = module {
             name = context.getDatabasePath(DATABASE_NAME).absolutePath,
         )
     }
-    single { AppDirectories(androidContext().filesDir.absolutePath.toPath()) }
+    single { AppDirectories(androidContext().filesDir.absolutePath.toPath(), androidContext().cacheDir.absolutePath.toPath()) }
     single { FileSystem.SYSTEM }
     single<DataStore<Preferences>> {
         val file = androidContext().filesDir.resolve(SETTINGS_FILE_NAME)

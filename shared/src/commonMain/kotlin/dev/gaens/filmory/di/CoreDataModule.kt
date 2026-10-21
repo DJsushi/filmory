@@ -30,6 +30,7 @@ val coreDataModule = module {
     single { get<AppDatabase>().episodeDao() }
     single { get<AppDatabase>().noteDao() }
     single { get<AppDatabase>().collectionDao() }
+    single { get<AppDatabase>().backupDao() }
     single<CoroutineScope> { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
     single<Clock> { Clock.System }
     singleOf(::UuidIdGenerator).bind<IdGenerator>()

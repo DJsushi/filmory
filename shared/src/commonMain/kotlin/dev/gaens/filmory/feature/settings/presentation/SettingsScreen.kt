@@ -1,7 +1,15 @@
 package dev.gaens.filmory.feature.settings.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import dev.gaens.filmory.core.presentation.ui.UiText
+import dev.gaens.filmory.feature.search.presentation.TmdbAttribution
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -48,21 +56,27 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsScreenRoot(
-    dataSection: @Composable () -> Unit = {},
-    aboutSection: @Composable () -> Unit = {},
+    dataSection: @Composable (onMessage: suspend (UiText) -> Unit) -> Unit = {},
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScreen(state, viewModel::onAction, dataSection, aboutSection)
+    val snackbarHostState = remember { SnackbarHostState() }
+    Box(Modifier.fillMaxSize()) {
+        SettingsScreen(
+            state = state,
+            onAction = viewModel::onAction,
+            dataSection = { dataSection { snackbarHostState.showSnackbar(it.asStringAsync()) } },
+        )
+        SnackbarHost(snackbarHostState, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 96.dp))
+    }
 }
 
-/** The Profile tab: a summary and the app settings. [dataSection] and [aboutSection] come from other features. */
+/** The Profile tab: a summary and the app settings. [dataSection] comes from the backup feature. */
 @Composable
 fun SettingsScreen(
     state: SettingsState,
     onAction: (SettingsAction) -> Unit,
     dataSection: @Composable () -> Unit = {},
-    aboutSection: @Composable () -> Unit = {},
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottomBarContentPadding())) {
         HeroHeader {
@@ -114,7 +128,7 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            aboutSection()
+            TmdbAttribution()
         }
     }
 }

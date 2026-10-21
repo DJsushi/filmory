@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity(
     tableName = "seasons",
@@ -17,6 +18,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("titleId")],
 )
+@Serializable
 data class SeasonEntity(
     @PrimaryKey val id: String,
     val titleId: String,

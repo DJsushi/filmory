@@ -12,7 +12,7 @@ import kotlin.test.assertFalse
 
 class FileNoteImageStorageTest {
     private val fileSystem = FakeFileSystem()
-    private val storage = FileNoteImageStorage(AppDirectories("/app".toPath()), SequentialIdGenerator(), fileSystem)
+    private val storage = FileNoteImageStorage(AppDirectories("/app".toPath(), "/cache".toPath()), SequentialIdGenerator(), fileSystem)
 
     @Test
     fun `saved images get a relative path and can be deleted`() = runTest {

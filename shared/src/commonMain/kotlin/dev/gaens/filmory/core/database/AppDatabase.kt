@@ -4,6 +4,7 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import dev.gaens.filmory.core.database.dao.BackupDao
 import dev.gaens.filmory.core.database.dao.CollectionDao
 import dev.gaens.filmory.core.database.dao.EpisodeDao
 import dev.gaens.filmory.core.database.dao.NoteDao
@@ -42,6 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun episodeDao(): EpisodeDao
     abstract fun noteDao(): NoteDao
     abstract fun collectionDao(): CollectionDao
+    abstract fun backupDao(): BackupDao
 }
 
 // Room generates the actual implementations.

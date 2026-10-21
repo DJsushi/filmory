@@ -251,6 +251,19 @@
     <string name="title_form_error_seasons">Add at least one season.</string>
     <string name="title_form_error_episodes">Each season needs 1 to 999 episodes.</string>
 
+    <!-- Backup -->
+    <string name="backup_title">Backup</string>
+    <string name="backup_description">Save everything, including note images, as one file. Restore it on this or another device.</string>
+    <string name="backup_export">Back up</string>
+    <string name="backup_restore">Restore</string>
+    <string name="backup_restore_confirm_title">Restore this backup?</string>
+    <string name="backup_restore_confirm_message">Everything now in Filmory is replaced by the backup. This cannot be undone.</string>
+    <string name="backup_restore_confirm">Replace my data</string>
+    <string name="backup_restored">Backup restored</string>
+    <string name="backup_error_invalid">That file is not a Filmory backup, or it is damaged. Nothing was changed.</string>
+    <string name="backup_error_version">That backup was made by a newer version of Filmory. Update the app and try again.</string>
+    <string name="backup_error_storage">Could not read or write the file. Check free storage and try again.</string>
+
     <!-- Notes tab -->
     <string name="notes_title">Notes</string>
     <string name="notes_subtitle">%1$s across %2$s.</string>

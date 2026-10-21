@@ -1,5 +1,7 @@
 package dev.gaens.filmory.di
 
+import dev.gaens.filmory.feature.backup.data.ZipBackupRepository
+import dev.gaens.filmory.feature.backup.domain.BackupRepository
 import dev.gaens.filmory.feature.collection.data.OfflineFirstCollectionRepository
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.episode.data.OfflineFirstEpisodeRepository
@@ -28,5 +30,6 @@ val featureDataModule = module {
     singleOf(::OfflineFirstCollectionRepository).bind<CollectionRepository>()
     singleOf(::FileNoteImageStorage).bind<NoteImageStorage>()
     singleOf(::TmdbRemoteTitleDataSource).bind<RemoteTitleDataSource>()
+    singleOf(::ZipBackupRepository).bind<BackupRepository>()
     singleOf(::DataStoreSettingsRepository).bind<SettingsRepository>()
 }
