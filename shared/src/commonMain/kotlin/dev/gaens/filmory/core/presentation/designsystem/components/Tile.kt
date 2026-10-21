@@ -23,7 +23,7 @@ fun FilmoryTile(
     title: String,
     subtitle: String,
     icon: DrawableResource,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     isWide: Boolean = false,
 ) {

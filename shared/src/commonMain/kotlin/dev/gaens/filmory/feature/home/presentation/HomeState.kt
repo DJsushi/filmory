@@ -1,5 +1,6 @@
 package dev.gaens.filmory.feature.home.presentation
 
+import dev.gaens.filmory.feature.settings.domain.HomeBlock
 import dev.gaens.filmory.feature.title.domain.TitleType
 import kotlinx.datetime.LocalDate
 
@@ -14,6 +15,8 @@ data class HomeState(
     val droppedCount: Int = 0,
     val libraryCount: Int = 0,
     val isEditingWatchLater: Boolean = false,
+    val layout: List<HomeBlock> = HomeBlock.entries,
+    val isEditingLayout: Boolean = false,
 )
 
 enum class DayPeriod { MORNING, AFTERNOON, EVENING }

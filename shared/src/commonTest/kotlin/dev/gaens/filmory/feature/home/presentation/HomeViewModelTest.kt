@@ -2,6 +2,9 @@ package dev.gaens.filmory.feature.home.presentation
 
 import app.cash.turbine.test
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.settings.domain.AppSettings
+import dev.gaens.filmory.feature.settings.domain.HomeBlock
+import dev.gaens.filmory.feature.settings.domain.homeLayoutOf
 import dev.gaens.filmory.feature.title.domain.MoveWatchLater
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
@@ -9,6 +12,7 @@ import dev.gaens.filmory.feature.title.domain.ToggleWatchLater
 import dev.gaens.filmory.feature.watching.domain.FindContinueWatching
 import dev.gaens.filmory.testing.FakeCollectionRepository
 import dev.gaens.filmory.testing.FakeEpisodeRepository
+import dev.gaens.filmory.testing.FakeSettingsRepository
 import dev.gaens.filmory.testing.FakeTitleRepository
 import dev.gaens.filmory.testing.FakeWatchingRepository
 import dev.gaens.filmory.testing.FixedClock
@@ -21,6 +25,7 @@ import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class HomeViewModelTest : ViewModelTest() {
     private val titles = FakeTitleRepository(
@@ -38,9 +43,11 @@ class HomeViewModelTest : ViewModelTest() {
         listOf(TitleCollection("favorites", "Favorites", listOf("title", "deleted"), at(0))),
     )
 
+    private val settings = FakeSettingsRepository()
+
     private fun viewModel() = HomeViewModel(
         titles, watchings, episodes, collections, FindContinueWatching(),
-        ToggleWatchLater(titles), MoveWatchLater(titles), FixedClock(),
+        ToggleWatchLater(titles), MoveWatchLater(titles), settings, FixedClock(),
     )
 
     @Test
@@ -77,6 +84,81 @@ class HomeViewModelTest : ViewModelTest() {
             viewModel.onAction(HomeAction.OnRemoveWatchLater("held"))
 
             assertEquals(listOf("wish"), expectMostRecentItem().watchLater.map { it.id })
+        }
+    }
+
+    @Test
+    fun `home starts with the saved layout`() = runTest {
+        settings.settings.value = AppSettings(homeLayout = homeLayoutOf(listOf("LIBRARY")))
+
+        viewModel().state.test {
+            assertEquals(HomeBlock.LIBRARY, expectMostRecentItem().layout.first())
+        }
+    }
+
+    @Test
+    fun `moving a block changes the screen at once and saves only when dropped`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(HomeAction.OnEditLayoutClick)
+            viewModel.onAction(HomeAction.OnMoveBlock(HomeBlock.LIBRARY, HomeBlock.WATCH_LATER))
+
+            val state = expectMostRecentItem()
+            assertEquals(HomeBlock.LIBRARY, state.layout.first())
+            assertEquals(HomeBlock.entries, settings.settings.value.homeLayout)
+
+            viewModel.onAction(HomeAction.OnLayoutDropped)
+
+            assertEquals(state.layout, settings.settings.value.homeLayout)
+        }
+    }
+
+    @Test
+    fun `a saved layout arriving while editing does not undo a move`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(HomeAction.OnEditLayoutClick)
+            viewModel.onAction(HomeAction.OnMoveBlock(HomeBlock.LIBRARY, HomeBlock.WATCH_LATER))
+            settings.settings.value = AppSettings()
+
+            assertEquals(HomeBlock.LIBRARY, expectMostRecentItem().layout.first())
+        }
+    }
+
+    @Test
+    fun `done leaves edit mode and saves the layout`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(HomeAction.OnEditLayoutClick)
+            viewModel.onAction(HomeAction.OnMoveBlock(HomeBlock.DROPPED, HomeBlock.WATCH_LATER))
+            viewModel.onAction(HomeAction.OnEditLayoutDone)
+
+            val state = expectMostRecentItem()
+            assertFalse(state.isEditingLayout)
+            assertEquals(HomeBlock.DROPPED, settings.settings.value.homeLayout.first())
+        }
+    }
+
+    @Test
+    fun `nudging a block moves it one place and saves`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(HomeAction.OnNudgeBlock(HomeBlock.WATCH_LATER, offset = 1))
+
+            assertEquals(HomeBlock.WISHLIST, expectMostRecentItem().layout.first())
+            assertEquals(HomeBlock.WISHLIST, settings.settings.value.homeLayout.first())
+        }
+    }
+
+    @Test
+    fun `reset restores the default order and saves it`() = runTest {
+        settings.settings.value = AppSettings(homeLayout = HomeBlock.entries.reversed())
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(HomeAction.OnResetLayout)
+
+            assertEquals(HomeBlock.entries, expectMostRecentItem().layout)
+            assertEquals(HomeBlock.entries, settings.settings.value.homeLayout)
         }
     }
 }

@@ -69,6 +69,12 @@
     <string name="home_library">My library</string>
     <string name="home_more">More</string>
     <string name="home_play">Open %1$s</string>
+    <string name="home_edit_layout">Edit layout</string>
+    <string name="home_edit_layout_hint">Drag a block to move it.</string>
+    <string name="home_reset_layout">Reset</string>
+    <string name="home_drag_handle">Drag to reorder</string>
+    <string name="home_move_block_up">Move up</string>
+    <string name="home_move_block_down">Move down</string>
 
     <!-- Library -->
     <string name="library_title">My library</string>
