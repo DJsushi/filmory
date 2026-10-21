@@ -163,6 +163,33 @@ class TitleDetailViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `closing the editor untouched just closes it`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w1"))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(TitleDetailAction.OnWatchingClick("w1"))
+            viewModel.onAction(TitleDetailAction.OnDraftDismiss)
+
+            assertNull(expectMostRecentItem().sheet)
+        }
+    }
+
+    @Test
+    fun `closing an edited editor asks first and keep editing goes back`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w1"))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(TitleDetailAction.OnWatchingClick("w1"))
+            viewModel.onAction(TitleDetailAction.OnDraftRatingChange(7))
+            viewModel.onAction(TitleDetailAction.OnDraftDismiss)
+            assertEquals(true, (expectMostRecentItem().sheet as TitleDetailSheet.EditWatching).isAskingToSave)
+
+            viewModel.onAction(TitleDetailAction.OnDraftKeepEditing)
+            assertEquals(false, (expectMostRecentItem().sheet as TitleDetailSheet.EditWatching).isAskingToSave)
+        }
+    }
+
+    @Test
     fun `wishlist toggles on the title`() = runTest {
         val viewModel = viewModel()
         viewModel.state.test {

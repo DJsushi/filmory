@@ -25,6 +25,8 @@ sealed interface TitleDetailAction {
     data class OnDraftReviewChange(val review: String) : TitleDetailAction
     data object OnDraftSave : TitleDetailAction
     data object OnDraftDeleteClick : TitleDetailAction
+    data object OnDraftDismiss : TitleDetailAction
+    data object OnDraftKeepEditing : TitleDetailAction
     data object OnDeleteWatchingConfirm : TitleDetailAction
 
     data object OnNextEpisodeClick : TitleDetailAction

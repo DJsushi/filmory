@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -34,15 +35,14 @@ import dev.gaens.filmory.core.presentation.richtext.RichTextField
 import dev.gaens.filmory.core.presentation.designsystem.components.ConfirmDialog
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmorySegmentedRow
 import dev.gaens.filmory.core.presentation.designsystem.components.RatingInputRow
-import dev.gaens.filmory.core.presentation.ui.UiText
 import dev.gaens.filmory.core.presentation.ui.formatDayMonthYear
 import dev.gaens.filmory.core.presentation.ui.label
 import dev.gaens.filmory.core.presentation.ui.toLocalDate
-import dev.gaens.filmory.feature.watching.domain.Watching
 import dev.gaens.filmory.feature.watching.domain.WatchingState
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.action_cancel
 import dev.gaens.filmory.resources.action_delete
+import dev.gaens.filmory.resources.action_discard
 import dev.gaens.filmory.resources.action_done
 import dev.gaens.filmory.resources.action_save
 import dev.gaens.filmory.resources.watching_clear_date
@@ -56,6 +56,8 @@ import dev.gaens.filmory.resources.watching_rating
 import dev.gaens.filmory.resources.watching_rating_description
 import dev.gaens.filmory.resources.watching_review
 import dev.gaens.filmory.resources.watching_started
+import dev.gaens.filmory.resources.watching_unsaved_message
+import dev.gaens.filmory.resources.watching_unsaved_title
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -67,10 +69,30 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WatchingEditorSheet(draft: Watching, error: UiText?, onAction: (TitleDetailAction) -> Unit) {
+fun WatchingEditorSheet(sheet: TitleDetailSheet.EditWatching, onAction: (TitleDetailAction) -> Unit) {
+    val draft = sheet.draft
+    val error = sheet.error
     val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
+    if (sheet.isAskingToSave) {
+        // Tapping outside or going back keeps editing; the two buttons are the real choices.
+        AlertDialog(
+            onDismissRequest = { onAction(TitleDetailAction.OnDraftKeepEditing) },
+            title = { Text(stringResource(Res.string.watching_unsaved_title)) },
+            text = { Text(stringResource(Res.string.watching_unsaved_message)) },
+            confirmButton = {
+                TextButton(onClick = { onAction(TitleDetailAction.OnDraftSave) }) {
+                    Text(stringResource(Res.string.action_save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onAction(TitleDetailAction.OnSheetDismiss) }) {
+                    Text(stringResource(Res.string.action_discard))
+                }
+            },
+        )
+    }
     ModalBottomSheet(
-        onDismissRequest = { onAction(TitleDetailAction.OnSheetDismiss) },
+        onDismissRequest = { onAction(TitleDetailAction.OnDraftDismiss) },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) {

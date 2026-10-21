@@ -89,8 +89,19 @@ sealed interface NoteEpisodeFilter {
 }
 
 sealed interface TitleDetailSheet {
-    /** [error] is shown inside the sheet, because a snackbar would sit behind it. */
-    data class EditWatching(val draft: Watching, val error: UiText? = null) : TitleDetailSheet
+    /**
+     * [error] is shown inside the sheet, because a snackbar would sit behind it. [original] is the watching as it was
+     * when the sheet opened, so closing can tell whether anything changed. [isAskingToSave] shows the save-or-discard
+     * dialog on top of the sheet.
+     */
+    data class EditWatching(
+        val original: Watching,
+        val draft: Watching = original,
+        val error: UiText? = null,
+        val isAskingToSave: Boolean = false,
+    ) : TitleDetailSheet {
+        val isDirty: Boolean get() = draft != original
+    }
     data object CollectionPicker : TitleDetailSheet
     data object DeleteTitle : TitleDetailSheet
     data class DeleteWatching(val watchingId: String) : TitleDetailSheet

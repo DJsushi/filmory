@@ -448,7 +448,7 @@ private fun NoteFilters(state: TitleDetailState, onAction: (TitleDetailAction) -
 private fun TitleDetailSheets(state: TitleDetailState, onAction: (TitleDetailAction) -> Unit) {
     val dismiss = { onAction(TitleDetailAction.OnSheetDismiss) }
     when (val sheet = state.sheet) {
-        is TitleDetailSheet.EditWatching -> WatchingEditorSheet(sheet.draft, sheet.error, onAction)
+        is TitleDetailSheet.EditWatching -> WatchingEditorSheet(sheet, onAction)
         TitleDetailSheet.CollectionPicker -> state.title?.id?.let { CollectionPickerSheet(it, onDismiss = dismiss) }
         TitleDetailSheet.DeleteTitle -> ConfirmDialog(
             title = stringResource(Res.string.detail_delete_title),

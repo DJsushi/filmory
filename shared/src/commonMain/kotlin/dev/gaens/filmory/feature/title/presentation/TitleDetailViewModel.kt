@@ -107,6 +107,8 @@ class TitleDetailViewModel(
             is TitleDetailAction.OnDraftReviewChange -> updateDraft { it.copy(review = action.review.ifBlank { null }) }
             TitleDetailAction.OnDraftSave -> saveDraft()
             TitleDetailAction.OnDraftDeleteClick -> draft()?.let { openSheet(TitleDetailSheet.DeleteWatching(it.id)) }
+            TitleDetailAction.OnDraftDismiss -> dismissDraft()
+            TitleDetailAction.OnDraftKeepEditing -> editSheet()?.let { openSheet(it.copy(isAskingToSave = false)) }
             TitleDetailAction.OnDeleteWatchingConfirm -> deleteDraftWatching()
             TitleDetailAction.OnNextEpisodeClick -> withActiveWatching { advanceEpisode(it.id) }
             is TitleDetailAction.OnEpisodeCheckClick -> toggleEpisodeCheck(action.episodeId)
@@ -139,22 +141,30 @@ class TitleDetailViewModel(
             .launchIn(viewModelScope)
     }
 
-    private fun openSheet(sheet: TitleDetailSheet) = _state.update { it.copy(sheet = sheet) }
+    private fun openSheet(sheet: TitleDetailSheet?) = _state.update { it.copy(sheet = sheet) }
 
-    private fun draft(): Watching? = (_state.value.sheet as? TitleDetailSheet.EditWatching)?.draft
+    private fun editSheet(): TitleDetailSheet.EditWatching? = _state.value.sheet as? TitleDetailSheet.EditWatching
+
+    private fun draft(): Watching? = editSheet()?.draft
 
     private fun updateDraft(transform: (Watching) -> Watching) {
-        val draft = draft() ?: return
-        openSheet(TitleDetailSheet.EditWatching(transform(draft)))
+        val sheet = editSheet() ?: return
+        openSheet(sheet.copy(draft = transform(sheet.draft), error = null))
     }
 
     private fun editWatching(watchingId: String) {
         val watching = data.value?.watchings?.find { it.id == watchingId } ?: return
-        openSheet(TitleDetailSheet.EditWatching(watching))
+        openSheet(TitleDetailSheet.EditWatching(original = watching))
+    }
+
+    private fun dismissDraft() {
+        val sheet = editSheet() ?: return
+        if (sheet.isDirty) openSheet(sheet.copy(isAskingToSave = true)) else openSheet(null)
     }
 
     private fun saveDraft() {
-        val draft = draft() ?: return
+        val sheet = editSheet() ?: return
+        val draft = sheet.draft
         viewModelScope.launch {
             when (val result = saveWatching(draft)) {
                 is Result.Success -> _state.update { it.copy(sheet = null) }
@@ -164,7 +174,7 @@ class TitleDetailViewModel(
                         SaveWatchingError.FinishBeforeStart -> UiText.Resource(Res.string.error_finish_before_start)
                         is SaveWatchingError.Storage -> error.error.asUiText()
                     }
-                    openSheet(TitleDetailSheet.EditWatching(draft, message))
+                    openSheet(sheet.copy(error = message, isAskingToSave = false))
                 }
             }
         }
