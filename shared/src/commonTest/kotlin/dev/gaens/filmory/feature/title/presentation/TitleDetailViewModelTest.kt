@@ -2,6 +2,7 @@ package dev.gaens.filmory.feature.title.presentation
 
 import app.cash.turbine.test
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
+import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.settings.domain.AppSettings
 import dev.gaens.filmory.feature.settings.domain.MarkerTarget
@@ -199,6 +200,32 @@ class TitleDetailViewModelTest : ViewModelTest() {
             viewModel.onAction(TitleDetailAction.OnUndoMarkSeasonClick)
             assertEquals(0, expectMostRecentItem().series?.checkedCount)
             assertEquals("e1", watchings.getWatching("w")?.currentEpisodeId)
+        }
+    }
+
+    @Test
+    fun `with every episode checked the series can be finished`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w"))
+        episodes.checks.value = listOf("e1", "e2", "e3").map { EpisodeCheck("check-$it", "w", it, at(1)) }
+        val viewModel = viewModel()
+        viewModel.state.test {
+            val before = expectMostRecentItem()
+            assertEquals(true, before.series?.isComplete)
+            assertEquals(false, before.series?.isFinished)
+
+            viewModel.onAction(TitleDetailAction.OnFinishSeriesClick)
+            val after = expectMostRecentItem()
+            assertEquals(true, after.series?.isFinished)
+            assertEquals(TitleStatus.WATCHED, after.title?.status)
+        }
+    }
+
+    @Test
+    fun `a series with unchecked episodes is not complete`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w"))
+        episodes.checks.value = listOf(EpisodeCheck("check-e1", "w", "e1", at(1)))
+        viewModel().state.test {
+            assertEquals(false, expectMostRecentItem().series?.isComplete)
         }
     }
 

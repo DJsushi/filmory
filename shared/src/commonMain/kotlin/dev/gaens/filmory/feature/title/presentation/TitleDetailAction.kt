@@ -31,6 +31,9 @@ sealed interface TitleDetailAction {
 
     data object OnMarkerSettingsClick : TitleDetailAction
     data object OnNextEpisodeClick : TitleDetailAction
+
+    /** Shown once every episode is checked: marks the series as watched. */
+    data object OnFinishSeriesClick : TitleDetailAction
     data class OnEpisodeCheckClick(val episodeId: String) : TitleDetailAction
     data class OnEpisodeClick(val episodeId: String) : TitleDetailAction
     data class OnSeasonClick(val seasonNumber: Int) : TitleDetailAction

@@ -67,12 +67,14 @@ import dev.gaens.filmory.resources.detail_episodes_skipped
 import dev.gaens.filmory.resources.detail_episodes_watched
 import dev.gaens.filmory.resources.detail_finish_and_next
 import dev.gaens.filmory.resources.detail_finish_last
+import dev.gaens.filmory.resources.detail_finish_series
 import dev.gaens.filmory.resources.detail_mark_all
 import dev.gaens.filmory.resources.detail_no_episodes
 import dev.gaens.filmory.resources.detail_not_started_yet
 import dev.gaens.filmory.resources.detail_runtime_minutes
 import dev.gaens.filmory.resources.detail_season_chip
 import dev.gaens.filmory.resources.detail_seasons
+import dev.gaens.filmory.resources.detail_series_finished
 import dev.gaens.filmory.resources.detail_start_watching
 import dev.gaens.filmory.resources.detail_you_are_here
 import dev.gaens.filmory.resources.home_season_episode
@@ -178,16 +180,31 @@ private fun ProgressCard(series: SeriesProgressUi, onAction: (TitleDetailAction)
                     stringResource(Res.string.detail_episodes_skipped, series.skippedCount),
                 )
             }
-            Button(onClick = { onAction(TitleDetailAction.OnNextEpisodeClick) }) {
-                Icon(painterResource(Res.drawable.ic_check), null, Modifier.size(18.dp))
-                Text(
-                    text = when {
-                        episode == null -> stringResource(Res.string.detail_start_watching)
-                        series.isOnLastEpisode -> stringResource(Res.string.detail_finish_last, episode)
-                        else -> stringResource(Res.string.detail_finish_and_next, episode)
-                    },
-                    modifier = Modifier.padding(start = 8.dp),
-                )
+            // With every episode checked, "next episode" has nothing left to do: offer to finish the series, or
+            // say it is finished.
+            when {
+                series.isComplete && series.isFinished -> Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Icon(painterResource(Res.drawable.ic_check), null, Modifier.size(18.dp), MaterialTheme.colorScheme.primary)
+                    Text(stringResource(Res.string.detail_series_finished), style = MaterialTheme.typography.titleSmall)
+                }
+                series.isComplete -> Button(onClick = { onAction(TitleDetailAction.OnFinishSeriesClick) }) {
+                    Icon(painterResource(Res.drawable.ic_check), null, Modifier.size(18.dp))
+                    Text(stringResource(Res.string.detail_finish_series), Modifier.padding(start = 8.dp))
+                }
+                else -> Button(onClick = { onAction(TitleDetailAction.OnNextEpisodeClick) }) {
+                    Icon(painterResource(Res.drawable.ic_check), null, Modifier.size(18.dp))
+                    Text(
+                        text = when {
+                            episode == null -> stringResource(Res.string.detail_start_watching)
+                            series.isOnLastEpisode -> stringResource(Res.string.detail_finish_last, episode)
+                            else -> stringResource(Res.string.detail_finish_and_next, episode)
+                        },
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
             }
         }
     }

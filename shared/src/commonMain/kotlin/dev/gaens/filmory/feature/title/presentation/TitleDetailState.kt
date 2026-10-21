@@ -64,10 +64,15 @@ data class SeriesProgressUi(
     val watchedCount: Int,
     val skippedCount: Int,
     val episodeCount: Int,
+    /** The current watching is finished. */
+    val isFinished: Boolean,
     val seasons: List<SeasonUi>,
 ) {
     /** Skipped episodes count as checked, so a series with filler can still be finished. */
     val checkedCount: Int get() = watchedCount + skippedCount
+
+    /** Every episode is checked, so there is nothing left to tick and the series can be finished. */
+    val isComplete: Boolean get() = episodeCount > 0 && checkedCount >= episodeCount
 }
 
 data class SeasonUi(

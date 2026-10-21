@@ -7,6 +7,7 @@ import dev.gaens.filmory.feature.note.domain.Note
 import dev.gaens.filmory.feature.note.presentation.buildNoteUis
 import dev.gaens.filmory.feature.title.domain.Title
 import dev.gaens.filmory.feature.watching.domain.Watching
+import dev.gaens.filmory.feature.watching.domain.WatchingState
 
 /** What the detail screen reads from the database. */
 data class TitleDetailData(
@@ -103,6 +104,7 @@ private fun TitleDetailData.toSeriesProgress(): SeriesProgressUi {
         watchedCount = allEpisodes.count { markOf(it.id) == EpisodeMark.WATCHED },
         skippedCount = allEpisodes.count { markOf(it.id) == EpisodeMark.SKIPPED },
         episodeCount = allEpisodes.size,
+        isFinished = watching?.state == WatchingState.FINISHED,
         seasons = seasons.map { season ->
             SeasonUi(
                 number = season.number,
