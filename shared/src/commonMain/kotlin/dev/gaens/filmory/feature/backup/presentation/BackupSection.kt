@@ -4,7 +4,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
@@ -17,12 +18,16 @@ import dev.gaens.filmory.core.presentation.designsystem.rise
 import dev.gaens.filmory.core.presentation.ui.ObserveAsEvents
 import dev.gaens.filmory.core.presentation.ui.UiText
 import dev.gaens.filmory.core.presentation.ui.rememberFilePicker
+import dev.gaens.filmory.core.presentation.ui.rememberFileSaver
 import dev.gaens.filmory.core.presentation.ui.rememberFileSharer
 import dev.gaens.filmory.feature.settings.presentation.SettingsCard
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.backup_description
-import dev.gaens.filmory.resources.backup_export
 import dev.gaens.filmory.resources.backup_restore
+import dev.gaens.filmory.resources.backup_save
+import dev.gaens.filmory.resources.backup_save_failed
+import dev.gaens.filmory.resources.backup_saved
+import dev.gaens.filmory.resources.backup_share
 import dev.gaens.filmory.resources.backup_restore_confirm
 import dev.gaens.filmory.resources.backup_restore_confirm_message
 import dev.gaens.filmory.resources.backup_restore_confirm_title
@@ -36,6 +41,7 @@ import org.koin.compose.viewmodel.koinViewModel
 private const val BACKUP_MIME_TYPE = "application/octet-stream"
 
 /** The backup and restore card on the Profile tab. Messages go to [onMessage]. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BackupSection(
     onMessage: suspend (UiText) -> Unit,
@@ -43,10 +49,15 @@ fun BackupSection(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val shareFile = rememberFileSharer()
-    val pickFile = rememberFilePicker { viewModel.onAction(BackupAction.OnFilePicked(it)) }
     val scope = rememberCoroutineScope()
+    val saveFile = rememberFileSaver { isSaved ->
+        val message = if (isSaved) Res.string.backup_saved else Res.string.backup_save_failed
+        scope.launch { onMessage(UiText.Resource(message)) }
+    }
+    val pickFile = rememberFilePicker { viewModel.onAction(BackupAction.OnFilePicked(it)) }
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
+            is BackupEvent.SaveFile -> saveFile(event.path)
             is BackupEvent.ShareFile -> scope.launch { shareFile(event.path, BACKUP_MIME_TYPE) }
             is BackupEvent.ShowMessage -> scope.launch { onMessage(event.message) }
         }
@@ -58,9 +69,12 @@ fun BackupSection(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { viewModel.onAction(BackupAction.OnExportClick) }, enabled = !state.isWorking) {
-                Text(stringResource(Res.string.backup_export))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { viewModel.onAction(BackupAction.OnSaveClick) }, enabled = !state.isWorking) {
+                Text(stringResource(Res.string.backup_save))
+            }
+            FilledTonalButton(onClick = { viewModel.onAction(BackupAction.OnShareClick) }, enabled = !state.isWorking) {
+                Text(stringResource(Res.string.backup_share))
             }
             FilledTonalButton(onClick = pickFile, enabled = !state.isWorking) {
                 Text(stringResource(Res.string.backup_restore))

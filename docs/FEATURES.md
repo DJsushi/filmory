@@ -68,7 +68,7 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 ### Backup and restore, and sync
 
 - The app is local on the device.
-- Backup and restore export and import the entire app state as a zip file with the extension `.filmorybkp`.
+- Backup and restore export and import the entire app state as a zip file with the extension `.filmorybkp`. "Save to device" opens the system save-as screen (suggested name `filmory-YYYY-MM-DD.filmorybkp`) so the user picks the folder; "Share" hands the file to another app.
 - Sync is not built now. The data layer must stay simple to extend with a web server later.
 
 ### Home screen

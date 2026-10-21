@@ -30,14 +30,15 @@ class BackupViewModel(
 
     fun onAction(action: BackupAction) {
         when (action) {
-            BackupAction.OnExportClick -> export()
+            BackupAction.OnSaveClick -> export(BackupEvent::SaveFile)
+            BackupAction.OnShareClick -> export(BackupEvent::ShareFile)
             is BackupAction.OnFilePicked -> _state.update { it.copy(pendingRestorePath = action.path) }
             BackupAction.OnRestoreConfirm -> restore()
             BackupAction.OnRestoreDismiss -> _state.update { it.copy(pendingRestorePath = null) }
         }
     }
 
-    private fun export() {
+    private fun export(eventFor: (path: String) -> BackupEvent) {
         if (_state.value.isWorking) return
         _state.update { it.copy(isWorking = true) }
         viewModelScope.launch {
@@ -45,7 +46,7 @@ class BackupViewModel(
             _state.update { it.copy(isWorking = false) }
             eventChannel.send(
                 when (result) {
-                    is Result.Success -> BackupEvent.ShareFile(result.data)
+                    is Result.Success -> eventFor(result.data)
                     is Result.Error -> BackupEvent.ShowMessage(result.error.asUiText())
                 },
             )

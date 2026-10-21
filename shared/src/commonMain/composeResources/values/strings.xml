@@ -261,7 +261,10 @@
     <!-- Backup -->
     <string name="backup_title">Backup</string>
     <string name="backup_description">Save everything, including note images, as one file. Restore it on this or another device.</string>
-    <string name="backup_export">Back up</string>
+    <string name="backup_save">Save to device</string>
+    <string name="backup_share">Share</string>
+    <string name="backup_saved">Backup saved</string>
+    <string name="backup_save_failed">Could not save the backup. Try another location.</string>
     <string name="backup_restore">Restore</string>
     <string name="backup_restore_confirm_title">Restore this backup?</string>
     <string name="backup_restore_confirm_message">Everything now in Filmory is replaced by the backup. This cannot be undone.</string>

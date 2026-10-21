@@ -7,5 +7,9 @@ import androidx.compose.runtime.Composable
 @Composable
 actual fun rememberFileSharer(): suspend (path: String, mimeType: String) -> Unit = { _, _ -> }
 
+// shortcut: no save screen on iOS yet; use UIDocumentPickerViewController(forExporting:) when the iOS app is built.
+@Composable
+actual fun rememberFileSaver(onResult: (isSaved: Boolean) -> Unit): (path: String) -> Unit = {}
+
 @Composable
 actual fun rememberFilePicker(onFilePicked: (path: String) -> Unit): () -> Unit = {}

@@ -9,13 +9,15 @@ data class BackupState(
 )
 
 sealed interface BackupAction {
-    data object OnExportClick : BackupAction
+    data object OnSaveClick : BackupAction
+    data object OnShareClick : BackupAction
     data class OnFilePicked(val path: String) : BackupAction
     data object OnRestoreConfirm : BackupAction
     data object OnRestoreDismiss : BackupAction
 }
 
 sealed interface BackupEvent {
+    data class SaveFile(val path: String) : BackupEvent
     data class ShareFile(val path: String) : BackupEvent
     data class ShowMessage(val message: UiText) : BackupEvent
 }

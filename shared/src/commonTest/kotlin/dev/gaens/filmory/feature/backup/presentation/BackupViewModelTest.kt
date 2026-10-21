@@ -27,11 +27,20 @@ class BackupViewModelTest : ViewModelTest() {
     private val viewModel = BackupViewModel(repository)
 
     @Test
-    fun `exporting emits the file to share`() = runTest {
+    fun `sharing emits the file to share`() = runTest {
         viewModel.events.test {
-            viewModel.onAction(BackupAction.OnExportClick)
+            viewModel.onAction(BackupAction.OnShareClick)
 
             assertEquals(BackupEvent.ShareFile("/cache/b.filmorybkp"), awaitItem())
+        }
+    }
+
+    @Test
+    fun `saving emits the file to save`() = runTest {
+        viewModel.events.test {
+            viewModel.onAction(BackupAction.OnSaveClick)
+
+            assertEquals(BackupEvent.SaveFile("/cache/b.filmorybkp"), awaitItem())
         }
     }
 
