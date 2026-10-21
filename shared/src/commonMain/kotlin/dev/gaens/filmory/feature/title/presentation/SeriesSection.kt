@@ -181,6 +181,8 @@ private fun EpisodeRow(episode: EpisodeUi, sharedScope: SharedTransitionScope, o
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            // The whole row moves the marker, so the whole row ripples. The check circle takes its own taps.
+            .clickable { onAction(TitleDetailAction.OnEpisodeClick(episode.id)) }
             .defaultMinSize(minHeight = 60.dp)
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -198,17 +200,7 @@ private fun EpisodeRow(episode: EpisodeUi, sharedScope: SharedTransitionScope, o
             ),
             onClick = { onAction(TitleDetailAction.OnEpisodeCheckClick(episode.id)) },
         )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    // The marker badge is the feedback; a ripple on the text looks like a stray splash.
-                    indication = null,
-                    onClick = { onAction(TitleDetailAction.OnEpisodeClick(episode.id)) },
-                )
-                .padding(vertical = 6.dp),
-        ) {
+        Column(Modifier.weight(1f).padding(vertical = 6.dp)) {
             Text(
                 text = listOfNotNull(episode.number.toString() + ".", episode.name).joinToString(" "),
                 style = MaterialTheme.typography.labelLarge,
