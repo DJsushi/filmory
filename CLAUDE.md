@@ -80,6 +80,16 @@ The user has given standing permission to commit in this repository. Do not wait
 - Room tests on a device: `./gradlew :shared:connectedAndroidDeviceTest`
 - Sample data (debug builds only, empty database): `adb shell am start -n dev.gaens.filmory/.SeedActivity`
 - Install on device: `./gradlew :androidApp:installDebug`
-- Fully optimized build (R8 over the whole app), temporarily signed with the debug key until a release key exists, not for publishing: `./gradlew :androidApp:assembleOptimized` or `installOptimized`. Keep rules are in `androidApp/src/main/keepRules/rules.keep`.
+- Fully optimized build (R8 over the whole app), temporarily signed with the debug key until a release key exists. This is the build the release workflow publishes: `./gradlew :androidApp:assembleOptimized` or `installOptimized`. Keep rules are in `androidApp/src/main/keepRules/rules.keep`.
 
 Gradle needs network access (outside the Claude sandbox).
+
+## Releases
+
+Semantic versioning through [release-please](https://github.com/googleapis/release-please), driven by the Conventional Commits above. Remote `origin` is GitHub, default branch `master`.
+
+- `version.txt` is the app version (`versionName`; `versionCode` is derived in `androidApp/build.gradle.kts`). release-please owns it and `CHANGELOG.md`. Never edit them by hand.
+- Bumps: `feat` is minor, `fix` and `perf` are patch, `!` or a `BREAKING CHANGE:` footer is major. While below 1.0, breaking changes bump minor. Other types do not release. To force a version, add a `Release-As: 1.0.0` footer to a commit.
+- `.github/workflows/ci.yml`: checks, unit tests and device tests on push and pull request.
+- `.github/workflows/release.yml`: on push to `master`, release-please opens or updates a Release PR. Merging it creates the tag `vX.Y.Z` and the GitHub Release, and the same workflow attaches `Filmory-vX.Y.Z.apk` and its `.sha256`.
+- Secrets: `TMDB_API_KEY`, and `DEBUG_KEYSTORE_BASE64` (base64 of the debug keystore, keeps the signature stable across releases). Remove the latter once a real release key replaces the debug key.
