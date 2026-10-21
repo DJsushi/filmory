@@ -23,12 +23,14 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
   - Once any watching is finished, the title stays **Watched**. Dropping or pausing a later rewatch changes only that watching, not the title.
   - While a rewatch is in progress on a Watched title, the title also appears under Continue watching on Home. It still counts as Watched everywhere else.
   - The user can always change the title status by hand.
-- The user can see the notes of every watching together in one view. The title detail screen has an "All watchings" filter, and the Notes tab lists notes from all watchings of all titles.
+- The user can see the notes of every watching together in one view. The title detail screen has watching chips that can be selected together, and "All watchings" clears the selection. The Notes tab lists notes from all watchings of all titles.
 
 ### Series progress
 
 - Each watching of a series has a current-episode pointer (season and episode) with a quick "next episode" action. Advancing the pointer checks the current episode.
 - Episodes can also be checked off individually, for people who skip around. Each check stores the date and time it was made, so the calendar can show episodes watched.
+- An episode has three states: not watched, watched and skipped. Tapping its circle cycles through them in that order. Skipped is for episodes left out on purpose, such as filler. It counts as checked, so a series can reach 100% without them, but it is not watched: the calendar ignores it. The progress card shows a two-colour bar (watched, then skipped) with the number of episodes checked, watched and skipped. Mark season checks only the episodes that have no state and leaves skipped ones skipped.
+- Tapping the "You are here" badge opens a sheet with the same Series card as Profile.
 - By default ticking an episode does not move the "You are here" marker. The Series card in Profile lets the user make the marker follow ticks (setting "Marker moves"): it lands on the next episode or on the ticked one, and ticking an episode before the marker moves it only if "Also when ticking earlier episodes" is on. Unticking never moves it, and Mark season behaves like ticking the season's last episode. The card shows a live example of the chosen rule.
 - Seasons are shown as expandable lists of episodes with a progress bar.
 - When a series is added by hand, the user enters the number of seasons and the number of episodes in each season (episode titles are optional). When it is added from TMDB, seasons and episodes are filled in automatically.
