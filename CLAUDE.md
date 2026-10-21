@@ -25,7 +25,7 @@ A clickable mockup (ten screens) is in the "Filmory Mockup" artifact: https://cl
 
 Kotlin Multiplatform, Compose Multiplatform (Material 3 components), Ktor, Koin, Room KMP. Navigation Compose, DataStore, Coil 3, coroutines + Flow, kotlinx.serialization, kotlinx-datetime, Okio, Gradle version catalog (`gradle/libs.versions.toml`). Do not add libraries outside this list without asking.
 
-Current state: converted to KMP (`:shared` + `:androidApp`, minSdk 24, targetSdk 37), with Koin, Room KMP, Ktor, theme and a placeholder Home. iOS targets are `iosArm64` and `iosSimulatorArm64` only (`sqlite-bundled` has no `iosX64`). iOS cannot be built on this machine.
+Current state: all four milestones are built and run on the Android emulator: every screen in the mockup, the list screens, Profile and Settings, TMDB search with manual add, and backup and restore. Not built: iOS app shell and iOS actuals for the photo picker and share sheet (stubs), the Xcode project. iOS targets are `iosArm64` and `iosSimulatorArm64` only (`sqlite-bundled` has no `iosX64`). iOS cannot be built on this machine.
 
 ## Product scope
 
@@ -72,6 +72,9 @@ The user has given standing permission to commit in this repository. Do not wait
 
 - Build: `./gradlew :androidApp:assembleDebug`
 - Unit tests: `./gradlew :shared:testAndroidHostTest`
+- Common-code check (catches JVM-only APIs): `./gradlew :shared:compileCommonMainKotlinMetadata`
+- Room tests on a device: `./gradlew :shared:connectedAndroidDeviceTest`
+- Sample data (debug builds only, empty database): `adb shell am start -n dev.gaens.filmory/.SeedActivity`
 - Install on device: `./gradlew :androidApp:installDebug`
 
 Gradle needs network access (outside the Claude sandbox).
