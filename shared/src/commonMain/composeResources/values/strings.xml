@@ -173,6 +173,50 @@
     <string name="watching_delete">Delete watching</string>
     <string name="watching_delete_message">Notes on this watching are deleted too.</string>
 
+    <!-- Notes tab -->
+    <string name="notes_title">Notes</string>
+    <string name="notes_subtitle">%1$s across %2$s.</string>
+    <string name="notes_subtitle_empty">Notes you write on titles show up here.</string>
+    <string name="notes_random">Random note</string>
+    <string name="notes_random_subtitle">Revisit one</string>
+    <string name="notes_favorites">Favorites</string>
+    <string name="notes_all_types">All</string>
+    <string name="notes_sort_newest">Sort: Newest</string>
+    <string name="notes_sort_oldest">Sort: Oldest</string>
+    <string name="notes_empty">No notes match.</string>
+    <string name="notes_pick_title">Add a note to</string>
+    <string name="notes_pick_title_empty">Add a title to your library first.</string>
+
+    <!-- Note editor -->
+    <string name="note_editor_add">Add note</string>
+    <string name="note_editor_edit">Edit note</string>
+    <string name="note_editor_watching">Watching</string>
+    <string name="note_editor_new_watching">New watching</string>
+    <string name="note_editor_type">Note type</string>
+    <string name="note_editor_season">Season</string>
+    <string name="note_editor_episode">Episode</string>
+    <string name="note_editor_whole_series">Whole series</string>
+    <string name="note_editor_season_number">Season %1$d</string>
+    <string name="note_editor_episode_number">Episode %1$d</string>
+    <string name="note_editor_timestamp">Timestamp (optional)</string>
+    <string name="note_editor_timestamp_hint">h:mm:ss</string>
+    <string name="note_editor_timestamp_error">Use h:mm:ss, for example 0:24:10</string>
+    <string name="note_editor_clear">Clear</string>
+    <string name="note_editor_text">Note</string>
+    <string name="note_editor_add_image">Add image</string>
+    <string name="note_editor_remove_image">Remove image</string>
+    <string name="note_editor_time">Time</string>
+
+    <!-- Note detail -->
+    <string name="note_detail_edit">Edit note</string>
+    <string name="note_detail_delete">Delete note</string>
+    <string name="note_detail_delete_message">The note and its comments will be deleted.</string>
+    <string name="note_detail_comments">Comments</string>
+    <string name="note_detail_no_comments">No comments yet. Add one below.</string>
+    <string name="note_detail_delete_comment">Delete comment</string>
+    <string name="note_detail_send">Send comment</string>
+    <string name="note_detail_image">Attached image</string>
+
     <!-- Notes -->
     <string name="note_favorite">Favorite</string>
     <string name="note_unfavorite">Remove from favorites</string>

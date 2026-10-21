@@ -12,6 +12,7 @@ import dev.gaens.filmory.feature.note.domain.Note
 import dev.gaens.filmory.feature.settings.domain.AppSettings
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import dev.gaens.filmory.feature.note.domain.NoteComment
+import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.domain.Title
 import dev.gaens.filmory.feature.title.domain.TitleRepository
@@ -152,4 +153,19 @@ class FakeSettingsRepository(settings: AppSettings = AppSettings()) : SettingsRe
 
     override fun observeSettings(): Flow<AppSettings> = settings
     override suspend fun update(transform: (AppSettings) -> AppSettings) = settings.update(transform)
+}
+
+class FakeNoteImageStorage : NoteImageStorage {
+    val files = mutableMapOf<String, ByteArray>()
+    private var saved = 0
+
+    override suspend fun save(bytes: ByteArray): Result<String, DataError.Local> {
+        val path = "note_images/${++saved}.jpg"
+        files[path] = bytes
+        return Result.Success(path)
+    }
+    override suspend fun delete(relativePath: String) {
+        files.remove(relativePath)
+    }
+    override fun resolve(relativePath: String): String = "/files/$relativePath"
 }

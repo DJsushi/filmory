@@ -4,7 +4,9 @@ import dev.gaens.filmory.feature.collection.data.OfflineFirstCollectionRepositor
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.episode.data.OfflineFirstEpisodeRepository
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
+import dev.gaens.filmory.feature.note.data.FileNoteImageStorage
 import dev.gaens.filmory.feature.note.data.OfflineFirstNoteRepository
+import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.data.OfflineFirstTitleRepository
 import dev.gaens.filmory.feature.title.domain.TitleRepository
@@ -22,5 +24,6 @@ val featureDataModule = module {
     singleOf(::OfflineFirstEpisodeRepository).bind<EpisodeRepository>()
     singleOf(::OfflineFirstNoteRepository).bind<NoteRepository>()
     singleOf(::OfflineFirstCollectionRepository).bind<CollectionRepository>()
+    singleOf(::FileNoteImageStorage).bind<NoteImageStorage>()
     singleOf(::DataStoreSettingsRepository).bind<SettingsRepository>()
 }

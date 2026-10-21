@@ -23,6 +23,9 @@ import dev.gaens.filmory.feature.collection.presentation.CollectionsScreenRoot
 import dev.gaens.filmory.feature.home.presentation.HomeScreenRoot
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
 import dev.gaens.filmory.feature.library.presentation.LibraryScreenRoot
+import dev.gaens.filmory.feature.note.presentation.detail.NoteDetailScreenRoot
+import dev.gaens.filmory.feature.note.presentation.editor.NoteEditorScreenRoot
+import dev.gaens.filmory.feature.note.presentation.list.NotesScreenRoot
 import dev.gaens.filmory.feature.title.presentation.TitleDetailScreenRoot
 import dev.gaens.filmory.navigation.Route
 import dev.gaens.filmory.resources.Res
@@ -88,7 +91,39 @@ private fun FilmoryNavHost(navController: NavHostController) {
             )
         }
         // Screens below land one by one in milestone 3.
-        composable<Route.Notes> {}
+        composable<Route.Notes> {
+            NotesScreenRoot(
+                onNoteClick = { navController.navigate(Route.NoteDetail(it)) },
+                onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
+                onAddNote = { navController.navigate(Route.AddNote(it)) },
+            )
+        }
+        composable<Route.AddNote> { entry ->
+            val route = entry.toRoute<Route.AddNote>()
+            NoteEditorScreenRoot(
+                titleId = route.titleId,
+                episodeId = route.episodeId,
+                noteId = null,
+                onClose = navController::navigateUp,
+            )
+        }
+        composable<Route.EditNote> { entry ->
+            NoteEditorScreenRoot(
+                titleId = null,
+                episodeId = null,
+                noteId = entry.toRoute<Route.EditNote>().noteId,
+                onClose = navController::navigateUp,
+            )
+        }
+        composable<Route.NoteDetail> { entry ->
+            val noteId = entry.toRoute<Route.NoteDetail>().noteId
+            NoteDetailScreenRoot(
+                noteId = noteId,
+                onBackClick = navController::navigateUp,
+                onEditClick = { navController.navigate(Route.EditNote(noteId)) },
+                onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
+            )
+        }
         composable<Route.Watched> {}
         composable<Route.Profile> {}
         composable<Route.Library> { entry ->

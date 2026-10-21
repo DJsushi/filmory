@@ -8,6 +8,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import dev.gaens.filmory.feature.settings.data.SETTINGS_FILE_NAME
+import dev.gaens.filmory.core.data.AppDirectories
+import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
@@ -29,6 +31,8 @@ actual val platformModule = module {
     single<RoomDatabase.Builder<AppDatabase>> {
         Room.databaseBuilder<AppDatabase>(name = documentsPath() + "/$DATABASE_NAME")
     }
+    single { AppDirectories(documentsPath().toPath()) }
+    single { FileSystem.SYSTEM }
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.createWithPath(produceFile = { (documentsPath() + "/$SETTINGS_FILE_NAME").toPath() })
     }

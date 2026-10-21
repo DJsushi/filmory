@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
+import dev.gaens.filmory.feature.title.domain.DeleteTitle
+import dev.gaens.filmory.testing.FakeNoteImageStorage
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.ToggleWatchLater
 import dev.gaens.filmory.feature.watching.domain.DeleteWatching
@@ -46,7 +48,7 @@ class TitleDetailViewModelTest : ViewModelTest() {
         "title", titles, watchings, episodes, notes, FakeCollectionRepository(),
         ChangeTitleStatus(titles, watchings, ids, clock), ToggleWatchLater(titles), start, SaveWatching(watchings, sync),
         DeleteWatching(watchings, sync), EnsureActiveWatching(watchings, start, sync, clock),
-        AdvanceEpisode(watchings, episodes, ids, clock), ids, clock,
+        AdvanceEpisode(watchings, episodes, ids, clock), DeleteTitle(titles, notes, FakeNoteImageStorage()), ids, clock,
     )
 
     @Test

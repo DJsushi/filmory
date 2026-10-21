@@ -14,6 +14,7 @@ import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatusError
+import dev.gaens.filmory.feature.title.domain.DeleteTitle
 import dev.gaens.filmory.feature.title.domain.Title
 import dev.gaens.filmory.feature.title.domain.TitleRepository
 import dev.gaens.filmory.feature.title.domain.TitleStatus
@@ -62,6 +63,7 @@ class TitleDetailViewModel(
     private val deleteWatching: DeleteWatching,
     private val ensureActiveWatching: EnsureActiveWatching,
     private val advanceEpisode: AdvanceEpisode,
+    private val deleteTitleWithImages: DeleteTitle,
     private val idGenerator: IdGenerator,
     private val clock: Clock,
 ) : ViewModel() {
@@ -192,7 +194,7 @@ class TitleDetailViewModel(
     private fun deleteTitle() {
         _state.update { it.copy(sheet = null) }
         viewModelScope.launch {
-            when (val result = titleRepository.deleteTitle(titleId)) {
+            when (val result = deleteTitleWithImages(titleId)) {
                 is Result.Success -> eventChannel.send(TitleDetailEvent.TitleDeleted)
                 is Result.Error -> showMessage(result.error.asUiText())
             }
