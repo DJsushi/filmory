@@ -23,5 +23,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Filmory"
-include(":app")
+include(":shared")
+include(":androidApp")
  

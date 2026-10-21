@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Filmory</string>
+    <string name="home_greeting">Welcome to Filmory</string>
+    <string name="home_tagline">Your movies and series, kept on your device.</string>
+</resources>
