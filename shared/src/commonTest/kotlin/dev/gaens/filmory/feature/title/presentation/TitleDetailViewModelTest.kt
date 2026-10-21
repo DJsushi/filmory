@@ -233,6 +233,19 @@ class TitleDetailViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `the you are here badge opens the marker settings sheet`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            expectMostRecentItem()
+            viewModel.onAction(TitleDetailAction.OnMarkerSettingsClick)
+            assertEquals(TitleDetailSheet.MarkerSettings, expectMostRecentItem().sheet)
+
+            viewModel.onAction(TitleDetailAction.OnSheetDismiss)
+            assertNull(expectMostRecentItem().sheet)
+        }
+    }
+
+    @Test
     fun `wishlist toggles on the title`() = runTest {
         val viewModel = viewModel()
         viewModel.state.test {

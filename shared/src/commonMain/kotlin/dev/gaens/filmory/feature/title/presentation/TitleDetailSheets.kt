@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.richtext.RichTextField
 import dev.gaens.filmory.core.presentation.designsystem.components.ConfirmDialog
@@ -38,6 +39,8 @@ import dev.gaens.filmory.core.presentation.designsystem.components.RatingInputRo
 import dev.gaens.filmory.core.presentation.ui.formatDayMonthYear
 import dev.gaens.filmory.core.presentation.ui.label
 import dev.gaens.filmory.core.presentation.ui.toLocalDate
+import dev.gaens.filmory.feature.settings.presentation.SeriesSettingsSection
+import dev.gaens.filmory.feature.settings.presentation.SettingsViewModel
 import dev.gaens.filmory.feature.watching.domain.WatchingState
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.action_cancel
@@ -64,6 +67,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -142,6 +146,18 @@ fun WatchingEditorSheet(sheet: TitleDetailSheet.EditWatching, onAction: (TitleDe
                 Spacer(Modifier.weight(1f))
                 Button(onClick = { onAction(TitleDetailAction.OnDraftSave) }) { Text(stringResource(Res.string.action_save)) }
             }
+        }
+    }
+}
+
+/** The Series card from Settings, so the "You are here" marker can be tuned without leaving the title. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MarkerSettingsSheet(onDismiss: () -> Unit, viewModel: SettingsViewModel = koinViewModel()) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = MaterialTheme.colorScheme.surfaceContainer) {
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(bottom = 32.dp)) {
+            SeriesSettingsSection(state.series, viewModel::onAction)
         }
     }
 }

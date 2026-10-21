@@ -450,6 +450,7 @@ private fun TitleDetailSheets(state: TitleDetailState, onAction: (TitleDetailAct
     when (val sheet = state.sheet) {
         is TitleDetailSheet.EditWatching -> WatchingEditorSheet(sheet, onAction)
         TitleDetailSheet.CollectionPicker -> state.title?.id?.let { CollectionPickerSheet(it, onDismiss = dismiss) }
+        TitleDetailSheet.MarkerSettings -> MarkerSettingsSheet(onDismiss = dismiss)
         TitleDetailSheet.DeleteTitle -> ConfirmDialog(
             title = stringResource(Res.string.detail_delete_title),
             message = stringResource(Res.string.detail_delete_title_message),

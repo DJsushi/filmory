@@ -29,6 +29,7 @@ sealed interface TitleDetailAction {
     data object OnDraftKeepEditing : TitleDetailAction
     data object OnDeleteWatchingConfirm : TitleDetailAction
 
+    data object OnMarkerSettingsClick : TitleDetailAction
     data object OnNextEpisodeClick : TitleDetailAction
     data class OnEpisodeCheckClick(val episodeId: String) : TitleDetailAction
     data class OnEpisodeClick(val episodeId: String) : TitleDetailAction

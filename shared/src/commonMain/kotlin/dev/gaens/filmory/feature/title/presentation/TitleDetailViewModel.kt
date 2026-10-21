@@ -110,6 +110,7 @@ class TitleDetailViewModel(
             TitleDetailAction.OnDraftDismiss -> dismissDraft()
             TitleDetailAction.OnDraftKeepEditing -> editSheet()?.let { openSheet(it.copy(isAskingToSave = false)) }
             TitleDetailAction.OnDeleteWatchingConfirm -> deleteDraftWatching()
+            TitleDetailAction.OnMarkerSettingsClick -> openSheet(TitleDetailSheet.MarkerSettings)
             TitleDetailAction.OnNextEpisodeClick -> withActiveWatching { advanceEpisode(it.id) }
             is TitleDetailAction.OnEpisodeCheckClick -> toggleEpisodeCheck(action.episodeId)
             is TitleDetailAction.OnEpisodeClick -> withActiveWatching {

@@ -109,6 +109,7 @@ sealed interface TitleDetailSheet {
         val isDirty: Boolean get() = draft != original
     }
     data object CollectionPicker : TitleDetailSheet
+    data object MarkerSettings : TitleDetailSheet
     data object DeleteTitle : TitleDetailSheet
     data class DeleteWatching(val watchingId: String) : TitleDetailSheet
 }

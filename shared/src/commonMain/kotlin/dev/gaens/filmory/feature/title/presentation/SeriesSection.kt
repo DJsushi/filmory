@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -206,7 +207,10 @@ private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit
             FilmoryBadge(
                 text = stringResource(Res.string.detail_you_are_here),
                 colors = BadgeColors(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary),
-                modifier = Modifier.padding(end = 12.dp),
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .clip(CircleShape)
+                    .clickable(role = Role.Button) { onAction(TitleDetailAction.OnMarkerSettingsClick) },
             )
         }
     }
