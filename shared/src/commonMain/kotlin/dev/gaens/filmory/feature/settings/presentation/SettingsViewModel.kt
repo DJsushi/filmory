@@ -3,6 +3,7 @@ package dev.gaens.filmory.feature.settings.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gaens.filmory.feature.note.domain.NoteRepository
+import dev.gaens.filmory.feature.settings.domain.SeriesSettings
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import dev.gaens.filmory.feature.title.domain.TitleRepository
 import dev.gaens.filmory.feature.title.domain.TitleStatus
@@ -26,6 +27,7 @@ class SettingsViewModel(
             themeMode = settings.themeMode,
             useDynamicColor = settings.useDynamicColor,
             tintHomeHeader = settings.tintHomeHeader,
+            series = settings.series,
             titleCount = titles.size,
             watchedCount = titles.count { it.status == TitleStatus.WATCHED },
             noteCount = notes.size,
@@ -40,7 +42,15 @@ class SettingsViewModel(
                     settingsRepository.update { it.copy(useDynamicColor = action.enabled) }
                 is SettingsAction.OnTintHomeHeaderChange ->
                     settingsRepository.update { it.copy(tintHomeHeader = action.enabled) }
+                is SettingsAction.OnMarkerFollowsTicksChange ->
+                    updateSeries { it.copy(markerFollowsTicks = action.enabled) }
+                is SettingsAction.OnMarkerTargetChange -> updateSeries { it.copy(markerTarget = action.target) }
+                is SettingsAction.OnMarkerMovesBackwardsChange ->
+                    updateSeries { it.copy(markerMovesBackwards = action.enabled) }
             }
         }
     }
+
+    private suspend fun updateSeries(transform: (SeriesSettings) -> SeriesSettings) =
+        settingsRepository.update { it.copy(series = transform(it.series)) }
 }

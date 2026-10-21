@@ -126,6 +126,7 @@ fun SettingsScreen(
                 onCheckedChange = { onAction(SettingsAction.OnTintHomeHeaderChange(it)) },
             )
         }
+        SeriesSettingsSection(state.series, onAction)
         dataSection()
         SectionHeader(stringResource(Res.string.settings_about))
         SettingsCard(Modifier.rise(4)) {
