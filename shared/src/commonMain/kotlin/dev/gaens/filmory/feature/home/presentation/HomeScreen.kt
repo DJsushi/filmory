@@ -91,7 +91,7 @@ import dev.gaens.filmory.resources.home_move_block_down
 import dev.gaens.filmory.resources.home_move_block_up
 import dev.gaens.filmory.resources.home_reset_layout
 import dev.gaens.filmory.resources.ic_drag_handle
-import dev.gaens.filmory.resources.ic_tune
+import dev.gaens.filmory.resources.ic_rearrange
 import dev.gaens.filmory.resources.home_calendar
 import dev.gaens.filmory.resources.home_collections
 import dev.gaens.filmory.resources.home_continue_watching
@@ -339,7 +339,7 @@ private fun HomeHero(state: HomeState, onAction: (HomeAction) -> Unit, modifier:
                     }
                 } else {
                     FilmoryIconButton(
-                        icon = Res.drawable.ic_tune,
+                        icon = Res.drawable.ic_rearrange,
                         contentDescription = stringResource(Res.string.home_edit_layout),
                         onClick = { onAction(HomeAction.OnEditLayoutClick) },
                     )
