@@ -1,5 +1,6 @@
 package dev.gaens.filmory.core.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -30,4 +31,6 @@ data class EpisodeCheckEntity(
     val watchingId: String,
     val episodeId: String,
     val checkedAtEpochMillis: Long,
+    // The default also lets backups made before skipping existed be read.
+    @ColumnInfo(defaultValue = "0") val isSkipped: Boolean = false,
 )

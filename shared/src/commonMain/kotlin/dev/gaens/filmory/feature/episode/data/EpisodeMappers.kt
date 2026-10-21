@@ -35,6 +35,7 @@ fun EpisodeCheckEntity.toEpisodeCheck(): EpisodeCheck = EpisodeCheck(
     watchingId = watchingId,
     episodeId = episodeId,
     checkedAt = checkedAtEpochMillis.toInstant(),
+    isSkipped = isSkipped,
 )
 
 fun EpisodeCheck.toEpisodeCheckEntity(): EpisodeCheckEntity = EpisodeCheckEntity(
@@ -42,4 +43,5 @@ fun EpisodeCheck.toEpisodeCheckEntity(): EpisodeCheckEntity = EpisodeCheckEntity
     watchingId = watchingId,
     episodeId = episodeId,
     checkedAtEpochMillis = checkedAt.toEpochMillis(),
+    isSkipped = isSkipped,
 )

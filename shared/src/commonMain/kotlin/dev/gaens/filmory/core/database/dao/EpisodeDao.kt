@@ -77,6 +77,9 @@ abstract class EpisodeDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertCheck(check: EpisodeCheckEntity)
 
+    @Query("UPDATE episode_checks SET isSkipped = :isSkipped WHERE watchingId = :watchingId AND episodeId = :episodeId")
+    abstract suspend fun setSkipped(watchingId: String, episodeId: String, isSkipped: Boolean)
+
     @Query("DELETE FROM episode_checks WHERE watchingId = :watchingId AND episodeId = :episodeId")
     abstract suspend fun deleteCheck(watchingId: String, episodeId: String)
 }

@@ -21,5 +21,8 @@ interface EpisodeRepository {
 
     /** Does nothing when the episode is already checked in that watching. */
     suspend fun checkEpisode(check: EpisodeCheck): EmptyResult<DataError.Local>
+
+    /** Does nothing when the episode is not checked in that watching. */
+    suspend fun setEpisodeSkipped(watchingId: String, episodeId: String, isSkipped: Boolean): EmptyResult<DataError.Local>
     suspend fun uncheckEpisode(watchingId: String, episodeId: String): EmptyResult<DataError.Local>
 }

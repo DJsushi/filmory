@@ -42,6 +42,12 @@ class OfflineFirstEpisodeRepository(
     override suspend fun checkEpisode(check: EpisodeCheck): EmptyResult<DataError.Local> =
         safeDatabaseWrite { episodeDao.insertCheck(check.toEpisodeCheckEntity()) }
 
+    override suspend fun setEpisodeSkipped(
+        watchingId: String,
+        episodeId: String,
+        isSkipped: Boolean,
+    ): EmptyResult<DataError.Local> = safeDatabaseWrite { episodeDao.setSkipped(watchingId, episodeId, isSkipped) }
+
     override suspend fun uncheckEpisode(watchingId: String, episodeId: String): EmptyResult<DataError.Local> =
         safeDatabaseWrite { episodeDao.deleteCheck(watchingId, episodeId) }
 }

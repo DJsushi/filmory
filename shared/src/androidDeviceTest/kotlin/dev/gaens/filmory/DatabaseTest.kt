@@ -120,6 +120,21 @@ class DatabaseTest {
     }
 
     @Test
+    fun skipping_an_episode_keeps_its_check_and_survives_a_backup_round_trip() = runBlocking {
+        val backups = ZipBackupRepository(database.backupDao(), directories, FileSystem.SYSTEM, Clock.System)
+        seed()
+        episodes.checkEpisode(EpisodeCheck("c1", "w", "e1", now))
+
+        episodes.setEpisodeSkipped("w", "e1", true)
+        assertEquals(true, episodes.observeChecks("w").first().single().isSkipped)
+
+        val file = (backups.createBackup() as Result.Success).data
+        titles.deleteTitle("t")
+        assertEquals(Result.Success(Unit), backups.restore(file))
+        assertEquals(true, episodes.observeChecks("w").first().single().isSkipped)
+    }
+
+    @Test
     fun checking_the_same_episode_twice_keeps_one_check() = runBlocking {
         seed()
 

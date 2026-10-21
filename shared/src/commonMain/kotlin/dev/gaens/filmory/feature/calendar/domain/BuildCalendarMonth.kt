@@ -82,7 +82,10 @@ class BuildCalendarMonth {
                     watching.finishedAt?.let { add(watching to it) }
                 }
                 notes.forEach { note -> watchingsById[note.watchingId]?.let { add(it to note.createdAt) } }
-                checks.forEach { check -> watchingsById[check.watchingId]?.let { add(it to check.checkedAt) } }
+                // A skipped episode was not watched that day.
+                checks.filterNot { it.isSkipped }.forEach { check ->
+                    watchingsById[check.watchingId]?.let { add(it to check.checkedAt) }
+                }
             }
             activity.mapNotNull { (watching, instant) ->
                 val title = titlesById[watching.titleId] ?: return@mapNotNull null

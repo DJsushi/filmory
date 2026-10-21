@@ -67,6 +67,14 @@ class BuildCalendarMonthTest {
     }
 
     @Test
+    fun `a skipped episode is not a logged date`() {
+        val skipped = listOf(EpisodeCheck("c", "wb", "e1", day(21), isSkipped = true))
+        val month = build(october, CalendarSettings(), titles, watchings, notes, skipped, today, zone)
+
+        assertTrue(month.day(21).entries.isEmpty())
+    }
+
+    @Test
     fun `ranges run from start to finish, and to today while in progress`() {
         val month = month(CalendarSettings(showLoggedDates = false))
 

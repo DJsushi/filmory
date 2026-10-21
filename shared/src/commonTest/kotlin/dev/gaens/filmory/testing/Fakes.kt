@@ -87,6 +87,16 @@ class FakeEpisodeRepository(seasons: List<Season> = emptyList()) : EpisodeReposi
         }
         return Saved
     }
+    override suspend fun setEpisodeSkipped(
+        watchingId: String,
+        episodeId: String,
+        isSkipped: Boolean,
+    ): EmptyResult<DataError.Local> {
+        checks.update { list ->
+            list.map { if (it.watchingId == watchingId && it.episodeId == episodeId) it.copy(isSkipped = isSkipped) else it }
+        }
+        return Saved
+    }
     override suspend fun uncheckEpisode(watchingId: String, episodeId: String): EmptyResult<DataError.Local> {
         checks.update { list -> list.filterNot { it.watchingId == watchingId && it.episodeId == episodeId } }
         return Saved
