@@ -8,9 +8,20 @@ data class AppSettings(
     val homeLayout: List<HomeBlock> = HomeBlock.entries,
     /** Home header takes a tint from the poster of the title in Continue watching. */
     val tintHomeHeader: Boolean = true,
+    val series: SeriesSettings = SeriesSettings(),
 )
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
+
+/** How ticking an episode treats the "You are here" marker. The defaults leave the marker alone. */
+data class SeriesSettings(
+    val markerFollowsTicks: Boolean = false,
+    val markerTarget: MarkerTarget = MarkerTarget.NEXT,
+    /** Whether ticking an episode before the marker also moves it. */
+    val markerMovesBackwards: Boolean = false,
+)
+
+enum class MarkerTarget { NEXT, TICKED }
 
 /** Blocks Home shows below the header. Declaration order is the default layout. */
 enum class HomeBlock(val isSection: Boolean) {

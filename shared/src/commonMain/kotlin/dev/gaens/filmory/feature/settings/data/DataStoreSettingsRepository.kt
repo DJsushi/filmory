@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.gaens.filmory.feature.settings.domain.AppSettings
 import dev.gaens.filmory.feature.settings.domain.CalendarSettings
 import dev.gaens.filmory.feature.settings.domain.LibrarySettings
+import dev.gaens.filmory.feature.settings.domain.SeriesSettings
 import dev.gaens.filmory.feature.settings.domain.homeLayoutOf
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +35,9 @@ private object Keys {
     val calendarWeekStart = stringPreferencesKey("calendar_week_start")
     val homeLayout = stringPreferencesKey("home_layout")
     val tintHomeHeader = booleanPreferencesKey("tint_home_header")
+    val markerFollowsTicks = booleanPreferencesKey("series_marker_follows_ticks")
+    val markerTarget = stringPreferencesKey("series_marker_target")
+    val markerMovesBackwards = booleanPreferencesKey("series_marker_moves_backwards")
 }
 
 class DataStoreSettingsRepository(
@@ -76,6 +80,11 @@ private fun Preferences.toAppSettings(): AppSettings {
         ),
         homeLayout = homeLayoutOf(this[Keys.homeLayout]?.split(",").orEmpty()),
         tintHomeHeader = this[Keys.tintHomeHeader] ?: defaults.tintHomeHeader,
+        series = SeriesSettings(
+            markerFollowsTicks = this[Keys.markerFollowsTicks] ?: defaults.series.markerFollowsTicks,
+            markerTarget = enum(Keys.markerTarget, defaults.series.markerTarget),
+            markerMovesBackwards = this[Keys.markerMovesBackwards] ?: defaults.series.markerMovesBackwards,
+        ),
     )
 }
 
@@ -97,4 +106,7 @@ private fun MutablePreferences.write(settings: AppSettings) {
     this[Keys.calendarWeekStart] = settings.calendar.weekStart.name
     this[Keys.homeLayout] = settings.homeLayout.joinToString(",") { it.name }
     this[Keys.tintHomeHeader] = settings.tintHomeHeader
+    this[Keys.markerFollowsTicks] = settings.series.markerFollowsTicks
+    this[Keys.markerTarget] = settings.series.markerTarget.name
+    this[Keys.markerMovesBackwards] = settings.series.markerMovesBackwards
 }
