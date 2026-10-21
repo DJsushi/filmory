@@ -73,10 +73,10 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 
 ### Home screen
 
-- Header with greeting and a "Continue watching" card for the series in progress.
+- Header with greeting and a "Continue watching" card for the series in progress. With several titles the cards swipe sideways and the next card peeks in at the right edge. The header color follows the poster of the card in view, mixed with the theme blue and darkened as far as needed to keep the white text readable. A setting in Profile turns the tint off.
 - Watch later row, Wishlist and Calendar cards, Collections row, On hold and Dropped cards, and a Library card.
 - Purchase, gift and loan records from Bookmory are not part of Filmory.
-- The layout is editable. Everything below the header is one ordered list of blocks: Watch later, Collections and the tiles Wishlist, Calendar, On hold, Dropped and Library. The "Edit layout" button in the app bar turns on edit mode: drag any block to a new place (sections by their handle, tiles by long press), or use the Move up and Move down accessibility actions. Done leaves edit mode and "Reset" restores the default order. Sections use the full width, tiles sit in two columns, and a tile with no partner in its row takes the full width. The order is stored in settings. Hiding blocks is not supported.
+- The layout is editable. Everything below the header is one ordered list of blocks: Watch later, Collections and the tiles Wishlist, Calendar, On hold, Dropped and Library. The "Edit layout" button in the app bar turns on edit mode: drag any block to a new place (sections by their handle, tiles by long press), or use the Move up and Move down accessibility actions. Done or the system Back button leaves edit mode and "Reset" restores the default order. Sections use the full width, tiles sit in two columns, and a tile with no partner in its row takes the full width. The order is stored in settings. Hiding blocks is not supported.
 
 ### Library
 

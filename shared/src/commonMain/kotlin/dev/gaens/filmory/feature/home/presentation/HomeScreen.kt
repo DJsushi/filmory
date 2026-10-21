@@ -29,7 +29,10 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -144,6 +149,7 @@ fun HomeScreenRoot(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen(
     state: HomeState,
@@ -157,6 +163,7 @@ fun HomeScreen(
         onAction(HomeAction.OnMoveBlock(block, target))
         haptics.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
     }
+    BackHandler(enabled = state.isEditingLayout) { onAction(HomeAction.OnEditLayoutDone) }
     val spans = homeSpans(state.layout)
     val bottomPadding = bottomBarContentPadding().calculateBottomPadding()
     LazyVerticalGrid(
@@ -309,8 +316,16 @@ private class TileContent(
 
 @Composable
 private fun HomeHero(state: HomeState, onAction: (HomeAction) -> Unit, modifier: Modifier = Modifier) {
-    HeroHeader(modifier) {
+    val pagerState = rememberPagerState { state.continueWatching.size }
+    val shown = state.continueWatching.getOrNull(pagerState.currentPage)
+    val posterColor = if (state.tintHeader && shown != null) rememberPosterColor(shown.titleId, shown.posterUrl) else null
+    val base = FilmoryTheme.colors.hero
+    val target = posterColor?.let { headerTint(it, base, FilmoryTheme.colors.onHero) } ?: base
+    val container by animateColorAsState(target, if (LocalReducedMotion.current) snap() else tween(HEADER_TINT_MILLIS))
+    HeroHeader(modifier, containerColor = container, horizontalPadding = 0.dp) {
+        val inset = Modifier.padding(horizontal = ScreenPadding)
         FilmoryAppBar(
+            modifier = inset,
             title = stringResource(Res.string.app_name),
             actions = {
                 if (state.isEditingLayout) {
@@ -333,7 +348,7 @@ private fun HomeHero(state: HomeState, onAction: (HomeAction) -> Unit, modifier:
         Text(
             text = stringResource(state.dayPeriod.greeting),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(top = 8.dp).rise(0),
+            modifier = inset.padding(top = 8.dp).rise(0),
         )
         val subtitle = when {
             state.isEditingLayout -> Res.string.home_edit_layout_hint
@@ -343,24 +358,32 @@ private fun HomeHero(state: HomeState, onAction: (HomeAction) -> Unit, modifier:
         Text(
             text = stringResource(subtitle),
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 4.dp).rise(1),
+            modifier = inset.padding(top = 4.dp).rise(1),
         )
+        val isEditing = state.isEditingLayout
         when (state.continueWatching.size) {
             0 -> Unit
-            1 -> ContinueWatchingCard(state.continueWatching.first(), onAction, Modifier.padding(top = 22.dp).rise(2))
-            else -> {
-                val pagerState = rememberPagerState { state.continueWatching.size }
-                HorizontalPager(
-                    state = pagerState,
-                    pageSpacing = 12.dp,
-                    modifier = Modifier.padding(top = 22.dp).rise(2),
-                ) { page ->
-                    ContinueWatchingCard(state.continueWatching[page], onAction)
-                }
+            1 -> ContinueWatchingCard(
+                item = state.continueWatching.first(),
+                isEnabled = !isEditing,
+                onAction = onAction,
+                modifier = inset.padding(top = 22.dp).rise(2),
+            )
+            else -> HorizontalPager(
+                state = pagerState,
+                pageSpacing = 12.dp,
+                // The next card shows a sliver past the end, so the list is seen to go on.
+                contentPadding = PaddingValues(start = ScreenPadding, end = ScreenPadding + NEXT_CARD_PEEK),
+                modifier = Modifier.padding(top = 22.dp).rise(2),
+            ) { page ->
+                ContinueWatchingCard(state.continueWatching[page], isEnabled = !isEditing, onAction = onAction)
             }
         }
     }
 }
+
+private const val HEADER_TINT_MILLIS = 500
+private val NEXT_CARD_PEEK = 16.dp
 
 private val DayPeriod.greeting
     get() = when (this) {
@@ -372,13 +395,14 @@ private val DayPeriod.greeting
 @Composable
 private fun ContinueWatchingCard(
     item: ContinueWatchingUi,
+    isEnabled: Boolean,
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     FilmoryCard(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        onClick = { onAction(HomeAction.OnTitleClick(item.titleId)) },
+        onClick = if (isEnabled) ({ onAction(HomeAction.OnTitleClick(item.titleId)) }) else null,
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
