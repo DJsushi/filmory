@@ -19,7 +19,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,7 +55,9 @@ import dev.gaens.filmory.feature.title.domain.TitleType
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.action_delete
 import dev.gaens.filmory.resources.action_more
+import dev.gaens.filmory.resources.action_close
 import dev.gaens.filmory.resources.action_search
+import dev.gaens.filmory.resources.ic_close
 import dev.gaens.filmory.resources.collection_delete
 import dev.gaens.filmory.resources.collection_delete_message
 import dev.gaens.filmory.resources.collection_name
@@ -177,6 +184,7 @@ fun LibraryScreen(
     LibraryDialogs(state, onAction)
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun LibraryHeader(state: LibraryState, onAction: (LibraryAction) -> Unit) {
     ScreenHeader(
@@ -194,13 +202,22 @@ private fun LibraryHeader(state: LibraryState, onAction: (LibraryAction) -> Unit
         },
     )
     if (state.isSearchOpen) {
+        val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+        // Back closes the search first, then leaves the screen.
+        BackHandler { onAction(LibraryAction.OnSearchClick) }
         OutlinedTextField(
             value = state.searchText,
             onValueChange = { onAction(LibraryAction.OnSearchTextChange(it)) },
             placeholder = { Text(stringResource(Res.string.library_search_hint)) },
+            trailingIcon = {
+                FilmoryIconButton(Res.drawable.ic_close, stringResource(Res.string.action_close), {
+                    onAction(LibraryAction.OnSearchClick)
+                })
+            },
             singleLine = true,
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = ScreenPadding, vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = ScreenPadding, vertical = 8.dp).focusRequester(focusRequester),
         )
     }
     ChipRow(Modifier.padding(top = 12.dp, bottom = 12.dp).rise(2)) {
