@@ -39,7 +39,7 @@ val presentationModule = module {
     viewModel { (noteId: String) -> NoteDetailViewModel(noteId, get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (titleId: String) ->
         TitleDetailViewModel(
-            titleId, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+            titleId, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
         )
     }
 }

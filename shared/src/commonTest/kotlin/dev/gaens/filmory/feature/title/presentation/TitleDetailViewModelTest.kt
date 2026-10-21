@@ -3,6 +3,9 @@ package dev.gaens.filmory.feature.title.presentation
 import app.cash.turbine.test
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
 import dev.gaens.filmory.feature.note.domain.NoteRepository
+import dev.gaens.filmory.feature.settings.domain.AppSettings
+import dev.gaens.filmory.feature.settings.domain.MarkerTarget
+import dev.gaens.filmory.feature.settings.domain.SeriesSettings
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
 import dev.gaens.filmory.feature.title.domain.DeleteTitle
 import dev.gaens.filmory.testing.FakeNoteImageStorage
@@ -17,6 +20,7 @@ import dev.gaens.filmory.feature.watching.domain.SyncTitleStatus
 import dev.gaens.filmory.testing.FakeCollectionRepository
 import dev.gaens.filmory.testing.FakeEpisodeRepository
 import dev.gaens.filmory.testing.FakeNoteRepository
+import dev.gaens.filmory.testing.FakeSettingsRepository
 import dev.gaens.filmory.testing.FakeTitleRepository
 import dev.gaens.filmory.testing.FakeWatchingRepository
 import dev.gaens.filmory.testing.FixedClock
@@ -44,6 +48,7 @@ class TitleDetailViewModelTest : ViewModelTest() {
     private val notes: NoteRepository = FakeNoteRepository(
         listOf(aNote(id = "n1", watchingId = "w1"), aNote(id = "n2", watchingId = "w2")),
     )
+    private val settings = FakeSettingsRepository()
     private val sync = SyncTitleStatus(titles, watchings, DetermineTitleStatus())
     private val start = StartWatching(watchings, sync, ids, clock)
 
@@ -51,8 +56,53 @@ class TitleDetailViewModelTest : ViewModelTest() {
         "title", titles, watchings, episodes, notes, FakeCollectionRepository(),
         ChangeTitleStatus(titles, watchings, ids, clock), ToggleWatchLater(titles), start, SaveWatching(watchings, sync),
         DeleteWatching(watchings, sync), EnsureActiveWatching(watchings, start, sync, clock),
-        AdvanceEpisode(watchings, episodes, ids, clock), DeleteTitle(titles, notes, FakeNoteImageStorage()), ids, clock,
+        AdvanceEpisode(watchings, episodes, ids, clock), DeleteTitle(titles, notes, FakeNoteImageStorage()), settings, ids, clock,
     )
+
+    private fun followTicks(target: MarkerTarget = MarkerTarget.NEXT) {
+        settings.settings.value = AppSettings(series = SeriesSettings(markerFollowsTicks = true, markerTarget = target))
+    }
+
+    private suspend fun markerAfter(action: TitleDetailAction): String? {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            expectMostRecentItem()
+            viewModel.onAction(action)
+            expectMostRecentItem()
+        }
+        return watchings.getWatching("w")?.currentEpisodeId
+    }
+
+    @Test
+    fun `ticking an episode leaves the marker alone by default`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+
+        assertEquals("e1", markerAfter(TitleDetailAction.OnEpisodeCheckClick("e1")))
+    }
+
+    @Test
+    fun `ticking moves the marker to the next episode when asked to`() = runTest {
+        followTicks()
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+
+        assertEquals("e2", markerAfter(TitleDetailAction.OnEpisodeCheckClick("e1")))
+    }
+
+    @Test
+    fun `ticking can put the marker on the ticked episode`() = runTest {
+        followTicks(MarkerTarget.TICKED)
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+
+        assertEquals("e2", markerAfter(TitleDetailAction.OnEpisodeCheckClick("e2")))
+    }
+
+    @Test
+    fun `marking a season moves the marker past its last episode`() = runTest {
+        followTicks()
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+
+        assertEquals("e3", markerAfter(TitleDetailAction.OnMarkSeasonClick))
+    }
 
     @Test
     fun `checking an episode on a fresh series starts a watching`() = runTest {

@@ -11,6 +11,8 @@ import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
 import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
+import dev.gaens.filmory.feature.episode.domain.placeMarker
+import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatusError
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -64,6 +67,7 @@ class TitleDetailViewModel(
     private val ensureActiveWatching: EnsureActiveWatching,
     private val advanceEpisode: AdvanceEpisode,
     private val deleteTitleWithImages: DeleteTitle,
+    private val settingsRepository: SettingsRepository,
     private val idGenerator: IdGenerator,
     private val clock: Clock,
 ) : ViewModel() {
@@ -220,8 +224,21 @@ class TitleDetailViewModel(
             if (isChecked) {
                 episodeRepository.uncheckEpisode(watching.id, episodeId)
             } else {
-                episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episodeId, clock.now()))
+                val checked = episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episodeId, clock.now()))
+                if (checked is Result.Error) checked else moveMarker(watching, episodeId)
             }
+        }
+    }
+
+    /** Moves the "You are here" marker after a tick, as the user's series settings say. */
+    private suspend fun moveMarker(watching: Watching, tickedEpisodeId: String): Result<*, DataError.Local> {
+        val settings = settingsRepository.observeSettings().first().series
+        val episodeIds = data.value?.seasons.orEmpty().flatMap { it.episodes }.map { it.id }
+        val placed = placeMarker(episodeIds, watching.currentEpisodeId, tickedEpisodeId, settings)
+        return if (placed == watching.currentEpisodeId) {
+            Result.Success(Unit)
+        } else {
+            watchingRepository.upsertWatching(watching.copy(currentEpisodeId = placed))
         }
     }
 
@@ -232,7 +249,7 @@ class TitleDetailViewModel(
                 val checked = episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episode.id, clock.now()))
                 if (checked is Result.Error) return@withActiveWatching checked
             }
-            Result.Success(Unit)
+            moveMarker(watching, season.episodes.last().id)
         }
     }
 
