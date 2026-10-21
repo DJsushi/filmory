@@ -76,6 +76,7 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 - Header with greeting and a "Continue watching" card for the series in progress.
 - Watch later row, Wishlist and Calendar cards, Collections row, On hold and Dropped cards, and a Library card.
 - Purchase, gift and loan records from Bookmory are not part of Filmory.
+- The layout is editable. Everything below the header is one ordered list of blocks: Watch later, Collections and the tiles Wishlist, Calendar, On hold, Dropped and Library. The "Edit layout" button in the app bar turns on edit mode: drag any block to a new place (sections by their handle, tiles by long press), or use the Move up and Move down accessibility actions. Done leaves edit mode and "Reset" restores the default order. Sections use the full width, tiles sit in two columns, and a tile with no partner in its row takes the full width. The order is stored in settings. Hiding blocks is not supported.
 
 ### Library
 
@@ -90,7 +91,7 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 - Streaks.
 - Statistics (daily, annual and tag statistics).
 - Rewind.
-- Premium features and home screen editing.
+- Premium features.
 - Purchase, gift and loan records.
 
 ## Look and feel

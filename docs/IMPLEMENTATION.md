@@ -24,6 +24,7 @@ Use the multiplatform versions of the libraries named in `CLEAN_CODE.md`:
 - Navigation Compose (multiplatform) with type-safe `@Serializable` routes.
 - DataStore (multiplatform) for settings.
 - Coil 3 for images.
+- `sh.calvin.reorderable` for drag and drop reordering of the Home layout (Compose Multiplatform, works on iOS).
 - Compose Multiplatform resources for strings and drawables. `UiText` wraps a resource key, not an Android `Context`.
 - kotlinx-datetime for dates (no `java.time` in common code) and Okio for the backup zip. Additions beyond `CLEAN_CODE.md`: the Compose Multiplatform Gradle plugin, kotlinx-datetime, Okio. Ask before adding anything else.
 - Tests: `kotlin.test` in `commonTest`, Turbine, and hand-written fakes. JUnit5 is not used.
