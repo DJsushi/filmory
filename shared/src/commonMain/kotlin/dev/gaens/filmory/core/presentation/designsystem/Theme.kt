@@ -1,6 +1,7 @@
 package dev.gaens.filmory.core.presentation.designsystem
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -23,8 +24,10 @@ fun FilmoryTheme(
             colorScheme = colorScheme,
             typography = FilmoryTypography,
             shapes = FilmoryShapes,
-            content = content,
-        )
+        ) {
+            SystemBarsAppearance(darkTheme)
+            CompositionLocalProvider(LocalContentColor provides colorScheme.onBackground, content = content)
+        }
     }
 }
 
@@ -34,3 +37,7 @@ object FilmoryTheme {
         @ReadOnlyComposable
         get() = LocalFilmoryColors.current
 }
+
+/** Makes the status and navigation bar icons readable on the app's own light or dark theme. */
+@Composable
+internal expect fun SystemBarsAppearance(darkTheme: Boolean)

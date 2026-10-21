@@ -205,6 +205,21 @@
     <string name="calendar_sunday">Sunday</string>
     <string name="calendar_day_empty">Nothing logged on this day.</string>
 
+    <!-- Profile and settings -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_subtitle">%1$s, %2$s watched, %3$s.</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_dynamic_color">Material You colors</string>
+    <string name="settings_dynamic_color_unavailable">Needs Android 12 or newer.</string>
+    <string name="settings_data">Your data</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Filmory %1$s</string>
+    <string name="settings_local_first">Everything you add stays on this device.</string>
+
     <!-- Notes tab -->
     <string name="notes_title">Notes</string>
     <string name="notes_subtitle">%1$s across %2$s.</string>

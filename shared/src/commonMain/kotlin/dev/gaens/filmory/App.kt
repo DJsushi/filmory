@@ -1,6 +1,7 @@
 package dev.gaens.filmory
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +17,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.gaens.filmory.feature.settings.domain.ThemeMode
+import dev.gaens.filmory.feature.settings.presentation.AppViewModel
+import dev.gaens.filmory.feature.settings.presentation.SettingsScreenRoot
+import org.koin.compose.viewmodel.koinViewModel
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.components.BottomBarItem
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryBottomBar
@@ -51,8 +57,15 @@ private enum class TopLevelTab(val route: Route, val label: StringResource, val 
 }
 
 @Composable
-fun FilmoryApp() {
-    FilmoryTheme {
+fun FilmoryApp(appViewModel: AppViewModel = koinViewModel()) {
+    // Wait for stored settings so the app never flashes the wrong theme.
+    val settings = appViewModel.settings.collectAsStateWithLifecycle().value ?: return
+    val darkTheme = when (settings.themeMode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+    FilmoryTheme(darkTheme = darkTheme, dynamicColor = settings.useDynamicColor) {
         val navController = rememberNavController()
         val backStackEntry by navController.currentBackStackEntryAsState()
         val selectedTab = TopLevelTab.entries.indexOfFirst { tab ->
@@ -129,7 +142,7 @@ private fun FilmoryNavHost(navController: NavHostController) {
         composable<Route.Watched> {
             WatchedScreenRoot(onTitleClick = { navController.navigate(Route.TitleDetail(it)) })
         }
-        composable<Route.Profile> {}
+        composable<Route.Profile> { SettingsScreenRoot() }
         composable<Route.Library> { entry ->
             val route = entry.toRoute<Route.Library>()
             LibraryScreenRoot(

@@ -5,3 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 internal actual fun dynamicColorScheme(darkTheme: Boolean): ColorScheme? = null
+
+actual val isDynamicColorAvailable: Boolean = false
