@@ -27,9 +27,9 @@ Where things live. Paths are under `shared/src/commonMain/kotlin/dev/gaens/filmo
 | `title` | Title (movie or series), status, detail screen, add/edit form, watch-later flag | `domain/ChangeTitleStatus`, `SaveTitleForm`, `WatchLater`; `presentation/TitleDetailScreen`, `TitleDetailViewModel`, `SeriesSection`, `form/TitleFormScreen` |
 | `watching` | One viewing of a title: dates, state, rating, review; status derivation | `domain/StartWatching`, `ChangeWatchingState`, `SaveWatching`, `DetermineTitleStatus`, `SyncTitleStatus`, `FindContinueWatching` |
 | `episode` | Seasons, episodes, per-episode checks (watched, skipped), current-episode marker | `domain/AdvanceEpisode`, `PlaceMarker`, `EpisodeCheck`, `Season` |
-| `note` | Notes and comments on titles, watchings, episodes; list, detail, editor | `domain/AddNote`, `DeleteNote`; `presentation/list`, `detail`, `editor`, `components/NoteCard` |
+| `note` | Notes and comments on titles, watchings, episodes; list, detail, editor | `domain/AddNote`, `DeleteNote`; `presentation/list` (with `TitlePickerSheet`, the searchable "add a note to" picker, built on `BuildLibrary`), `detail`, `editor`, `components/NoteCard` |
 | `home` | Home tab: watch-later slots, continue watching, drag and drop | `presentation/HomeScreen`, `HomeViewModel`, `WatchLaterEditor` |
-| `library` | Library tab with presets, filters, sort and layout settings | `domain/BuildLibrary`; `presentation/LibraryScreen`, `LibrarySettingsSheet` |
+| `library` | Library tab with presets, filters, sort and layout settings. The collection screen reuses its list. | `domain/BuildLibrary`; `presentation/LibraryScreen`, `LibrarySettingsSheet`, `components/TitleFilters` (search field and status, type and collection chips, also used by the add note picker) |
 | `watched` | Watched list screen | `domain/BuildWatchedList`; `presentation/WatchedScreen` |
 | `collection` | Collections of titles, picker sheet, look (icon, color) | `domain/CreateCollection`; `presentation/CollectionsScreen`, `detail/`, `picker/` |
 | `calendar` | Calendar tab and its settings | `domain/BuildCalendarMonth`; `presentation/CalendarScreen`, `CalendarSheets` |
