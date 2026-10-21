@@ -1,5 +1,14 @@
 package dev.gaens.filmory.feature.title.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +39,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.gaens.filmory.core.presentation.designsystem.EmphasizedEasing
+import dev.gaens.filmory.core.presentation.designsystem.LocalReducedMotion
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.BadgeColors
 import dev.gaens.filmory.core.presentation.designsystem.components.ChipRow
@@ -66,7 +77,15 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-fun LazyListScope.seriesSection(state: TitleDetailState, onAction: (TitleDetailAction) -> Unit) {
+private const val MARKER_KEY = "you-are-here"
+private const val MARKER_MOVE_MILLIS = 500
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+fun LazyListScope.seriesSection(
+    state: TitleDetailState,
+    sharedScope: SharedTransitionScope,
+    onAction: (TitleDetailAction) -> Unit,
+) {
     val series = state.series
     if (series == null) {
         item(key = "noEpisodes") {
@@ -96,7 +115,7 @@ fun LazyListScope.seriesSection(state: TitleDetailState, onAction: (TitleDetailA
         }
     }
     val episodes = series.seasons.find { it.number == state.selectedSeasonNumber }?.episodes.orEmpty()
-    items(episodes, key = { "episode-${it.id}" }) { episode -> EpisodeRow(episode, onAction) }
+    items(episodes, key = { "episode-${it.id}" }) { episode -> EpisodeRow(episode, sharedScope, onAction) }
 }
 
 @Composable
@@ -156,8 +175,9 @@ private fun Legend(color: Color, text: String) {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit) {
+private fun EpisodeRow(episode: EpisodeUi, sharedScope: SharedTransitionScope, onAction: (TitleDetailAction) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -203,15 +223,30 @@ private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit
                 )
             }
         }
-        if (episode.isCurrent) {
-            FilmoryBadge(
-                text = stringResource(Res.string.detail_you_are_here),
-                colors = BadgeColors(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary),
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .clip(CircleShape)
-                    .clickable(role = Role.Button) { onAction(TitleDetailAction.OnMarkerSettingsClick) },
-            )
+        val isReducedMotion = LocalReducedMotion.current
+        // Only one row shows the badge, so it leaves one row and enters the next as one shared element that glides.
+        AnimatedVisibility(
+            visible = episode.isCurrent,
+            enter = if (isReducedMotion) EnterTransition.None else fadeIn(),
+            exit = if (isReducedMotion) ExitTransition.None else fadeOut(),
+        ) {
+            with(sharedScope) {
+                FilmoryBadge(
+                    text = stringResource(Res.string.detail_you_are_here),
+                    colors = BadgeColors(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary),
+                    modifier = Modifier
+                        .sharedElement(
+                            sharedContentState = rememberSharedContentState(MARKER_KEY),
+                            animatedVisibilityScope = this@AnimatedVisibility,
+                            boundsTransform = { _, _ ->
+                                if (isReducedMotion) snap() else tween(MARKER_MOVE_MILLIS, easing = EmphasizedEasing)
+                            },
+                        )
+                        .padding(end = 12.dp)
+                        .clip(CircleShape)
+                        .clickable(role = Role.Button) { onAction(TitleDetailAction.OnMarkerSettingsClick) },
+                )
+            }
         }
     }
 }

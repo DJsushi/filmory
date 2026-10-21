@@ -2,6 +2,8 @@ package dev.gaens.filmory.feature.title.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -158,6 +160,7 @@ fun TitleDetailScreenRoot(
 private fun TitleDetailState.currentEpisodeIdForNotes(): String? =
     series?.seasons?.flatMap { it.episodes }?.find { it.isCurrent }?.id
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun TitleDetailScreen(
     state: TitleDetailState,
@@ -165,21 +168,25 @@ fun TitleDetailScreen(
     onEditTitleClick: () -> Unit = {},
 ) {
     val title = state.title ?: return
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn(contentPadding = PaddingValues(bottom = 120.dp), modifier = Modifier.fillMaxSize()) {
-            item(key = "hero") { DetailHero(title, onAction, onEditTitleClick) }
-            item(key = "status") { StatusSelector(title, onAction) }
-            item(key = "overview") { Overview(title.overview, state.isOverviewExpanded, onAction) }
-            item(key = "collections") { CollectionChips(state.collections, onAction) }
-            if (title.type == TitleType.SERIES) seriesSection(state, onAction)
-            watchingsSection(state, onAction)
-            notesSection(state, onAction)
+    // The shared transition scope lets the "You are here" badge glide from one episode row to the next.
+    SharedTransitionLayout {
+        val sharedScope = this
+        Box(Modifier.fillMaxSize()) {
+            LazyColumn(contentPadding = PaddingValues(bottom = 120.dp), modifier = Modifier.fillMaxSize()) {
+                item(key = "hero") { DetailHero(title, onAction, onEditTitleClick) }
+                item(key = "status") { StatusSelector(title, onAction) }
+                item(key = "overview") { Overview(title.overview, state.isOverviewExpanded, onAction) }
+                item(key = "collections") { CollectionChips(state.collections, onAction) }
+                if (title.type == TitleType.SERIES) seriesSection(state, sharedScope, onAction)
+                watchingsSection(state, onAction)
+                notesSection(state, onAction)
+            }
+            FilmoryFab(
+                text = stringResource(Res.string.detail_add_note),
+                onClick = { onAction(TitleDetailAction.OnAddNoteClick) },
+                modifier = Modifier.align(Alignment.BottomEnd).navigationBarsPadding().padding(16.dp),
+            )
         }
-        FilmoryFab(
-            text = stringResource(Res.string.detail_add_note),
-            onClick = { onAction(TitleDetailAction.OnAddNoteClick) },
-            modifier = Modifier.align(Alignment.BottomEnd).navigationBarsPadding().padding(16.dp),
-        )
     }
     TitleDetailSheets(state, onAction)
 }
