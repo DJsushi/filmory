@@ -48,7 +48,7 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 ### Formatted text
 
 - Note text, note comments, the watching review and the title description are written in a small Markdown subset: `**bold**`, `*italic*`, `~~strikethrough~~`, `# ` and `## ` headings, `> ` quotes (for things said in the movie or series) and `- ` bullets. Underline is not supported, because Markdown has no underline.
-- These fields are small text fields that show the formatting as you type, with the markers dimmed. A button in the corner opens a full-screen editor with a toolbar above the keyboard. Everywhere the text is shown, the markers are hidden and the formatting applied. Copying a note copies the raw Markdown.
+- These fields are small text fields that show the formatting as you type, like Obsidian's live preview: the markers of a run (and the `#`, `>` or `-` of a line) are hidden, and show dimmed only while the cursor or selection is in or next to that run or line. A button in the corner opens a full-screen editor with a toolbar above the keyboard. Everywhere the text is shown, the markers are hidden and the formatting applied. Copying a note copies the raw Markdown.
 
 ### Rating and review
 

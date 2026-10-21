@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.Role
@@ -98,7 +99,9 @@ fun RichTextField(
 ) {
     var field by rememberFieldState(value)
     var isExpanded by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(false) }
     val colors = rememberMarkdownColors()
+    val reveal = if (isFocused) field.selection else null
     OutlinedTextField(
         value = field,
         onValueChange = {
@@ -108,7 +111,7 @@ fun RichTextField(
         label = label?.let { { Text(it) } },
         placeholder = placeholder?.let { { Text(it) } },
         shape = shape,
-        visualTransformation = remember(colors) { MarkdownVisualTransformation(colors) },
+        visualTransformation = remember(colors, reveal) { MarkdownVisualTransformation(colors, reveal) },
         minLines = minLines,
         maxLines = maxLines,
         trailingIcon = {
@@ -116,7 +119,7 @@ fun RichTextField(
                 Icon(painterResource(Res.drawable.ic_expand), stringResource(Res.string.richtext_expand))
             }
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().onFocusChanged { isFocused = it.isFocused },
     )
     if (isExpanded) {
         RichTextEditor(editorTitle, value, onValueChange, onDismiss = { isExpanded = false })
@@ -158,7 +161,7 @@ fun RichTextEditor(title: String, value: String, onValueChange: (String) -> Unit
                         },
                         textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                        visualTransformation = remember(colors) { MarkdownVisualTransformation(colors) },
+                        visualTransformation = remember(colors, field.selection) { MarkdownVisualTransformation(colors, field.selection) },
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()

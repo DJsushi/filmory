@@ -24,7 +24,7 @@ fun MarkdownText(
     overflow: TextOverflow = TextOverflow.Clip,
 ) {
     val colors = rememberMarkdownColors()
-    val styled = remember(text, colors) { markdownAnnotated(text, colors, showMarkers = false) }
+    val styled = remember(text, colors) { markdownAnnotated(text, colors) }
     Text(
         text = styled,
         modifier = modifier,
