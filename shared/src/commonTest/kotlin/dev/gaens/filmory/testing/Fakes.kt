@@ -5,6 +5,7 @@ import dev.gaens.filmory.core.domain.util.EmptyResult
 import dev.gaens.filmory.core.domain.util.Result
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.collection.domain.inDisplayOrder
 import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
 import dev.gaens.filmory.feature.episode.domain.Season
@@ -123,7 +124,13 @@ class FakeCollectionRepository(collections: List<TitleCollection> = emptyList())
     CollectionRepository {
     val collections = MutableStateFlow(collections)
 
-    override fun observeCollections(): Flow<List<TitleCollection>> = collections
+    override fun observeCollections(): Flow<List<TitleCollection>> = collections.map { it.inDisplayOrder() }
+    override suspend fun reorder(orderedIds: List<String>): EmptyResult<DataError.Local> {
+        collections.update { list ->
+            list.map { collection -> orderedIds.indexOf(collection.id).let { if (it == -1) collection else collection.copy(sortOrder = it + 1) } }
+        }
+        return Saved
+    }
     override suspend fun upsertCollection(
         collection: TitleCollection,
     ): EmptyResult<DataError.Local> {

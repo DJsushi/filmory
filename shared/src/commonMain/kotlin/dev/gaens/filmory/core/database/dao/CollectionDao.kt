@@ -23,6 +23,13 @@ interface CollectionDao {
     @Query("DELETE FROM collections WHERE id = :id")
     suspend fun deleteCollection(id: String)
 
+    /**
+     * Gives every collection in [ids] the position its id has in [orderedIds], which is the ids
+     * joined as ",a,b,c,". One statement, so observers never see a half-changed order.
+     */
+    @Query("UPDATE collections SET sortOrder = INSTR(:orderedIds, ',' || id || ',') WHERE id IN (:ids)")
+    suspend fun setOrder(orderedIds: String, ids: List<String>)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTitle(link: CollectionTitleEntity)
 

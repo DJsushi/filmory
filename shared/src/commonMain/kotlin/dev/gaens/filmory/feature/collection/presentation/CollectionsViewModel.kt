@@ -2,9 +2,8 @@ package dev.gaens.filmory.feature.collection.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.gaens.filmory.core.domain.IdGenerator
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
-import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.collection.domain.CreateCollection
 import dev.gaens.filmory.feature.title.domain.TitleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,13 +13,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 class CollectionsViewModel(
     private val collectionRepository: CollectionRepository,
     private val titleRepository: TitleRepository,
-    private val idGenerator: IdGenerator,
-    private val clock: Clock,
+    private val createCollection: CreateCollection,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -61,10 +58,6 @@ class CollectionsViewModel(
 
     private fun addCollection(name: String) {
         _state.update { it.copy(isAddDialogOpen = false) }
-        viewModelScope.launch {
-            collectionRepository.upsertCollection(
-                TitleCollection(id = idGenerator.newId(), name = name, titleIds = emptyList(), createdAt = clock.now()),
-            )
-        }
+        viewModelScope.launch { createCollection(name) }
     }
 }

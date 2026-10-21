@@ -17,12 +17,15 @@ class OfflineFirstCollectionRepository(
     override fun observeCollections(): Flow<List<TitleCollection>> =
         combine(collectionDao.observeCollections(), collectionDao.observeCollectionTitles(), ::toCollections)
 
-    /** Saves the name only. Membership changes go through [addTitle] and [removeTitle]. */
+    /** Saves everything but the titles. Membership changes go through [addTitle] and [removeTitle]. */
     override suspend fun upsertCollection(collection: TitleCollection): EmptyResult<DataError.Local> =
         safeDatabaseWrite { collectionDao.upsertCollection(collection.toCollectionEntity()) }
 
     override suspend fun deleteCollection(id: String): EmptyResult<DataError.Local> =
         safeDatabaseWrite { collectionDao.deleteCollection(id) }
+
+    override suspend fun reorder(orderedIds: List<String>): EmptyResult<DataError.Local> =
+        safeDatabaseWrite { collectionDao.setOrder(orderedIds.joinToString(",", prefix = ",", postfix = ","), orderedIds) }
 
     override suspend fun addTitle(collectionId: String, titleId: String): EmptyResult<DataError.Local> =
         safeDatabaseWrite { collectionDao.addTitle(CollectionTitleEntity(collectionId, titleId)) }
