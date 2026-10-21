@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.ConfirmDialog
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmorySegmentedRow
-import dev.gaens.filmory.core.presentation.designsystem.components.StarRatingInput
+import dev.gaens.filmory.core.presentation.designsystem.components.RatingInputRow
 import dev.gaens.filmory.core.presentation.ui.formatDayMonthYear
 import dev.gaens.filmory.core.presentation.ui.label
 import dev.gaens.filmory.core.presentation.ui.toLocalDate
@@ -90,20 +90,14 @@ fun WatchingEditorSheet(draft: Watching, onAction: (TitleDetailAction) -> Unit) 
                 onAction(TitleDetailAction.OnDraftFinishDateChange(it))
             }
             Text(stringResource(Res.string.watching_rating), style = MaterialTheme.typography.labelLarge)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                val halfStars = draft.rating?.halfStars ?: 0
-                StarRatingInput(
-                    halfStars = halfStars,
-                    onChange = { onAction(TitleDetailAction.OnDraftRatingChange(it)) },
-                    contentDescription = stringResource(Res.string.watching_rating_description, (halfStars / 2f).toString()),
-                )
-                Spacer(Modifier.weight(1f))
-                if (draft.rating != null) {
-                    TextButton(onClick = { onAction(TitleDetailAction.OnDraftRatingChange(null)) }) {
-                        Text(stringResource(Res.string.watching_clear_rating))
-                    }
-                }
-            }
+            val halfStars = draft.rating?.halfStars ?: 0
+            RatingInputRow(
+                halfStars = halfStars,
+                onChange = { onAction(TitleDetailAction.OnDraftRatingChange(it)) },
+                onClear = { onAction(TitleDetailAction.OnDraftRatingChange(null)) },
+                contentDescription = stringResource(Res.string.watching_rating_description, (halfStars / 2f).toString()),
+                clearLabel = stringResource(Res.string.watching_clear_rating),
+            )
             OutlinedTextField(
                 value = draft.review.orEmpty(),
                 onValueChange = { onAction(TitleDetailAction.OnDraftReviewChange(it)) },
