@@ -173,6 +173,16 @@
     <string name="watching_delete">Delete watching</string>
     <string name="watching_delete_message">Notes on this watching are deleted too.</string>
 
+    <!-- Watched tab -->
+    <string name="watched_title">Watched</string>
+    <plurals name="watched_subtitle">
+        <item quantity="one">You finished %1$d title. Nice.</item>
+        <item quantity="other">You finished %1$d titles. Nice.</item>
+    </plurals>
+    <string name="watched_subtitle_empty">Finished titles collect here.</string>
+    <string name="watched_all">All</string>
+    <string name="watched_sort_finished">Finished</string>
+
     <!-- Notes tab -->
     <string name="notes_title">Notes</string>
     <string name="notes_subtitle">%1$s across %2$s.</string>

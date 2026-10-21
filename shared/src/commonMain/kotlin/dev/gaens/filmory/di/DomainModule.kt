@@ -5,6 +5,7 @@ import dev.gaens.filmory.feature.library.domain.BuildLibrary
 import dev.gaens.filmory.feature.note.domain.AddNote
 import dev.gaens.filmory.feature.note.domain.DeleteNote
 import dev.gaens.filmory.feature.title.domain.DeleteTitle
+import dev.gaens.filmory.feature.watched.domain.BuildWatchedList
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
 import dev.gaens.filmory.feature.title.domain.MoveWatchLater
 import dev.gaens.filmory.feature.title.domain.ToggleWatchLater
@@ -35,5 +36,6 @@ val domainModule = module {
     factoryOf(::SaveWatching)
     factoryOf(::DeleteNote)
     factoryOf(::DeleteTitle)
+    factoryOf(::BuildWatchedList)
     factoryOf(::EnsureActiveWatching)
 }

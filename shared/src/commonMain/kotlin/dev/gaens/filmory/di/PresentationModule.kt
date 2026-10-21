@@ -8,6 +8,7 @@ import dev.gaens.filmory.feature.title.presentation.TitleDetailViewModel
 import dev.gaens.filmory.feature.note.presentation.detail.NoteDetailViewModel
 import dev.gaens.filmory.feature.note.presentation.editor.NoteEditorViewModel
 import dev.gaens.filmory.feature.note.presentation.list.NotesViewModel
+import dev.gaens.filmory.feature.watched.presentation.WatchedViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -18,6 +19,7 @@ val presentationModule = module {
         LibraryViewModel(preset, collectionId, get(), get(), get(), get(), get())
     }
     viewModelOf(::CollectionsViewModel)
+    viewModelOf(::WatchedViewModel)
     viewModel { NotesViewModel(get(), get(), get(), get()) }
     viewModel { (titleId: String?, episodeId: String?, noteId: String?) ->
         NoteEditorViewModel(titleId, episodeId, noteId, get(), get(), get(), get(), get(), get(), get())

@@ -27,6 +27,7 @@ import dev.gaens.filmory.feature.note.presentation.detail.NoteDetailScreenRoot
 import dev.gaens.filmory.feature.note.presentation.editor.NoteEditorScreenRoot
 import dev.gaens.filmory.feature.note.presentation.list.NotesScreenRoot
 import dev.gaens.filmory.feature.title.presentation.TitleDetailScreenRoot
+import dev.gaens.filmory.feature.watched.presentation.WatchedScreenRoot
 import dev.gaens.filmory.navigation.Route
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.ic_home
@@ -124,7 +125,9 @@ private fun FilmoryNavHost(navController: NavHostController) {
                 onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
             )
         }
-        composable<Route.Watched> {}
+        composable<Route.Watched> {
+            WatchedScreenRoot(onTitleClick = { navController.navigate(Route.TitleDetail(it)) })
+        }
         composable<Route.Profile> {}
         composable<Route.Library> { entry ->
             val route = entry.toRoute<Route.Library>()
