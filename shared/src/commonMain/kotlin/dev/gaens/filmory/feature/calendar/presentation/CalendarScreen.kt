@@ -26,7 +26,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.layer.GraphicsLayer
@@ -200,7 +202,13 @@ private fun MonthGrid(state: CalendarState, onAction: (CalendarAction) -> Unit, 
             .softShadow(GridShape)
             .clip(GridShape)
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(start = 6.dp, end = 6.dp, bottom = 8.dp),
+            .then(
+                if (settings.showVerticalBorder) {
+                    Modifier.border(BorderWidth, MaterialTheme.colorScheme.outlineVariant, GridShape)
+                } else {
+                    Modifier
+                },
+            ),
     ) {
         Row {
             weekDays(settings.weekStart).forEach { dayOfWeek ->
@@ -213,10 +221,13 @@ private fun MonthGrid(state: CalendarState, onAction: (CalendarAction) -> Unit, 
                 )
             }
         }
-        calendar.weeks.forEach { week ->
+        val borderColor = MaterialTheme.colorScheme.outlineVariant
+        calendar.weeks.forEachIndexed { weekIndex, week ->
             Row {
-                week.forEach { day ->
-                    Box(Modifier.weight(1f).height(DayHeight)) {
+                week.forEachIndexed { dayIndex, day ->
+                    val showEnd = settings.showVerticalBorder && dayIndex < week.lastIndex
+                    val showBottom = settings.showVerticalBorder && weekIndex < calendar.weeks.lastIndex
+                    Box(Modifier.weight(1f).height(DayHeight).innerBorders(borderColor, showEnd, showBottom)) {
                         if (day != null) DayCell(day, day.date == state.today, settings, onAction)
                     }
                 }
@@ -226,6 +237,14 @@ private fun MonthGrid(state: CalendarState, onAction: (CalendarAction) -> Unit, 
 }
 
 private val DayHeight = 76.dp
+private val BorderWidth = 0.5.dp
+
+/** Draws only the right and bottom lines, so a line shared by two cells is drawn once at full width. */
+private fun Modifier.innerBorders(color: Color, showEnd: Boolean, showBottom: Boolean): Modifier = drawBehind {
+    val width = BorderWidth.toPx()
+    if (showEnd) drawLine(color, Offset(size.width - width / 2, 0f), Offset(size.width - width / 2, size.height), width)
+    if (showBottom) drawLine(color, Offset(0f, size.height - width / 2), Offset(size.width, size.height - width / 2), width)
+}
 
 private fun weekDays(weekStart: WeekStart): List<DayOfWeek> {
     val first = if (weekStart == WeekStart.MONDAY) DayOfWeek.MONDAY else DayOfWeek.SUNDAY
@@ -234,15 +253,9 @@ private fun weekDays(weekStart: WeekStart): List<DayOfWeek> {
 
 @Composable
 private fun DayCell(day: CalendarDay, isToday: Boolean, settings: CalendarSettings, onAction: (CalendarAction) -> Unit) {
-    val border = if (settings.showVerticalBorder) {
-        Modifier.border(0.5.dp, MaterialTheme.colorScheme.outlineVariant)
-    } else {
-        Modifier
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .then(border)
             .clickable { onAction(CalendarAction.OnDayClick(day.date)) }
             .padding(top = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
