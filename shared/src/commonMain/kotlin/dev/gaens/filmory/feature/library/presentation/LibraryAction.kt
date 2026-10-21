@@ -11,6 +11,7 @@ sealed interface LibraryAction {
     data object OnAddTitleClick : LibraryAction
     data class OnStatusFilterChange(val status: TitleStatus?) : LibraryAction
     data class OnTypeFilterClick(val type: TitleType) : LibraryAction
+    data class OnCollectionFilterChange(val collectionId: String?) : LibraryAction
     data class OnSortChange(val sort: LibrarySort) : LibraryAction
     data object OnSearchClick : LibraryAction
     data class OnSearchTextChange(val text: String) : LibraryAction

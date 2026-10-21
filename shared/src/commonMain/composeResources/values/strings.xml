@@ -92,6 +92,9 @@
     <string name="library_sort_name">Name</string>
     <string name="library_sort_rating">Rating</string>
     <string name="library_all_statuses">All statuses</string>
+    <string name="library_collection_all">Collection: All</string>
+    <string name="library_collection_filter">Collection: %1$s</string>
+    <string name="library_all_collections">All collections</string>
     <string name="library_search_hint">Search titles</string>
     <string name="library_settings">Library settings</string>
     <string name="library_settings_title">Display</string>
@@ -339,6 +342,7 @@
     <string name="notes_empty">No notes match.</string>
     <string name="notes_pick_title">Add a note to</string>
     <string name="notes_pick_title_empty">Add a title to your library first.</string>
+    <string name="notes_pick_title_no_match">No titles match.</string>
 
     <!-- Note editor -->
     <string name="note_editor_add">Add note</string>

@@ -17,15 +17,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.BackHandler
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,32 +42,28 @@ import dev.gaens.filmory.core.presentation.designsystem.components.TitleGridCell
 import dev.gaens.filmory.core.presentation.designsystem.components.TitleListRow
 import dev.gaens.filmory.core.presentation.designsystem.rise
 import dev.gaens.filmory.core.presentation.ui.label
+import dev.gaens.filmory.feature.library.presentation.components.CollectionFilterChip
+import dev.gaens.filmory.feature.library.presentation.components.StatusFilterChip
+import dev.gaens.filmory.feature.library.presentation.components.TitleSearchField
+import dev.gaens.filmory.feature.library.presentation.components.TypeFilterChips
 import dev.gaens.filmory.feature.settings.domain.LibraryLayout
 import dev.gaens.filmory.feature.settings.domain.LibrarySort
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
 import dev.gaens.filmory.resources.Res
-import dev.gaens.filmory.resources.action_close
 import dev.gaens.filmory.resources.action_search
-import dev.gaens.filmory.resources.ic_close
 import dev.gaens.filmory.resources.ic_search
 import dev.gaens.filmory.resources.ic_tune
 import dev.gaens.filmory.resources.library_add_title
-import dev.gaens.filmory.resources.library_all_statuses
 import dev.gaens.filmory.resources.library_dropped_title
 import dev.gaens.filmory.resources.library_empty
-import dev.gaens.filmory.resources.library_movies
 import dev.gaens.filmory.resources.library_on_hold_title
-import dev.gaens.filmory.resources.library_search_hint
-import dev.gaens.filmory.resources.library_series
 import dev.gaens.filmory.resources.library_settings
 import dev.gaens.filmory.resources.library_sort
 import dev.gaens.filmory.resources.library_sort_added
 import dev.gaens.filmory.resources.library_sort_name
 import dev.gaens.filmory.resources.library_sort_rating
 import dev.gaens.filmory.resources.library_sort_updated
-import dev.gaens.filmory.resources.library_status_all
-import dev.gaens.filmory.resources.library_status_filter
 import dev.gaens.filmory.resources.library_title
 import dev.gaens.filmory.resources.library_wishlist_title
 import dev.gaens.filmory.resources.title_count
@@ -225,36 +217,26 @@ private fun RowScope.LibraryListActions(onAction: (LibraryAction) -> Unit) {
 @Composable
 private fun LibrarySearchAndFilters(state: LibraryState, onAction: (LibraryAction) -> Unit) {
     if (state.isSearchOpen) {
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
         // Back closes the search first, then leaves the screen.
         BackHandler { onAction(LibraryAction.OnSearchClick) }
-        OutlinedTextField(
-            value = state.searchText,
-            onValueChange = { onAction(LibraryAction.OnSearchTextChange(it)) },
-            placeholder = { Text(stringResource(Res.string.library_search_hint)) },
-            trailingIcon = {
-                FilmoryIconButton(Res.drawable.ic_close, stringResource(Res.string.action_close), {
-                    onAction(LibraryAction.OnSearchClick)
-                })
-            },
-            singleLine = true,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = ScreenPadding, vertical = 8.dp).focusRequester(focusRequester),
+        TitleSearchField(
+            text = state.searchText,
+            onTextChange = { onAction(LibraryAction.OnSearchTextChange(it)) },
+            onClear = { onAction(LibraryAction.OnSearchClick) },
+            requestFocus = true,
+            modifier = Modifier.padding(horizontal = ScreenPadding, vertical = 8.dp),
         )
     }
     ChipRow(Modifier.padding(top = 12.dp, bottom = 12.dp).rise(2)) {
-        if (state.canFilterStatus) StatusFilterChip(state.statusFilter, onAction)
-        FilmoryChip(
-            label = stringResource(Res.string.library_movies),
-            selected = state.typeFilter == TitleType.MOVIE,
-            onClick = { onAction(LibraryAction.OnTypeFilterClick(TitleType.MOVIE)) },
-        )
-        FilmoryChip(
-            label = stringResource(Res.string.library_series),
-            selected = state.typeFilter == TitleType.SERIES,
-            onClick = { onAction(LibraryAction.OnTypeFilterClick(TitleType.SERIES)) },
-        )
+        if (state.canFilterStatus) {
+            StatusFilterChip(state.statusFilter) { onAction(LibraryAction.OnStatusFilterChange(it)) }
+        }
+        TypeFilterChips(state.typeFilter) { onAction(LibraryAction.OnTypeFilterClick(it)) }
+        if (state.canFilterCollection) {
+            CollectionFilterChip(state.collections, state.collectionFilter) {
+                onAction(LibraryAction.OnCollectionFilterChange(it))
+            }
+        }
         SortChip(state.settings.sort, onAction)
     }
 }
@@ -267,40 +249,6 @@ private fun LibraryState.headline(): String = when (preset) {
     LibraryPreset.DROPPED -> stringResource(Res.string.library_dropped_title)
     // A collection brings its own header, so this one is never shown for it.
     LibraryPreset.COLLECTION -> ""
-}
-
-@Composable
-private fun StatusFilterChip(selected: TitleStatus?, onAction: (LibraryAction) -> Unit) {
-    var isMenuOpen by remember { mutableStateOf(false) }
-    Box {
-        FilmoryChip(
-            label = if (selected == null) {
-                stringResource(Res.string.library_status_all)
-            } else {
-                stringResource(Res.string.library_status_filter, selected.label())
-            },
-            selected = true,
-            onClick = { isMenuOpen = true },
-        )
-        DropdownMenu(expanded = isMenuOpen, onDismissRequest = { isMenuOpen = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.library_all_statuses)) },
-                onClick = {
-                    isMenuOpen = false
-                    onAction(LibraryAction.OnStatusFilterChange(null))
-                },
-            )
-            TitleStatus.entries.forEach { status ->
-                DropdownMenuItem(
-                    text = { Text(status.label()) },
-                    onClick = {
-                        isMenuOpen = false
-                        onAction(LibraryAction.OnStatusFilterChange(status))
-                    },
-                )
-            }
-        }
-    }
 }
 
 @Composable

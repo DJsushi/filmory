@@ -3,9 +3,10 @@ package dev.gaens.filmory.feature.library.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
+import dev.gaens.filmory.feature.collection.domain.inDisplayOrder
 import dev.gaens.filmory.feature.library.domain.BuildLibrary
-import dev.gaens.filmory.feature.library.domain.LibraryEntry
 import dev.gaens.filmory.feature.library.domain.LibraryQuery
+import dev.gaens.filmory.feature.library.presentation.components.CollectionOptionUi
 import dev.gaens.filmory.feature.settings.domain.LibrarySettings
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import dev.gaens.filmory.feature.title.domain.TitleRepository
@@ -52,6 +53,7 @@ class LibraryViewModel(
             is LibraryAction.OnTypeFilterClick -> _state.update {
                 it.copy(typeFilter = if (it.typeFilter == action.type) null else action.type)
             }
+            is LibraryAction.OnCollectionFilterChange -> _state.update { it.copy(collectionFilter = action.collectionId) }
             is LibraryAction.OnSortChange -> updateSettings { it.copy(sort = action.sort) }
             LibraryAction.OnSearchClick -> _state.update { it.copy(isSearchOpen = !it.isSearchOpen, searchText = "") }
             is LibraryAction.OnSearchTextChange -> _state.update { it.copy(searchText = action.text) }
@@ -63,27 +65,38 @@ class LibraryViewModel(
     }
 
     private fun observeLibrary() {
-        val collection = collectionRepository.observeCollections().map { list -> list.find { it.id == collectionId } }
-        val filters = _state.map { Filters(it.statusFilter, it.typeFilter, it.searchText) }.distinctUntilChanged()
+        val filters = _state
+            .map { Filters(it.statusFilter, it.typeFilter, it.collectionFilter, it.searchText) }
+            .distinctUntilChanged()
         combine(
             titleRepository.observeTitles(),
             watchingRepository.observeAllWatchings(),
-            collection,
+            collectionRepository.observeCollections(),
             settingsRepository.observeSettings(),
             filters,
-        ) { titles, watchings, collection, settings, filters ->
+        ) { titles, watchings, collections, settings, filters ->
+            // A collection screen is its own collection; a deleted collection no longer filters anything.
+            val activeCollectionId = if (preset == LibraryPreset.COLLECTION) {
+                collectionId
+            } else {
+                filters.collectionId?.takeIf { id -> collections.any { it.id == id } }
+            }
             val query = LibraryQuery(
                 status = presetStatus() ?: filters.status,
                 type = filters.type,
                 onlyWishlisted = preset == LibraryPreset.WISHLIST,
-                onlyTitleIds = if (preset == LibraryPreset.COLLECTION) collection?.titleIds.orEmpty().toSet() else null,
+                onlyTitleIds = activeCollectionId?.let { id -> collections.find { it.id == id }?.titleIds.orEmpty().toSet() },
                 includeWishlist = settings.library.includeWishlist,
                 searchText = filters.searchText,
                 sort = settings.library.sort,
             )
             val items = buildLibrary(titles, watchings, query).map { it.toUi() }
             _state.update {
-                it.copy(items = items, settings = settings.library)
+                it.copy(
+                    items = items,
+                    settings = settings.library,
+                    collections = collections.inDisplayOrder().map { collection -> CollectionOptionUi(collection.id, collection.name) },
+                )
             }
         }.launchIn(viewModelScope)
     }
@@ -98,15 +111,10 @@ class LibraryViewModel(
         viewModelScope.launch { settingsRepository.update { it.copy(library = transform(it.library)) } }
     }
 
-    private data class Filters(val status: TitleStatus?, val type: TitleType?, val searchText: String)
+    private data class Filters(
+        val status: TitleStatus?,
+        val type: TitleType?,
+        val collectionId: String?,
+        val searchText: String,
+    )
 }
-
-private fun LibraryEntry.toUi() = LibraryItemUi(
-    id = title.id,
-    name = title.name,
-    posterUrl = title.posterUrl,
-    type = title.type,
-    year = title.year,
-    status = title.status,
-    stars = rating?.stars,
-)

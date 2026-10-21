@@ -3,6 +3,7 @@ package dev.gaens.filmory.feature.library.presentation
 import app.cash.turbine.test
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
 import dev.gaens.filmory.feature.library.domain.BuildLibrary
+import dev.gaens.filmory.feature.library.presentation.components.CollectionOptionUi
 import dev.gaens.filmory.feature.settings.domain.LibrarySort
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
@@ -43,6 +44,20 @@ class LibraryViewModelTest : ViewModelTest() {
     fun `a collection lists its titles`() = runTest {
         viewModel(LibraryPreset.COLLECTION, "c").state.test {
             assertEquals(listOf("show"), expectMostRecentItem().items.map { it.id })
+        }
+    }
+
+    @Test
+    fun `the collection filter narrows the library, and a deleted collection stops filtering`() = runTest {
+        val viewModel = viewModel(LibraryPreset.ALL)
+        viewModel.state.test {
+            assertEquals(listOf(CollectionOptionUi("c", "Mine")), expectMostRecentItem().collections)
+
+            viewModel.onAction(LibraryAction.OnCollectionFilterChange("c"))
+            assertEquals(listOf("show"), expectMostRecentItem().items.map { it.id })
+
+            collections.collections.value = emptyList()
+            assertEquals(3, expectMostRecentItem().items.size)
         }
     }
 
