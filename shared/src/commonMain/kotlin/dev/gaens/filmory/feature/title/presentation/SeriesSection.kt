@@ -1,9 +1,9 @@
 package dev.gaens.filmory.feature.title.presentation
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,11 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -134,13 +132,9 @@ private fun ProgressCard(series: SeriesProgressUi, onAction: (TitleDetailAction)
 
 @Composable
 private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit) {
-    val background by animateColorAsState(
-        if (episode.isCurrent) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
-    )
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(background)
             .defaultMinSize(minHeight = 60.dp)
             .padding(horizontal = 12.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -154,7 +148,12 @@ private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit
         Column(
             modifier = Modifier
                 .weight(1f)
-                .clickable { onAction(TitleDetailAction.OnEpisodeClick(episode.id)) }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    // The marker badge is the feedback; a ripple on the text looks like a stray splash.
+                    indication = null,
+                    onClick = { onAction(TitleDetailAction.OnEpisodeClick(episode.id)) },
+                )
                 .padding(vertical = 6.dp),
         ) {
             Text(
@@ -188,7 +187,14 @@ private fun EpisodeCheck(isChecked: Boolean, label: String, onClick: () -> Unit)
     Box(
         modifier = Modifier
             .size(44.dp)
-            .toggleable(value = isChecked, role = Role.Checkbox, onValueChange = { onClick() }),
+            .toggleable(
+                value = isChecked,
+                interactionSource = remember { MutableInteractionSource() },
+                // The pop-in of the check is the feedback.
+                indication = null,
+                role = Role.Checkbox,
+                onValueChange = { onClick() },
+            ),
         contentAlignment = Alignment.Center,
     ) {
         if (isChecked) {
