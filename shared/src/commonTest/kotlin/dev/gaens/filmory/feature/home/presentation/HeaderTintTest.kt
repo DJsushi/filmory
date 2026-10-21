@@ -1,6 +1,7 @@
 package dev.gaens.filmory.feature.home.presentation
 
 import androidx.compose.ui.graphics.Color
+import dev.gaens.filmory.core.presentation.designsystem.contrastRatio
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

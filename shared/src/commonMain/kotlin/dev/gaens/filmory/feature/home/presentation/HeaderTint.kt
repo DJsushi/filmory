@@ -20,6 +20,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Size as CoilSize
 import dev.gaens.filmory.core.presentation.designsystem.components.posterGradientColors
+import dev.gaens.filmory.core.presentation.designsystem.contrastRatio
 import dev.gaens.filmory.core.presentation.designsystem.forPixelReading
 
 private const val SAMPLE_SIZE = 24
@@ -45,12 +46,6 @@ fun averageColor(pixels: IntArray): Color? {
     if (count == 0) return null
     val divisor = count * 255f
     return Color(red = red / divisor, green = green / divisor, blue = blue / divisor)
-}
-
-/** WCAG contrast ratio between two opaque colors. */
-fun contrastRatio(a: Color, b: Color): Float {
-    val (lighter, darker) = maxOf(a.luminance(), b.luminance()) to minOf(a.luminance(), b.luminance())
-    return (lighter + 0.05f) / (darker + 0.05f)
 }
 
 /**
