@@ -1,5 +1,3 @@
-All the documentation is in /docs. Read it before proceeding.
-
 # Filmory
 
 Android and iOS app (Kotlin Multiplatform), a clone of [Bookmory](https://play.google.com/store/apps/details?id=net.tonysoft.bookmory) (book tracker) for **movies and series**. Local-first: all data lives on the device. Package `dev.gaens.filmory`.
@@ -10,9 +8,15 @@ A clickable mockup (ten screens) is in the "Filmory Mockup" artifact: https://cl
 
 ## Docs
 
-- `docs/FEATURES.md`: product scope and decisions. The source of truth for what to build and what to skip.
-- `docs/IMPLEMENTATION.md`: platform, libraries, data model and technical decisions.
-- `docs/CLEAN_CODE.md`: architecture and code rules (Philipp Lackner style), with the KMP adaptations at the top. Read in full before writing code.
+Do not read all the docs at the start of a session. Read only what the task needs.
+
+- `docs/CODE_MAP.md`: where every feature and package lives. Check it before searching the codebase. For a change inside one feature, read the files under that feature's folder directly and do not start exploration subagents.
+- `docs/FEATURES.md`: product scope and decisions (126 lines). The source of truth for what to build and what to skip. Read it when a task changes behavior or scope.
+- `docs/IMPLEMENTATION.md`: platform, libraries, data model and technical decisions (55 lines). Read it for build, library or data model questions.
+- `docs/CLEAN_CODE.md`: architecture and code rules (Philipp Lackner style), 721 lines, with the KMP adaptations at the top. Read the section you need, not the whole file: sections 5 to 7 for domain, data and presentation code, 9 for Koin, 12 for tests, 14 and 15 when adding a feature. Section headings are in the file.
+- `docs/mockup/`: open only the screen being built.
+
+Keep `docs/CODE_MAP.md` current when a feature or package is added, moved or removed.
 
 ## Decided (do not ask the user again)
 
