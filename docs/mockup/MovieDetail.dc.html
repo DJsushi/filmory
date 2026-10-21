@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Movie detail</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="m3.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="screen">
+<div class="scroll">
+<header class="hero">
+<div class="appbar">
+<a class="iconbtn" href="Library.dc.html" aria-label="Back"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+<span class="grow"></span>
+<a class="iconbtn" href="#" aria-label="Watch later"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></a>
+<a class="iconbtn" href="#" aria-label="Add to wishlist"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a>
+<a class="iconbtn" href="#" aria-label="More"><svg class="icon fill" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></a>
+</div>
+<div class="dhero">
+<div class="poster g2 rise" style="--i:0"><span>Arrival</span></div>
+<div class="dmeta rise" style="--i:1">
+<h1>Arrival</h1>
+<div class="sub">2016 · Sci-fi · 1 h 56 min</div>
+<div class="sub">Directed by Denis Villeneuve</div>
+<div><span class="{{ badgeCls }}">{{ badgeLabel }}</span></div>
+</div>
+</div>
+</header>
+
+<div class="seg-row rise" style="--i:2" role="group" aria-label="Status">
+<sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+<button class="{{ o.cls }}" aria-pressed="{{ o.pressed }}" onClick="{{ o.pick }}">{{ o.label }}</button>
+</sc-for>
+</div>
+
+<p class="desc rise" style="--i:3">A linguist is recruited by the military to communicate with alien lifeforms after twelve mysterious spacecraft land around the world, and finds that understanding them may change how she sees time itself.</p>
+
+<div class="chips rise" style="--i:4">
+<a class="chip" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Favorites</a>
+<a class="chip" href="#">#SciFi</a>
+<a class="chip" href="#">#Slow burn</a>
+<a class="chip" href="#">+ Collection</a>
+</div>
+
+<div class="section"><h2>Watchings</h2><a class="btn-tonal" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add watching</a></div>
+<a class="watch press rise" style="--i:5" href="#">
+<div class="top"><span class="title-md">Watching 2</span><span class="stars r45"><i>★★★★★</i></span></div>
+<span class="sub2">12 Oct 2026 · Finished</span>
+<span class="sub2">Hit harder the second time. The ending reframes everything.</span>
+</a>
+<a class="watch press rise" style="--i:6" href="#">
+<div class="top"><span class="title-md">Watching 1</span><span class="stars r4"><i>★★★★★</i></span></div>
+<span class="sub2">3 Mar 2024 · Finished</span>
+<span class="sub2">Quiet and strange. Loved the sound design.</span>
+</a>
+
+<div class="section"><h2>Notes</h2><span class="sub2">3 notes</span></div>
+<div class="chips" style="padding-top:0">
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All watchings</a>
+<a class="chip" href="#">Watching 2</a>
+<a class="chip" href="#">Watching 1</a>
+</div>
+
+<article class="note rise" style="--i:7;margin-top:12px">
+<div class="note-top"><span class="badge b-type">Scene</span><span class="ts"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>0:24:10</span><span class="wtag">Watching 2</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>The first time the heptapod ink ring appears. The whole theater held its breath.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>2 comments</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><a class="iconbtn" href="#" aria-label="Copy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></a><span class="when">12 Oct 2026</span></div>
+</article>
+<article class="note rise" style="--i:8">
+<div class="note-top"><span class="badge b-type">Thought</span><span class="ts"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>1:31:45</span><span class="wtag">Watching 2</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>Knowing the twist makes every scene with the daughter unbearable in a good way.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Add a comment</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><a class="iconbtn" href="#" aria-label="Copy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></a><span class="when">12 Oct 2026</span></div>
+</article>
+<article class="note rise" style="--i:9">
+<div class="note-top"><span class="badge b-type">Summary</span><span class="wtag">Watching 1</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>Language shapes perception of time. Louise chooses her future knowingly.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>1 comment</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><a class="iconbtn" href="#" aria-label="Copy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></a><span class="when">3 Mar 2024</span></div>
+</article>
+</div>
+
+<a class="fab" href="AddNote.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add note</a>
+
+<nav class="nav" aria-label="Main">
+<a href="Main.dc.html" class="on" aria-current="page"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Home</a>
+<a href="Notes.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM15 20v-4a1 1 0 0 1 1-1h4M8 9h8M8 13h4"/></svg></span>Notes</a>
+<a href="Watched.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span>Watched</a>
+<a href="#"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+state = { status: 'watched' };
+renderVals() {
+const opts = [['wish', 'Not watched'], ['watched', 'Watched'], ['hold', 'On hold'], ['drop', 'Dropped']];
+const badges = { wish: ['b-wish', 'Not watched'], watched: ['b-watched', 'Watched'], hold: ['b-hold', 'On hold'], drop: ['b-drop', 'Dropped'] };
+const cur = this.state.status;
+return {
+options: opts.map(([id, label]) => ({
+label,
+cls: id === cur ? 'seg on' : 'seg',
+pressed: id === cur ? 'true' : 'false',
+pick: () => this.setState({ status: id })
+})),
+badgeCls: 'badge ' + badges[cur][0],
+badgeLabel: badges[cur][1]
+};
+}
+}
+</script>
+</body>
+</html>

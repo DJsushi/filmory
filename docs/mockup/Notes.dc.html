@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="m3.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="screen">
+<div class="scroll">
+<header class="hero">
+<div class="appbar">
+<span class="grow">Filmory</span>
+<a class="iconbtn" href="#" aria-label="Search notes"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></a>
+</div>
+<h1 class="headline rise" style="--i:0;margin-top:8px">Notes</h1>
+<p class="sub rise" style="--i:1">42 notes across 18 titles.</p>
+<div class="tiles" style="padding:16px 0 0">
+<a class="tile press rise" style="--i:2;background:var(--surface)" href="#">
+<div><div class="title-md">Random note</div><div class="sub2">Revisit one</div></div>
+<svg class="icon tile-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h4l10 10h4M3 17h4l3-3M14 10l3-3h4M18 4l3 3-3 3M18 14l3 3-3 3"/></svg>
+</a>
+<a class="tile press rise" style="--i:3;background:var(--surface)" href="#">
+<div><div class="title-md">Favorites</div><div class="sub2">6 notes</div></div>
+<svg class="icon tile-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+</a>
+</div>
+</header>
+
+<div class="chips rise" style="--i:4">
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All</a>
+<a class="chip" href="#">Scene</a>
+<a class="chip" href="#">Summary</a>
+<a class="chip" href="#">Thought</a>
+<a class="chip" href="#">Question</a>
+</div>
+<div class="chips" style="padding-top:0">
+<a class="chip" href="#">All watchings</a>
+<a class="chip" href="#">Sort: Created</a>
+</div>
+
+<article class="note rise" style="--i:5;margin-top:12px">
+<a class="note-title" href="MovieDetail.dc.html"><div class="poster g2"><span></span></div><div><div class="title-md">Arrival</div><div class="sub2">Movie · Watching 2</div></div></a>
+<div class="note-top"><span class="badge b-type">Scene</span><span class="ts"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>0:24:10</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>The first time the heptapod ink ring appears. The whole theater held its breath.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>2 comments</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><a class="iconbtn" href="#" aria-label="Copy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></a><span class="when">12 Oct 2026</span></div>
+</article>
+<article class="note rise" style="--i:6">
+<a class="note-title" href="SeriesDetail.dc.html"><div class="poster g1"><span></span></div><div><div class="title-md">Severance</div><div class="sub2">Series · S2 · E3 · Watching 1</div></div></a>
+<div class="note-top"><span class="badge b-type">Scene</span><span class="ts"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>0:24:10</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>The elevator reveal. I rewound it twice.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>1 comment</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><a class="iconbtn" href="#" aria-label="Copy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></a><span class="when">18 Oct 2026</span></div>
+</article>
+<article class="note rise" style="--i:7">
+<a class="note-title" href="MovieDetail.dc.html"><div class="poster g4"><span></span></div><div><div class="title-md">Past Lives</div><div class="sub2">Movie · Watching 1</div></div></a>
+<div class="note-top"><span class="badge b-type">Question</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>Would Nora have said the same thing if the subway ride had lasted another minute?</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Add a comment</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><a class="iconbtn" href="#" aria-label="Copy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></a><span class="when">2 Sep 2026</span></div>
+</article>
+</div>
+
+<a class="fab" href="AddNote.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add note</a>
+
+<nav class="nav" aria-label="Main">
+<a href="Main.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Home</a>
+<a href="Notes.dc.html" class="on" aria-current="page"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM15 20v-4a1 1 0 0 1 1-1h4M8 9h8M8 13h4"/></svg></span>Notes</a>
+<a href="Watched.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span>Watched</a>
+<a href="#"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

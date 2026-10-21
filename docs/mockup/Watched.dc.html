@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Watched</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="m3.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="screen">
+<div class="scroll">
+<header class="hero">
+<div class="appbar">
+<span class="grow">Filmory</span>
+<a class="iconbtn" href="#" aria-label="Search"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></a>
+<a class="iconbtn" href="#" aria-label="Settings"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></a>
+</div>
+<h1 class="headline rise" style="--i:0;margin-top:8px">Watched</h1>
+<p class="sub rise" style="--i:1">You finished 24 titles. Nice.</p>
+</header>
+
+<div class="chips rise" style="--i:2">
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All</a>
+<a class="chip" href="#">Movies</a>
+<a class="chip" href="#">Series</a>
+<a class="chip" href="#">Sort: Finished</a>
+</div>
+
+<div class="grid" style="padding-top:12px">
+<a class="cell rise" style="--i:3" href="MovieDetail.dc.html">
+<div class="poster g2"><span>Arrival</span></div>
+<span class="nm">Arrival</span><span class="stars sm r45"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:4" href="SeriesDetail.dc.html">
+<div class="poster g3"><span>Succession</span></div>
+<span class="nm">Succession</span><span class="stars sm r5"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:5" href="MovieDetail.dc.html">
+<div class="poster g4"><span>Past Lives</span></div>
+<span class="nm">Past Lives</span><span class="stars sm r5"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:6" href="MovieDetail.dc.html">
+<div class="poster g8"><span>Dune: Part Two</span></div>
+<span class="nm">Dune: Part Two</span><span class="stars sm r4"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:7" href="MovieDetail.dc.html">
+<div class="poster g9"><span>Blade Runner 2049</span></div>
+<span class="nm">Blade Runner 2049</span><span class="stars sm r45"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:8" href="SeriesDetail.dc.html">
+<div class="poster g5"><span>Chernobyl</span></div>
+<span class="nm">Chernobyl</span><span class="stars sm r5"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:9" href="MovieDetail.dc.html">
+<div class="poster g7"><span>Everything Everywhere</span></div>
+<span class="nm">Everything Everywhere</span><span class="stars sm r4"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:10" href="SeriesDetail.dc.html">
+<div class="poster g6"><span>Fleabag</span></div>
+<span class="nm">Fleabag</span><span class="stars sm r45"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:11" href="MovieDetail.dc.html">
+<div class="poster g1"><span>Parasite</span></div>
+<span class="nm">Parasite</span><span class="stars sm r5"><i>★★★★★</i></span>
+</a>
+</div>
+</div>
+
+<nav class="nav" aria-label="Main">
+<a href="Main.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Home</a>
+<a href="Notes.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM15 20v-4a1 1 0 0 1 1-1h4M8 9h8M8 13h4"/></svg></span>Notes</a>
+<a href="Watched.dc.html" class="on" aria-current="page"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span>Watched</a>
+<a href="#"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

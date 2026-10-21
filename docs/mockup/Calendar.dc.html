@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="m3.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="screen">
+<div class="scroll">
+<div class="topbar">
+<div class="appbar">
+<a class="iconbtn" href="Main.dc.html" aria-label="Back"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+<span class="grow"></span>
+<a class="iconbtn" href="#" aria-label="Calendar settings"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></a>
+<a class="iconbtn" href="#" aria-label="Export calendar"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></a>
+</div>
+<h1 class="headline rise" style="--i:0;margin-top:8px">Calendar</h1>
+<p class="sub2 rise" style="--i:1;margin:4px 0 0">What did you watch this month?</p>
+</div>
+
+<div class="chips rise" style="--i:2">
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Finish dates</a>
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Start ~ finish</a>
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Logged dates</a>
+</div>
+
+<div class="month rise" style="--i:3">
+<span class="title-md">October 2026</span>
+<span>
+<a class="iconbtn" href="#" aria-label="Previous month" style="display:inline-grid"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
+<a class="iconbtn" href="#" aria-label="Next month" style="display:inline-grid"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+</span>
+</div>
+
+<div class="cal rise" style="--i:4" role="grid" aria-label="October 2026">
+<div class="dow">Mon</div><div class="dow">Tue</div><div class="dow">Wed</div><div class="dow">Thu</div><div class="dow">Fri</div><div class="dow">Sat</div><div class="dow sun">Sun</div>
+<sc-for list="{{ days }}" as="d" hint-placeholder-count="35">
+<div class="{{ d.cls }}">
+<sc-if value="{{ d.hasRng }}" hint-placeholder-val="{{ false }}"><span class="{{ d.rngCls }}"></span></sc-if>
+<span class="dn">{{ d.n }}</span>
+<sc-if value="{{ d.hasP2 }}" hint-placeholder-val="{{ false }}"><div class="{{ d.p2Cls }}"></div></sc-if>
+<sc-if value="{{ d.hasP }}" hint-placeholder-val="{{ false }}"><div class="{{ d.pCls }}"></div></sc-if>
+<sc-if value="{{ d.hasStars }}" hint-placeholder-val="{{ false }}"><span class="{{ d.starCls }}"><i>★★★★★</i></span></sc-if>
+</div>
+</sc-for>
+</div>
+
+<p class="sub2" style="padding:12px 20px 0;margin:0">Posters mark finish dates. A shaded band is a start to finish span. Two posters on one day are stacked.</p>
+</div>
+
+<nav class="nav" aria-label="Main">
+<a href="Main.dc.html" class="on" aria-current="page"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Home</a>
+<a href="Notes.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM15 20v-4a1 1 0 0 1 1-1h4M8 9h8M8 13h4"/></svg></span>Notes</a>
+<a href="Watched.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span>Watched</a>
+<a href="#"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+// October 2026 starts on a Thursday; weeks start on Monday.
+const lead = 3;
+const events = {
+3: { p: 'mini g4', r: 'r5' },
+5: { rng: 's' },
+6: { rng: 'm' },
+7: { rng: 'e', p: 'mini g1', r: 'r45' },
+9: { p: 'mini g8', p2: 'mini back g2', r: 'r4' },
+12: { p: 'mini g2', r: 'r45' },
+14: { p: 'mini g9', r: 'r45' },
+20: { p: 'mini g3', r: 'r5' },
+25: { p: 'mini g7', r: 'r4' }
+};
+const days = [];
+for (let i = 0; i < lead; i++) days.push({ cls: 'day', n: '', hasRng: false, hasP: false, hasP2: false, hasStars: false });
+for (let n = 1; n <= 31; n++) {
+const e = events[n] || {};
+const col = (lead + n - 1) % 7;
+days.push({
+n,
+cls: 'day' + (col === 6 ? ' sun' : '') + (n === 20 ? ' today' : ''),
+hasRng: !!e.rng,
+rngCls: 'rng' + (e.rng === 's' ? ' s' : e.rng === 'e' ? ' e' : ''),
+hasP: !!e.p, pCls: e.p || '',
+hasP2: !!e.p2, p2Cls: e.p2 || '',
+hasStars: !!e.p, starCls: 'stars sm ' + (e.r || 'r4')
+});
+}
+while (days.length % 7) days.push({ cls: 'day', n: '', hasRng: false, hasP: false, hasP2: false, hasStars: false });
+return { days };
+}
+}
+</script>
+</body>
+</html>

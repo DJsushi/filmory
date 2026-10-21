@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Series detail</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="m3.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="screen">
+<div class="scroll">
+<header class="hero">
+<div class="appbar">
+<a class="iconbtn" href="Library.dc.html" aria-label="Back"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+<span class="grow"></span>
+<a class="iconbtn" href="#" aria-label="Watch later"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></a>
+<a class="iconbtn" href="#" aria-label="Add to wishlist"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a>
+<a class="iconbtn" href="#" aria-label="More"><svg class="icon fill" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></a>
+</div>
+<div class="dhero">
+<div class="poster g1 rise" style="--i:0"><span>Severance</span></div>
+<div class="dmeta rise" style="--i:1">
+<h1>Severance</h1>
+<div class="sub">2022 · Thriller · 2 seasons</div>
+<div class="sub">Created by Dan Erickson</div>
+<div><span class="badge b-watching"><svg class="icon fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Watching</span></div>
+</div>
+</div>
+</header>
+
+<div class="tiles" style="grid-template-columns:1fr;padding-top:20px">
+<div class="tile rise" style="--i:2;min-height:0;gap:12px">
+<div class="label">Currently on</div>
+<div class="title-md">{{ currentLabel }}</div>
+<div class="bar" style="margin-top:0"><i class="{{ progressCls }}"></i></div>
+<div class="sub2">{{ watchedCount }} of 10 episodes checked</div>
+<div><button class="btn-fill" onClick="{{ next }}"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{{ nextLabel }}</button></div>
+</div>
+</div>
+
+<div class="section"><h2>Seasons</h2><a href="#">Mark all</a></div>
+<div class="chips season-chips">
+<a class="chip" href="#">Season 1 · 9/9</a>
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Season 2</a>
+</div>
+<div style="padding-top:8px">
+<sc-for list="{{ episodes }}" as="ep" hint-placeholder-count="10">
+<div class="{{ ep.rowCls }}">
+<button class="{{ ep.checkCls }}" aria-label="{{ ep.checkLabel }}" aria-pressed="{{ ep.pressed }}" onClick="{{ ep.toggle }}"><span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>
+<button class="ep-main" onClick="{{ ep.setHere }}"><span class="t">{{ ep.num }}. {{ ep.title }}</span><span class="sub2">48 min</span></button>
+<sc-if value="{{ ep.here }}" hint-placeholder-val="{{ false }}"><span class="badge b-watching">You are here</span></sc-if>
+</div>
+</sc-for>
+</div>
+
+<div class="section"><h2>Watchings</h2><a class="btn-tonal" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add watching</a></div>
+<a class="watch press" href="#">
+<div class="top"><span class="title-md">Watching 1</span><span class="stars r45"><i>★★★★★</i></span></div>
+<span class="sub2">Started 4 Jan 2025 · Season 1 finished, season 2 in progress</span>
+<span class="sub2">Rewatching with a friend. Pausing after each episode to talk.</span>
+</a>
+
+<div class="section"><h2>Notes</h2><span class="sub2">2 notes</span></div>
+<div class="chips" style="padding-top:0">
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>All episodes</a>
+<a class="chip" href="#">S2 · E3</a>
+<a class="chip" href="#">Series</a>
+</div>
+<article class="note" style="margin-top:12px">
+<div class="note-top"><span class="badge b-type">Scene</span><span class="ts">S2 · E3 · 0:24:10</span><span class="wtag">Watching 1</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>The elevator reveal. I rewound it twice.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>1 comment</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><span class="when">18 Oct 2026</span></div>
+</article>
+<article class="note">
+<div class="note-top"><span class="badge b-type">Thought</span><span class="ts">Series</span><span class="wtag">Watching 1</span></div>
+<a class="note-link" href="NoteDetail.dc.html"><p>The show is about work, but really about who we let ourselves be when no one is watching.</p><span class="cmt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Add a comment</span></a>
+<div class="note-foot"><a class="iconbtn" href="#" aria-label="Favorite"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></a><span class="when">4 Jan 2025</span></div>
+</article>
+</div>
+
+<a class="fab" href="AddNote.dc.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add note</a>
+
+<nav class="nav" aria-label="Main">
+<a href="Main.dc.html" class="on" aria-current="page"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Home</a>
+<a href="Notes.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM15 20v-4a1 1 0 0 1 1-1h4M8 9h8M8 13h4"/></svg></span>Notes</a>
+<a href="Watched.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span>Watched</a>
+<a href="#"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+state = { current: 4, checked: [true, true, true, false, false, false, false, false, false, false] };
+renderVals() {
+const titles = ['Hello, Ms. Cobel', 'Goodbye, Mrs. Selvig', 'Who Is Alive?', "Woe's Hollow", "Trojan's Horse", 'Attila', 'Chikhai Bardo', 'Sweet Vitriol', 'The After Hours', 'Cold Harbor'];
+const { current, checked } = this.state;
+const count = checked.filter(Boolean).length;
+return {
+currentLabel: 'Season 2 · Episode ' + current,
+watchedCount: count,
+progressCls: 'pw' + count,
+nextLabel: current < 10 ? 'Finish E' + current + ' and go to next' : 'Finish E10',
+next: () => {
+const nextChecked = checked.slice();
+nextChecked[current - 1] = true;
+this.setState({ checked: nextChecked, current: Math.min(current + 1, 10) });
+},
+episodes: titles.map((title, i) => {
+const n = i + 1;
+const here = n === current;
+return {
+num: n,
+title,
+here,
+rowCls: here ? 'ep here' : 'ep',
+checkCls: checked[i] ? 'ep-check on' : 'ep-check',
+pressed: checked[i] ? 'true' : 'false',
+checkLabel: 'Episode ' + n + ' watched',
+toggle: () => {
+const c = checked.slice();
+c[i] = !c[i];
+this.setState({ checked: c });
+},
+setHere: () => this.setState({ current: n })
+};
+})
+};
+}
+}
+</script>
+</body>
+</html>

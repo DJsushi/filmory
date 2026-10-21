@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Library</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="m3.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="screen">
+<div class="scroll">
+<div class="topbar">
+<div class="appbar">
+<a class="iconbtn" href="Main.dc.html" aria-label="Back"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+<span class="grow"></span>
+<a class="iconbtn" href="#" aria-label="Search"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></a>
+<a class="iconbtn" href="#" aria-label="Library settings"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></a>
+</div>
+<h1 class="headline rise" style="--i:0;margin-top:8px">My library</h1>
+<p class="sub2 rise" style="--i:1;margin:4px 0 0">128 titles</p>
+</div>
+
+<div class="chips rise" style="--i:2">
+<a class="chip on" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Status: All</a>
+<a class="chip" href="#">Movies</a>
+<a class="chip" href="#">Series</a>
+<a class="chip" href="#">Sort: Updated</a>
+</div>
+
+<div class="grid">
+<a class="cell rise" style="--i:3" href="SeriesDetail.dc.html">
+<div class="poster g1"><span class="mark b-watching"><svg class="icon fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span>Severance</span></div>
+<span class="nm">Severance</span><span class="stars sm r45"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:4" href="MovieDetail.dc.html">
+<div class="poster g2"><span class="mark b-watched"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Arrival</span></div>
+<span class="nm">Arrival</span><span class="stars sm r45"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:5" href="MovieDetail.dc.html">
+<div class="poster g8"><span class="mark b-watched"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Dune: Part Two</span></div>
+<span class="nm">Dune: Part Two</span><span class="stars sm r4"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:6" href="SeriesDetail.dc.html">
+<div class="poster g6"><span class="mark b-watching"><svg class="icon fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span>The Bear</span></div>
+<span class="nm">The Bear</span><span class="stars sm r35"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:7" href="MovieDetail.dc.html">
+<div class="poster g4"><span class="mark b-watched"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Past Lives</span></div>
+<span class="nm">Past Lives</span><span class="stars sm r5"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:8" href="SeriesDetail.dc.html">
+<div class="poster g7"><span class="mark b-hold"><svg class="icon fill" viewBox="0 0 24 24" aria-hidden="true"><rect x="5.5" y="4" width="5" height="16" rx="1.6"/><rect x="13.5" y="4" width="5" height="16" rx="1.6"/></svg></span><span>Andor</span></div>
+<span class="nm">Andor</span><span class="stars sm r4"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:9" href="SeriesDetail.dc.html">
+<div class="poster g5"><span class="mark b-drop"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 4h11l-2 4 2 4H6"/></svg></span><span>Dark</span></div>
+<span class="nm">Dark</span><span class="stars sm r35"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:10" href="MovieDetail.dc.html">
+<div class="poster g9"><span class="mark b-watched"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Blade Runner 2049</span></div>
+<span class="nm">Blade Runner 2049</span><span class="stars sm r45"><i>★★★★★</i></span>
+</a>
+<a class="cell rise" style="--i:11" href="SeriesDetail.dc.html">
+<div class="poster g3"><span class="mark b-watched"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>Succession</span></div>
+<span class="nm">Succession</span><span class="stars sm r5"><i>★★★★★</i></span>
+</a>
+</div>
+</div>
+
+<a class="fab" href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add title</a>
+
+<nav class="nav" aria-label="Main">
+<a href="Main.dc.html" class="on" aria-current="page"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Home</a>
+<a href="Notes.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v10l-5 5H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM15 20v-4a1 1 0 0 1 1-1h4M8 9h8M8 13h4"/></svg></span>Notes</a>
+<a href="Watched.dc.html"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span>Watched</a>
+<a href="#"><span class="ind"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg></span>Profile</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
