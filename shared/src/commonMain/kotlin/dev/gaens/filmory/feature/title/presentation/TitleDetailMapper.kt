@@ -87,7 +87,12 @@ private fun TitleDetailData.currentSeasonNumber(): Int? {
 
 private fun TitleDetailData.toSeriesProgress(): SeriesProgressUi {
     val watching = currentWatching
-    val checkedIds = checks.filter { it.watchingId == watching?.id }.mapTo(HashSet()) { it.episodeId }
+    val skippedByEpisodeId = checks.filter { it.watchingId == watching?.id }.associate { it.episodeId to it.isSkipped }
+    fun markOf(episodeId: String) = when (skippedByEpisodeId[episodeId]) {
+        null -> EpisodeMark.NOT_WATCHED
+        true -> EpisodeMark.SKIPPED
+        false -> EpisodeMark.WATCHED
+    }
     val allEpisodes = seasons.flatMap { it.episodes }
     val currentId = watching?.currentEpisodeId
     val currentSeason = seasons.find { season -> season.episodes.any { it.id == currentId } }
@@ -95,14 +100,15 @@ private fun TitleDetailData.toSeriesProgress(): SeriesProgressUi {
         currentSeasonNumber = currentSeason?.number,
         currentEpisodeNumber = currentSeason?.episodes?.find { it.id == currentId }?.number,
         isOnLastEpisode = currentId != null && allEpisodes.lastOrNull()?.id == currentId,
-        checkedCount = allEpisodes.count { it.id in checkedIds },
+        watchedCount = allEpisodes.count { markOf(it.id) == EpisodeMark.WATCHED },
+        skippedCount = allEpisodes.count { markOf(it.id) == EpisodeMark.SKIPPED },
         episodeCount = allEpisodes.size,
         seasons = seasons.map { season ->
             SeasonUi(
                 number = season.number,
-                checkedCount = season.episodes.count { it.id in checkedIds },
+                checkedCount = season.episodes.count { markOf(it.id) != EpisodeMark.NOT_WATCHED },
                 episodes = season.episodes.map {
-                    EpisodeUi(it.id, it.number, it.name, it.runtimeMinutes, it.id in checkedIds, it.id == currentId)
+                    EpisodeUi(it.id, it.number, it.name, it.runtimeMinutes, markOf(it.id), it.id == currentId)
                 },
             )
         },

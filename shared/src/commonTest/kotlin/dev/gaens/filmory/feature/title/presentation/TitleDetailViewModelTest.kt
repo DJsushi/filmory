@@ -113,7 +113,50 @@ class TitleDetailViewModelTest : ViewModelTest() {
             val state = expectMostRecentItem()
             assertEquals(TitleStatus.WATCHING, state.title?.status)
             assertEquals(1, state.series?.checkedCount)
-            assertTrue(state.series?.seasons?.first()?.episodes?.single { it.id == "e2" }?.isChecked == true)
+            assertEquals(EpisodeMark.WATCHED, state.series?.seasons?.first()?.episodes?.single { it.id == "e2" }?.mark)
+        }
+    }
+
+    @Test
+    fun `tapping an episode cycles watched, skipped, not watched, and skipped counts as checked`() = runTest {
+        watchings.upsertWatching(aWatching(id = "w"))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            expectMostRecentItem()
+            viewModel.onAction(TitleDetailAction.OnEpisodeCheckClick("e1"))
+            val watched = expectMostRecentItem().series
+            assertEquals(1, watched?.watchedCount)
+            assertEquals(0, watched?.skippedCount)
+
+            viewModel.onAction(TitleDetailAction.OnEpisodeCheckClick("e1"))
+            val skipped = expectMostRecentItem().series
+            assertEquals(0, skipped?.watchedCount)
+            assertEquals(1, skipped?.skippedCount)
+            assertEquals(1, skipped?.checkedCount)
+            assertEquals(1, skipped?.seasons?.first()?.checkedCount)
+            assertEquals(EpisodeMark.SKIPPED, skipped?.seasons?.first()?.episodes?.first()?.mark)
+
+            viewModel.onAction(TitleDetailAction.OnEpisodeCheckClick("e1"))
+            assertEquals(0, expectMostRecentItem().series?.checkedCount)
+        }
+    }
+
+    @Test
+    fun `skipping does not move the marker and marking a season keeps skipped episodes skipped`() = runTest {
+        followTicks()
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            expectMostRecentItem()
+            viewModel.onAction(TitleDetailAction.OnEpisodeCheckClick("e1"))
+            viewModel.onAction(TitleDetailAction.OnEpisodeCheckClick("e1"))
+            expectMostRecentItem()
+            assertEquals("e2", watchings.getWatching("w")?.currentEpisodeId)
+
+            viewModel.onAction(TitleDetailAction.OnMarkSeasonClick)
+            val series = expectMostRecentItem().series
+            assertEquals(1, series?.watchedCount)
+            assertEquals(1, series?.skippedCount)
         }
     }
 

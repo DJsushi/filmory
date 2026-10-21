@@ -60,10 +60,14 @@ data class SeriesProgressUi(
     val currentSeasonNumber: Int?,
     val currentEpisodeNumber: Int?,
     val isOnLastEpisode: Boolean,
-    val checkedCount: Int,
+    val watchedCount: Int,
+    val skippedCount: Int,
     val episodeCount: Int,
     val seasons: List<SeasonUi>,
-)
+) {
+    /** Skipped episodes count as checked, so a series with filler can still be finished. */
+    val checkedCount: Int get() = watchedCount + skippedCount
+}
 
 data class SeasonUi(
     val number: Int,
@@ -76,9 +80,11 @@ data class EpisodeUi(
     val number: Int,
     val name: String?,
     val runtimeMinutes: Int?,
-    val isChecked: Boolean,
+    val mark: EpisodeMark,
     val isCurrent: Boolean,
 )
+
+enum class EpisodeMark { NOT_WATCHED, WATCHED, SKIPPED }
 
 data class EpisodeChipUi(val episodeId: String, val seasonNumber: Int, val episodeNumber: Int)
 

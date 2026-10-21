@@ -218,12 +218,15 @@ class TitleDetailViewModel(
 
     private fun toggleEpisodeCheck(episodeId: String) {
         withActiveWatching { watching ->
-            val isChecked = data.value?.checks?.any { it.watchingId == watching.id && it.episodeId == episodeId } == true
-            if (isChecked) {
-                episodeRepository.uncheckEpisode(watching.id, episodeId)
-            } else {
-                val checked = episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episodeId, clock.now()))
-                if (checked is Result.Error) checked else moveMarker(watching, episodeId)
+            // One tap cycles: not watched, watched, skipped, not watched.
+            val check = data.value?.checks?.find { it.watchingId == watching.id && it.episodeId == episodeId }
+            when {
+                check == null -> {
+                    val checked = episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episodeId, clock.now()))
+                    if (checked is Result.Error) checked else moveMarker(watching, episodeId)
+                }
+                !check.isSkipped -> episodeRepository.setEpisodeSkipped(watching.id, episodeId, true)
+                else -> episodeRepository.uncheckEpisode(watching.id, episodeId)
             }
         }
     }
@@ -243,7 +246,7 @@ class TitleDetailViewModel(
     private fun markSelectedSeason() {
         val season = state.value.series?.seasons?.find { it.number == state.value.selectedSeasonNumber } ?: return
         withActiveWatching { watching ->
-            season.episodes.filterNot { it.isChecked }.forEach { episode ->
+            season.episodes.filter { it.mark == EpisodeMark.NOT_WATCHED }.forEach { episode ->
                 val checked = episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episode.id, clock.now()))
                 if (checked is Result.Error) return@withActiveWatching checked
             }

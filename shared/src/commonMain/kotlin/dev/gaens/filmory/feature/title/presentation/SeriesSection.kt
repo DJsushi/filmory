@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -24,7 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
@@ -41,7 +43,11 @@ import dev.gaens.filmory.core.presentation.designsystem.rise
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.detail_currently_on
 import dev.gaens.filmory.resources.detail_episode_checked
+import dev.gaens.filmory.resources.detail_episode_not_watched
+import dev.gaens.filmory.resources.detail_episode_skipped
 import dev.gaens.filmory.resources.detail_episodes_checked
+import dev.gaens.filmory.resources.detail_episodes_skipped
+import dev.gaens.filmory.resources.detail_episodes_watched
 import dev.gaens.filmory.resources.detail_finish_and_next
 import dev.gaens.filmory.resources.detail_finish_last
 import dev.gaens.filmory.resources.detail_mark_all
@@ -54,6 +60,8 @@ import dev.gaens.filmory.resources.detail_start_watching
 import dev.gaens.filmory.resources.detail_you_are_here
 import dev.gaens.filmory.resources.home_season_episode
 import dev.gaens.filmory.resources.ic_check
+import dev.gaens.filmory.resources.ic_skip
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -109,12 +117,20 @@ private fun ProgressCard(series: SeriesProgressUi, onAction: (TitleDetailAction)
                 },
                 style = MaterialTheme.typography.titleMedium,
             )
-            GrowingProgressBar(if (series.episodeCount == 0) 0f else series.checkedCount.toFloat() / series.episodeCount)
+            val total = series.episodeCount.coerceAtLeast(1).toFloat()
+            GrowingProgressBar(series.watchedCount / total, secondary = series.skippedCount / total)
             Text(
                 text = stringResource(Res.string.detail_episodes_checked, series.checkedCount, series.episodeCount),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Legend(MaterialTheme.colorScheme.primary, stringResource(Res.string.detail_episodes_watched, series.watchedCount))
+                Legend(
+                    MaterialTheme.colorScheme.tertiaryContainer,
+                    stringResource(Res.string.detail_episodes_skipped, series.skippedCount),
+                )
+            }
             Button(onClick = { onAction(TitleDetailAction.OnNextEpisodeClick) }) {
                 Icon(painterResource(Res.drawable.ic_check), null, Modifier.size(18.dp))
                 Text(
@@ -130,6 +146,15 @@ private fun ProgressCard(series: SeriesProgressUi, onAction: (TitleDetailAction)
     }
 }
 
+/** A colour dot with a count, explaining one colour of the progress bar. */
+@Composable
+private fun Legend(color: Color, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Box(Modifier.size(8.dp).background(color, CircleShape))
+        Text(text, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
 @Composable
 private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit) {
     Row(
@@ -141,8 +166,15 @@ private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         EpisodeCheck(
-            isChecked = episode.isChecked,
-            label = stringResource(Res.string.detail_episode_checked, episode.number),
+            mark = episode.mark,
+            label = stringResource(
+                when (episode.mark) {
+                    EpisodeMark.NOT_WATCHED -> Res.string.detail_episode_not_watched
+                    EpisodeMark.WATCHED -> Res.string.detail_episode_checked
+                    EpisodeMark.SKIPPED -> Res.string.detail_episode_skipped
+                },
+                episode.number,
+            ),
             onClick = { onAction(TitleDetailAction.OnEpisodeCheckClick(episode.id)) },
         )
         Column(
@@ -180,35 +212,37 @@ private fun EpisodeRow(episode: EpisodeUi, onAction: (TitleDetailAction) -> Unit
     }
 }
 
-/** The round check of an episode. A new check pops in. */
+/** The round mark of an episode: empty, watched or skipped. A new mark pops in. */
 @Composable
-private fun EpisodeCheck(isChecked: Boolean, label: String, onClick: () -> Unit) {
-    val wasCheckedAtStart = remember { isChecked }
+private fun EpisodeCheck(mark: EpisodeMark, label: String, onClick: () -> Unit) {
+    val markAtStart = remember { mark }
     Box(
         modifier = Modifier
             .size(44.dp)
-            .toggleable(
-                value = isChecked,
+            .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                // The pop-in of the check is the feedback.
+                // The pop-in of the mark is the feedback.
                 indication = null,
                 role = Role.Checkbox,
-                onValueChange = { onClick() },
-            ),
+                onClick = onClick,
+            )
+            .semantics { contentDescription = label },
         contentAlignment = Alignment.Center,
     ) {
-        if (isChecked) {
-            Box(
-                modifier = Modifier
-                    .then(if (wasCheckedAtStart) Modifier else Modifier.popIn())
-                    .size(26.dp)
-                    .background(MaterialTheme.colorScheme.primary, CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(painterResource(Res.drawable.ic_check), label, Modifier.size(16.dp), MaterialTheme.colorScheme.onPrimary)
-            }
-        } else {
-            Box(Modifier.size(26.dp).border(2.dp, MaterialTheme.colorScheme.outline, CircleShape))
+        val colors = MaterialTheme.colorScheme
+        val popIn = if (mark == markAtStart) Modifier else Modifier.popIn()
+        when (mark) {
+            EpisodeMark.NOT_WATCHED -> Box(Modifier.size(26.dp).border(2.dp, colors.outline, CircleShape))
+            EpisodeMark.WATCHED -> MarkedCircle(Res.drawable.ic_check, colors.primary, colors.onPrimary, popIn)
+            EpisodeMark.SKIPPED -> MarkedCircle(Res.drawable.ic_skip, colors.tertiaryContainer, colors.onTertiaryContainer, popIn)
         }
     }
 }
+
+@Composable
+private fun MarkedCircle(icon: DrawableResource, fill: Color, onFill: Color, modifier: Modifier) {
+    Box(modifier.size(26.dp).background(fill, CircleShape), contentAlignment = Alignment.Center) {
+        Icon(painterResource(icon), null, Modifier.size(16.dp), onFill)
+    }
+}
+

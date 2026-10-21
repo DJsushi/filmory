@@ -187,6 +187,10 @@
     <string name="detail_season_episode_short">S%1$d · E%2$d</string>
     <string name="detail_you_are_here">You are here</string>
     <string name="detail_episode_checked">Episode %1$d watched</string>
+    <string name="detail_episode_skipped">Episode %1$d skipped</string>
+    <string name="detail_episode_not_watched">Episode %1$d not watched</string>
+    <string name="detail_episodes_watched">%1$d watched</string>
+    <string name="detail_episodes_skipped">%1$d skipped</string>
     <string name="detail_notes">Notes</string>
     <string name="detail_all_watchings">All watchings</string>
     <string name="detail_all_episodes">All episodes</string>
