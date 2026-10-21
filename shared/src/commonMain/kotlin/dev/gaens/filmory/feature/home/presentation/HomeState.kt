@@ -1,5 +1,6 @@
 package dev.gaens.filmory.feature.home.presentation
 
+import dev.gaens.filmory.feature.collection.presentation.CollectionLook
 import dev.gaens.filmory.feature.settings.domain.HomeBlock
 import dev.gaens.filmory.feature.title.domain.TitleType
 import kotlinx.datetime.LocalDate
@@ -42,4 +43,5 @@ data class CollectionUi(
     val id: String,
     val name: String,
     val titleCount: Int,
+    val look: CollectionLook = CollectionLook(),
 )

@@ -1,6 +1,7 @@
 package dev.gaens.filmory.feature.home.presentation
 
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.collection.presentation.toLook
 import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.episode.domain.Season
 import dev.gaens.filmory.feature.title.domain.Title
@@ -17,14 +18,19 @@ data class HomeData(
     val collections: List<TitleCollection>,
 )
 
-fun HomeState.withData(data: HomeData): HomeState {
+fun HomeState.withData(data: HomeData, resolvePhoto: (relativePath: String) -> String): HomeState {
     val existingIds = data.titles.mapTo(HashSet()) { it.id }
     return copy(
         continueWatching = data.continueWatching.map { it.toUi(data.seasons, data.checks) },
         watchLater = data.titles.watchLaterQueue().map { it.toThumbUi() },
         wishlistCount = data.titles.count { it.isWishlisted },
         collections = data.collections.map { collection ->
-            CollectionUi(collection.id, collection.name, collection.titleIds.count { it in existingIds })
+            CollectionUi(
+                id = collection.id,
+                name = collection.name,
+                titleCount = collection.titleIds.count { it in existingIds },
+                look = collection.toLook(resolvePhoto),
+            )
         },
         onHoldCount = data.titles.count { it.status == TitleStatus.ON_HOLD },
         droppedCount = data.titles.count { it.status == TitleStatus.DROPPED },

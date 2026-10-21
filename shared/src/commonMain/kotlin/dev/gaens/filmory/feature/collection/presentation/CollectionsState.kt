@@ -9,6 +9,7 @@ data class CollectionCardUi(
     val name: String,
     val isDefault: Boolean,
     val titleCount: Int,
+    val look: CollectionLook = CollectionLook(),
 )
 
 sealed interface CollectionsAction {

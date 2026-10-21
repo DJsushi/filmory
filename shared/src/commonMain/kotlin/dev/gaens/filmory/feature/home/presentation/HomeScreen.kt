@@ -77,6 +77,7 @@ import dev.gaens.filmory.core.presentation.designsystem.softShadow
 import dev.gaens.filmory.core.presentation.designsystem.spanParentPadding
 import dev.gaens.filmory.core.presentation.ui.formatMonthYear
 import dev.gaens.filmory.core.presentation.ui.label
+import dev.gaens.filmory.feature.collection.presentation.CollectionCardSurface
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
 import dev.gaens.filmory.feature.settings.domain.HomeBlock
 import dev.gaens.filmory.feature.title.domain.TitleType
@@ -557,22 +558,18 @@ private fun CollectionsSection(
 
 @Composable
 private fun CollectionCard(collection: CollectionUi, isEnabled: Boolean, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(20.dp)
-    Column(
-        modifier = Modifier
-            .size(width = 148.dp, height = 108.dp)
-            .softShadow(shape)
-            .clip(shape)
-            .background(posterGradient(collection.id))
-            .clickable(enabled = isEnabled, onClick = onClick)
-            .padding(12.dp),
-        verticalArrangement = Arrangement.Bottom,
-    ) {
-        Text(collection.name, style = MaterialTheme.typography.titleMedium, color = Color.White, maxLines = 1)
+    CollectionCardSurface(
+        look = collection.look,
+        seed = collection.id,
+        modifier = Modifier.size(width = 148.dp, height = 108.dp),
+        isEnabled = isEnabled,
+        onClick = onClick,
+    ) { contentColor ->
+        Text(collection.name, style = MaterialTheme.typography.titleMedium, color = contentColor, maxLines = 1)
         Text(
             text = pluralStringResource(Res.plurals.title_count, collection.titleCount, collection.titleCount),
             style = MaterialTheme.typography.labelMedium,
-            color = Color.White.copy(alpha = 0.92f),
+            color = contentColor.copy(alpha = 0.92f),
         )
     }
 }

@@ -1,8 +1,11 @@
 package dev.gaens.filmory.feature.collection.presentation.detail
 
+import dev.gaens.filmory.feature.collection.presentation.CollectionLook
+
 data class CollectionDetailState(
     val name: String? = null,
     val isDefault: Boolean = false,
+    val look: CollectionLook = CollectionLook(),
     /** The name is a text field right now. */
     val isEditingName: Boolean = false,
     val isDeleteDialogOpen: Boolean = false,

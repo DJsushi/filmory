@@ -3,6 +3,7 @@ package dev.gaens.filmory.feature.collection.presentation.detail
 import app.cash.turbine.test
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
 import dev.gaens.filmory.testing.FakeCollectionRepository
+import dev.gaens.filmory.testing.FakeNoteImageStorage
 import dev.gaens.filmory.testing.ViewModelTest
 import dev.gaens.filmory.testing.at
 import kotlinx.coroutines.test.runTest
@@ -19,7 +20,7 @@ class CollectionDetailViewModelTest : ViewModelTest() {
         ),
     )
 
-    private fun viewModel(id: String = "c", isNew: Boolean = false) = CollectionDetailViewModel(id, isNew, collections)
+    private fun viewModel(id: String = "c", isNew: Boolean = false) = CollectionDetailViewModel(id, isNew, collections, FakeNoteImageStorage())
 
     @Test
     fun `it shows the collection name and whether it is the default one`() = runTest {

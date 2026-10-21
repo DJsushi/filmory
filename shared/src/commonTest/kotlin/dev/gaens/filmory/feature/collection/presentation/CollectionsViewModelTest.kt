@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import dev.gaens.filmory.feature.collection.domain.CreateCollection
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
 import dev.gaens.filmory.testing.FakeCollectionRepository
+import dev.gaens.filmory.testing.FakeNoteImageStorage
 import dev.gaens.filmory.testing.FakeTitleRepository
 import dev.gaens.filmory.testing.FixedClock
 import dev.gaens.filmory.testing.SequentialIdGenerator
@@ -19,6 +20,7 @@ class CollectionsViewModelTest : ViewModelTest() {
     )
     private val viewModel = CollectionsViewModel(
         collections, FakeTitleRepository(), CreateCollection(collections, SequentialIdGenerator(), FixedClock()),
+        FakeNoteImageStorage(),
     )
 
     @Test

@@ -99,27 +99,23 @@ fun CollectionsScreen(
             }
         }
         itemsIndexed(state.collections, key = { _, it -> it.id }) { index, collection ->
-            Column(
-                modifier = Modifier
-                    .rise(index + 1)
-                    .height(120.dp)
-                    .softShadow(CardShape)
-                    .clip(CardShape)
-                    .background(posterGradient(collection.id))
-                    .clickable { onAction(CollectionsAction.OnCollectionClick(collection.id)) }
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.Bottom,
-            ) {
+            CollectionCardSurface(
+                look = collection.look,
+                seed = collection.id,
+                modifier = Modifier.rise(index + 1).height(120.dp),
+                shape = CardShape,
+                onClick = { onAction(CollectionsAction.OnCollectionClick(collection.id)) },
+            ) { contentColor ->
                 Text(
                     text = collection.name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                    color = contentColor,
                     maxLines = 2,
                 )
                 Text(
                     text = pluralStringResource(Res.plurals.title_count, collection.titleCount, collection.titleCount),
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color.White.copy(alpha = 0.92f),
+                    color = contentColor.copy(alpha = 0.92f),
                 )
             }
         }

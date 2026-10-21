@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gaens.filmory.core.domain.util.onSuccess
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
+import dev.gaens.filmory.feature.collection.presentation.toLook
+import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,6 +27,7 @@ class CollectionDetailViewModel(
     private val collectionId: String,
     isNew: Boolean,
     private val collectionRepository: CollectionRepository,
+    private val imageStorage: NoteImageStorage,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -57,7 +60,15 @@ class CollectionDetailViewModel(
         collectionRepository.observeCollections()
             .map { list -> list.find { it.id == collectionId } }
             .onEach { collection ->
-                if (collection != null) _state.update { it.copy(name = collection.name, isDefault = collection.isDefault) }
+                if (collection != null) {
+                    _state.update {
+                        it.copy(
+                            name = collection.name,
+                            isDefault = collection.isDefault,
+                            look = collection.toLook(imageStorage::resolve),
+                        )
+                    }
+                }
             }
             .launchIn(viewModelScope)
     }

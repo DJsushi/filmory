@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dev.gaens.filmory.core.domain.util.onSuccess
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.collection.domain.CreateCollection
+import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import dev.gaens.filmory.feature.title.domain.TitleRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,7 @@ class CollectionsViewModel(
     private val collectionRepository: CollectionRepository,
     private val titleRepository: TitleRepository,
     private val createCollection: CreateCollection,
+    private val imageStorage: NoteImageStorage,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -54,6 +56,7 @@ class CollectionsViewModel(
                     name = collection.name,
                     isDefault = collection.isDefault,
                     titleCount = collection.titleIds.count { it in titleIds },
+                    look = collection.toLook(imageStorage::resolve),
                 )
             }
             _state.update { it.copy(collections = cards) }

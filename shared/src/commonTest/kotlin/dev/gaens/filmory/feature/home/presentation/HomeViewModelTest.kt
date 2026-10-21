@@ -12,6 +12,7 @@ import dev.gaens.filmory.feature.title.domain.ToggleWatchLater
 import dev.gaens.filmory.feature.watching.domain.FindContinueWatching
 import dev.gaens.filmory.testing.FakeCollectionRepository
 import dev.gaens.filmory.testing.FakeEpisodeRepository
+import dev.gaens.filmory.testing.FakeNoteImageStorage
 import dev.gaens.filmory.testing.FakeSettingsRepository
 import dev.gaens.filmory.testing.FakeTitleRepository
 import dev.gaens.filmory.testing.FakeWatchingRepository
@@ -47,7 +48,7 @@ class HomeViewModelTest : ViewModelTest() {
 
     private fun viewModel() = HomeViewModel(
         titles, watchings, episodes, collections, FindContinueWatching(),
-        ToggleWatchLater(titles), MoveWatchLater(titles), settings, FixedClock(),
+        ToggleWatchLater(titles), MoveWatchLater(titles), settings, FakeNoteImageStorage(), FixedClock(),
     )
 
     @Test

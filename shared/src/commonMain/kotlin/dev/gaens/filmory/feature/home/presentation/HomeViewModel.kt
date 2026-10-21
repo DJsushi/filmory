@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
+import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import dev.gaens.filmory.feature.settings.domain.HomeBlock
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import dev.gaens.filmory.feature.title.domain.MoveWatchLater
@@ -37,6 +38,7 @@ class HomeViewModel(
     private val toggleWatchLater: ToggleWatchLater,
     private val moveWatchLater: MoveWatchLater,
     private val settingsRepository: SettingsRepository,
+    private val imageStorage: NoteImageStorage,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -117,7 +119,7 @@ class HomeViewModel(
             collectionRepository.observeCollections(),
             ::HomeData,
         )
-            .onEach { data -> _state.update { it.withData(data) } }
+            .onEach { data -> _state.update { it.withData(data, imageStorage::resolve) } }
             .launchIn(viewModelScope)
     }
 }
