@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
+import dev.gaens.filmory.core.presentation.richtext.RichTextField
 import dev.gaens.filmory.core.presentation.designsystem.components.ConfirmDialog
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmorySegmentedRow
 import dev.gaens.filmory.core.presentation.designsystem.components.RatingInputRow
@@ -103,12 +104,11 @@ fun WatchingEditorSheet(draft: Watching, error: UiText?, onAction: (TitleDetailA
                 contentDescription = stringResource(Res.string.watching_rating_description, (halfStars / 2f).toString()),
                 clearLabel = stringResource(Res.string.watching_clear_rating),
             )
-            OutlinedTextField(
+            RichTextField(
                 value = draft.review.orEmpty(),
                 onValueChange = { onAction(TitleDetailAction.OnDraftReviewChange(it)) },
-                label = { Text(stringResource(Res.string.watching_review)) },
-                minLines = 3,
-                modifier = Modifier.fillMaxWidth(),
+                editorTitle = stringResource(Res.string.watching_review),
+                label = stringResource(Res.string.watching_review),
             )
             if (error != null) {
                 Text(error.asString(), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)

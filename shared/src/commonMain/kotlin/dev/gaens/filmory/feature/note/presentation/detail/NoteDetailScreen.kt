@@ -41,8 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import dev.gaens.filmory.core.presentation.richtext.MarkdownText
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
+import dev.gaens.filmory.core.presentation.richtext.RichTextField
 import dev.gaens.filmory.core.presentation.designsystem.components.ConfirmDialog
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryAppBar
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryCard
@@ -173,7 +175,7 @@ fun NoteDetailScreen(
                         TypeBadge(note.type.label())
                         note.positionLabel()?.let { PositionChip(it) }
                     }
-                    Text(note.text, style = BigText, modifier = Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 16.dp).rise(2))
+                    MarkdownText(note.text, style = BigText, modifier = Modifier.padding(start = ScreenPadding, end = ScreenPadding, top = 16.dp).rise(2))
                     if (state.imageUrl != null) {
                         AsyncImage(
                             model = state.imageUrl,
@@ -216,7 +218,7 @@ fun NoteDetailScreen(
                 FilmoryCard(Modifier.fillMaxWidth().padding(start = ScreenPadding, end = ScreenPadding, bottom = 12.dp)) {
                     Row(Modifier.padding(start = 16.dp, top = 6.dp, bottom = 6.dp), verticalAlignment = Alignment.Top) {
                         Column(Modifier.weight(1f).padding(top = 8.dp)) {
-                            Text(comment.text, style = MaterialTheme.typography.bodyLarge)
+                            MarkdownText(comment.text, style = MaterialTheme.typography.bodyLarge)
                             Text(
                                 text = comment.createdAt.formatDateTime(),
                                 style = MaterialTheme.typography.bodyMedium,
@@ -256,11 +258,13 @@ private fun Composer(draft: String, onAction: (NoteDetailAction) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        OutlinedTextField(
+        RichTextField(
             value = draft,
             onValueChange = { onAction(NoteDetailAction.OnDraftChange(it)) },
-            placeholder = { Text(stringResource(Res.string.note_add_comment)) },
+            editorTitle = stringResource(Res.string.note_add_comment),
+            placeholder = stringResource(Res.string.note_add_comment),
             shape = RoundedCornerShape(24.dp),
+            minLines = 1,
             maxLines = 4,
             modifier = Modifier.weight(1f),
         )

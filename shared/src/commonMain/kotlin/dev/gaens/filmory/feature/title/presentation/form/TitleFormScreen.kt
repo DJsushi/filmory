@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
+import dev.gaens.filmory.core.presentation.richtext.RichTextField
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryAppBar
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryIconButton
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmorySegmentedRow
@@ -170,13 +171,12 @@ fun TitleFormScreen(
                     isNumber = true,
                 ) { onAction(TitleFormAction.OnRuntimeChange(it)) }
             }
-            OutlinedTextField(
+            RichTextField(
                 value = state.overview,
                 onValueChange = { onAction(TitleFormAction.OnOverviewChange(it)) },
-                label = { Text(stringResource(Res.string.title_form_overview)) },
-                minLines = 3,
+                editorTitle = stringResource(Res.string.title_form_overview),
+                label = stringResource(Res.string.title_form_overview),
                 shape = MaterialTheme.shapes.small,
-                modifier = Modifier.fillMaxWidth(),
             )
             if (state.type == TitleType.SERIES) SeasonsEditor(state, onAction)
         }

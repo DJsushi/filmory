@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.gaens.filmory.core.presentation.richtext.MarkdownText
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
 import dev.gaens.filmory.core.presentation.designsystem.components.ChipRow
@@ -288,7 +289,7 @@ private fun StatusSelector(title: TitleDetailUi, onAction: (TitleDetailAction) -
 @Composable
 private fun Overview(overview: String?, isExpanded: Boolean, onAction: (TitleDetailAction) -> Unit) {
     if (overview.isNullOrBlank()) return
-    Text(
+    MarkdownText(
         text = overview,
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -360,7 +361,7 @@ private fun WatchingCard(watching: WatchingUi, onClick: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (watching.review != null) {
-                Text(watching.review, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                MarkdownText(watching.review, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

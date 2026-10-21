@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.gaens.filmory.core.presentation.richtext.MarkdownText
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryCard
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryIconButton
@@ -84,7 +85,7 @@ fun NoteCard(
             Column(
                 modifier = Modifier.fillMaxWidth().clickable(onClick = onClick).padding(top = 10.dp, end = 8.dp),
             ) {
-                Text(note.text, style = MaterialTheme.typography.bodyLarge, maxLines = 8, overflow = TextOverflow.Ellipsis)
+                MarkdownText(note.text, style = MaterialTheme.typography.bodyLarge, maxLines = 8, overflow = TextOverflow.Ellipsis)
                 Row(
                     modifier = Modifier.padding(top = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,

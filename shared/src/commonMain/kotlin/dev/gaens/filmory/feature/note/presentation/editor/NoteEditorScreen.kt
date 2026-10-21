@@ -51,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.ScreenPadding
+import dev.gaens.filmory.core.presentation.richtext.RichTextField
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryAppBar
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryChip
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryIconButton
@@ -159,13 +160,13 @@ fun NoteEditorScreen(
             TypeField(state.noteType, onAction)
             if (state.titleType == TitleType.SERIES && state.seasons.isNotEmpty()) EpisodeFields(state, onAction)
             TimestampField(state, onAction)
-            OutlinedTextField(
+            RichTextField(
                 value = state.text,
                 onValueChange = { onAction(NoteEditorAction.OnTextChange(it)) },
-                label = { Text(stringResource(Res.string.note_editor_text)) },
+                editorTitle = stringResource(Res.string.note_editor_text),
+                label = stringResource(Res.string.note_editor_text),
                 minLines = 5,
                 shape = MaterialTheme.shapes.small,
-                modifier = Modifier.fillMaxWidth(),
             )
             ImageAndDate(state, onAction)
         }
