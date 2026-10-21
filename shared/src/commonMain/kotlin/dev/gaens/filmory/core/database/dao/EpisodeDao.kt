@@ -30,6 +30,12 @@ abstract class EpisodeDao {
     )
     abstract suspend fun getEpisodes(titleId: String): List<EpisodeEntity>
 
+    @Query("SELECT * FROM seasons ORDER BY titleId, number")
+    abstract fun observeAllSeasons(): Flow<List<SeasonEntity>>
+
+    @Query("SELECT * FROM episodes ORDER BY number")
+    abstract fun observeAllEpisodes(): Flow<List<EpisodeEntity>>
+
     @Query("DELETE FROM seasons WHERE titleId = :titleId")
     abstract suspend fun deleteSeasons(titleId: String)
 

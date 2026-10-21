@@ -8,6 +8,7 @@ interface EpisodeRepository {
     /** Seasons ordered by number, each with its episodes ordered by number. */
     fun observeSeasons(titleId: String): Flow<List<Season>>
     suspend fun getSeasons(titleId: String): List<Season>
+    fun observeAllSeasons(): Flow<List<Season>>
 
     /** Replaces a series' whole structure. Checks on removed episodes are removed too. */
     suspend fun replaceSeasons(titleId: String, seasons: List<Season>): EmptyResult<DataError.Local>

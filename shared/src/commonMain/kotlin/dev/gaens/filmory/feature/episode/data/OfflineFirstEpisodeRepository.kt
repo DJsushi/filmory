@@ -30,6 +30,9 @@ class OfflineFirstEpisodeRepository(
             )
         }
 
+    override fun observeAllSeasons(): Flow<List<Season>> =
+        combine(episodeDao.observeAllSeasons(), episodeDao.observeAllEpisodes(), ::toSeasons)
+
     override fun observeChecks(watchingId: String): Flow<List<EpisodeCheck>> =
         episodeDao.observeChecks(watchingId).map { list -> list.map { it.toEpisodeCheck() } }
 

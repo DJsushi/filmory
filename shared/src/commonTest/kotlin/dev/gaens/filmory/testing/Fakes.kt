@@ -3,6 +3,8 @@ package dev.gaens.filmory.testing
 import dev.gaens.filmory.core.domain.util.DataError
 import dev.gaens.filmory.core.domain.util.EmptyResult
 import dev.gaens.filmory.core.domain.util.Result
+import dev.gaens.filmory.feature.collection.domain.CollectionRepository
+import dev.gaens.filmory.feature.collection.domain.TitleCollection
 import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
 import dev.gaens.filmory.feature.episode.domain.Season
@@ -67,6 +69,7 @@ class FakeEpisodeRepository(seasons: List<Season> = emptyList()) : EpisodeReposi
         this.seasons.update { list -> list.filterNot { it.titleId == titleId } + seasons }
         return Saved
     }
+    override fun observeAllSeasons(): Flow<List<Season>> = seasons
     override fun observeChecks(watchingId: String): Flow<List<EpisodeCheck>> =
         checks.map { list -> list.filter { it.watchingId == watchingId } }
     override fun observeAllChecks(): Flow<List<EpisodeCheck>> = checks
@@ -106,6 +109,38 @@ class FakeNoteRepository(notes: List<Note> = emptyList()) : NoteRepository {
     }
     override suspend fun deleteComment(id: String): EmptyResult<DataError.Local> {
         comments.update { list -> list.filterNot { it.id == id } }
+        return Saved
+    }
+}
+
+class FakeCollectionRepository(collections: List<TitleCollection> = emptyList()) :
+    CollectionRepository {
+    val collections = MutableStateFlow(collections)
+
+    override fun observeCollections(): Flow<List<TitleCollection>> = collections
+    override suspend fun upsertCollection(
+        collection: TitleCollection,
+    ): EmptyResult<DataError.Local> {
+        collections.update { list ->
+            val existing = list.find { it.id == collection.id }
+            list.filterNot { it.id == collection.id } + collection.copy(titleIds = existing?.titleIds.orEmpty())
+        }
+        return Saved
+    }
+    override suspend fun deleteCollection(id: String): EmptyResult<DataError.Local> {
+        collections.update { list -> list.filterNot { it.id == id } }
+        return Saved
+    }
+    override suspend fun addTitle(collectionId: String, titleId: String): EmptyResult<DataError.Local> {
+        collections.update { list ->
+            list.map { if (it.id == collectionId && titleId !in it.titleIds) it.copy(titleIds = it.titleIds + titleId) else it }
+        }
+        return Saved
+    }
+    override suspend fun removeTitle(collectionId: String, titleId: String): EmptyResult<DataError.Local> {
+        collections.update { list ->
+            list.map { if (it.id == collectionId) it.copy(titleIds = it.titleIds - titleId) else it }
+        }
         return Saved
     }
 }
