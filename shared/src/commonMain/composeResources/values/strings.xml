@@ -110,6 +110,13 @@
     <string name="collections_title">Collections</string>
     <string name="collections_add">Add collection</string>
     <string name="collection_new_name">New collection</string>
+    <string name="richtext_expand">Open the full editor</string>
+    <string name="richtext_bold">Bold</string>
+    <string name="richtext_italic">Italic</string>
+    <string name="richtext_strikethrough">Strikethrough</string>
+    <string name="richtext_heading">Heading</string>
+    <string name="richtext_quote">Quote</string>
+    <string name="richtext_bullet">Bullet list</string>
     <string name="collection_picker_edit_title">Edit collections</string>
     <string name="collection_picker_drag">Drag to reorder</string>
     <string name="collection_picker_pin">Pin to the top</string>
