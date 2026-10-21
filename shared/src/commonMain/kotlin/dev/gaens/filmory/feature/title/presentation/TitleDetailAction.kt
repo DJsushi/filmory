@@ -15,7 +15,6 @@ sealed interface TitleDetailAction {
     data class OnStatusChange(val status: TitleStatus) : TitleDetailAction
 
     data object OnCollectionPickerClick : TitleDetailAction
-    data class OnCollectionToggle(val collectionId: String) : TitleDetailAction
 
     data object OnAddWatchingClick : TitleDetailAction
     data class OnWatchingClick(val watchingId: String) : TitleDetailAction

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +44,6 @@ import dev.gaens.filmory.resources.action_cancel
 import dev.gaens.filmory.resources.action_delete
 import dev.gaens.filmory.resources.action_done
 import dev.gaens.filmory.resources.action_save
-import dev.gaens.filmory.resources.detail_collections_title
 import dev.gaens.filmory.resources.watching_clear_date
 import dev.gaens.filmory.resources.watching_clear_rating
 import dev.gaens.filmory.resources.watching_delete
@@ -168,35 +166,6 @@ private fun DateField(label: String, value: Instant?, limits: DateLimits, onChan
             },
         ) {
             DatePicker(pickerState)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CollectionPickerSheet(collections: List<CollectionToggleUi>, onAction: (TitleDetailAction) -> Unit) {
-    ModalBottomSheet(
-        onDismissRequest = { onAction(TitleDetailAction.OnSheetDismiss) },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ) {
-        Column(Modifier.padding(bottom = 32.dp)) {
-            Text(
-                text = stringResource(Res.string.detail_collections_title),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(horizontal = ScreenPadding, vertical = 8.dp),
-            )
-            collections.forEach { collection ->
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(
-                        checked = collection.containsTitle,
-                        onCheckedChange = { onAction(TitleDetailAction.OnCollectionToggle(collection.id)) },
-                    )
-                    Text(collection.name, style = MaterialTheme.typography.bodyLarge)
-                }
-            }
         }
     }
 }

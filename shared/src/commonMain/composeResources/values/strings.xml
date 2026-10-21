@@ -110,6 +110,10 @@
     <string name="collections_title">Collections</string>
     <string name="collections_add">Add collection</string>
     <string name="collection_new_name">New collection</string>
+    <string name="collection_picker_edit_title">Edit collections</string>
+    <string name="collection_picker_drag">Drag to reorder</string>
+    <string name="collection_picker_pin">Pin to the top</string>
+    <string name="collection_picker_unpin">Unpin</string>
     <string name="collection_appearance_title">Icon and color</string>
     <string name="collection_appearance_open">Change icon and color</string>
     <string name="collection_appearance_icon">Icon</string>

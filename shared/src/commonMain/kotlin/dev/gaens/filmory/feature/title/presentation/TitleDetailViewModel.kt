@@ -98,7 +98,6 @@ class TitleDetailViewModel(
             TitleDetailAction.OnOverviewClick -> _state.update { it.copy(isOverviewExpanded = !it.isOverviewExpanded) }
             is TitleDetailAction.OnStatusChange -> changeStatus(action.status)
             TitleDetailAction.OnCollectionPickerClick -> openSheet(TitleDetailSheet.CollectionPicker)
-            is TitleDetailAction.OnCollectionToggle -> toggleCollection(action.collectionId)
             TitleDetailAction.OnAddWatchingClick -> launchReporting { startWatching(titleId) }
             is TitleDetailAction.OnWatchingClick -> editWatching(action.watchingId)
             is TitleDetailAction.OnDraftStateChange -> updateDraft { it.withState(action.state, clock.now()) }
@@ -203,17 +202,6 @@ class TitleDetailViewModel(
             when (val result = deleteTitleWithImages(titleId)) {
                 is Result.Success -> eventChannel.send(TitleDetailEvent.TitleDeleted)
                 is Result.Error -> showMessage(result.error.asUiText())
-            }
-        }
-    }
-
-    private fun toggleCollection(collectionId: String) {
-        val collection = data.value?.collections?.find { it.id == collectionId } ?: return
-        launchReporting {
-            if (titleId in collection.titleIds) {
-                collectionRepository.removeTitle(collectionId, titleId)
-            } else {
-                collectionRepository.addTitle(collectionId, titleId)
             }
         }
     }

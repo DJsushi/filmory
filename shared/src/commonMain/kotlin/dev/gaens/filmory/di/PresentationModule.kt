@@ -2,6 +2,7 @@ package dev.gaens.filmory.di
 
 import dev.gaens.filmory.feature.collection.presentation.CollectionsViewModel
 import dev.gaens.filmory.feature.collection.presentation.detail.CollectionDetailViewModel
+import dev.gaens.filmory.feature.collection.presentation.picker.CollectionPickerViewModel
 import dev.gaens.filmory.feature.home.presentation.HomeViewModel
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
 import dev.gaens.filmory.feature.library.presentation.LibraryViewModel
@@ -26,6 +27,7 @@ val presentationModule = module {
         LibraryViewModel(preset, collectionId, get(), get(), get(), get(), get())
     }
     viewModelOf(::CollectionsViewModel)
+    viewModel { (titleId: String) -> CollectionPickerViewModel(titleId, get(), get(), get()) }
     viewModel { (collectionId: String, isNew: Boolean) -> CollectionDetailViewModel(collectionId, isNew, get(), get(), get()) }
     viewModelOf(::WatchedViewModel)
     viewModelOf(::CalendarViewModel)

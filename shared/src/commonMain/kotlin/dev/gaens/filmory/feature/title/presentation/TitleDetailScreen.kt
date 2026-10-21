@@ -56,6 +56,7 @@ import dev.gaens.filmory.core.presentation.designsystem.rise
 import dev.gaens.filmory.core.presentation.ui.ObserveAsEvents
 import dev.gaens.filmory.core.presentation.ui.formatDate
 import dev.gaens.filmory.core.presentation.ui.label
+import dev.gaens.filmory.feature.collection.presentation.picker.CollectionPickerSheet
 import dev.gaens.filmory.feature.note.presentation.components.NoteCard
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
@@ -447,7 +448,7 @@ private fun TitleDetailSheets(state: TitleDetailState, onAction: (TitleDetailAct
     val dismiss = { onAction(TitleDetailAction.OnSheetDismiss) }
     when (val sheet = state.sheet) {
         is TitleDetailSheet.EditWatching -> WatchingEditorSheet(sheet.draft, sheet.error, onAction)
-        TitleDetailSheet.CollectionPicker -> CollectionPickerSheet(state.collections, onAction)
+        TitleDetailSheet.CollectionPicker -> state.title?.id?.let { CollectionPickerSheet(it, onDismiss = dismiss) }
         TitleDetailSheet.DeleteTitle -> ConfirmDialog(
             title = stringResource(Res.string.detail_delete_title),
             message = stringResource(Res.string.detail_delete_title_message),
