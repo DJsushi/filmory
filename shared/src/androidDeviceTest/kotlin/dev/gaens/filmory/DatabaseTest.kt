@@ -121,6 +121,9 @@ class DatabaseTest {
 
     @Test
     fun skipping_an_episode_keeps_its_check_and_survives_a_backup_round_trip() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val root = java.io.File(context.cacheDir, "skip-test").apply { deleteRecursively(); mkdirs() }.absolutePath.toPath()
+        val directories = AppDirectories(root / "files", root / "cache")
         val backups = ZipBackupRepository(database.backupDao(), directories, FileSystem.SYSTEM, Clock.System)
         seed()
         episodes.checkEpisode(EpisodeCheck("c1", "w", "e1", now))
