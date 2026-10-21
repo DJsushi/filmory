@@ -45,9 +45,14 @@ Filmory is a Bookmory clone for movies and series. This file is the source of tr
 - The screen for adding or editing a note shows the title's poster large at the top.
 - The Notes tab (Bookmory's Memorize) shows all notes with random note and favorite notes shortcuts, a type filter and sorting.
 
+### Formatted text
+
+- Note text, note comments, the watching review and the title description are written in a small Markdown subset: `**bold**`, `*italic*`, `~~strikethrough~~`, `# ` and `## ` headings, `> ` quotes (for things said in the movie or series) and `- ` bullets. Underline is not supported, because Markdown has no underline.
+- These fields are small text fields that show the formatting as you type, with the markers dimmed. A button in the corner opens a full-screen editor with a toolbar above the keyboard. Everywhere the text is shown, the markers are hidden and the formatting applied. Copying a note copies the raw Markdown.
+
 ### Rating and review
 
-- Rating is 0 to 5 stars in half steps.
+- Rating is 0 to 5 stars in half steps. Stars can be set by tapping or by dragging a finger across them.
 - Rating and review belong to a watching. A title card shows the rating of its latest watching.
 
 ### Collections
