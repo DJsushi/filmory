@@ -22,8 +22,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,6 +67,7 @@ import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.action_back
+import dev.gaens.filmory.resources.action_undo
 import dev.gaens.filmory.resources.action_delete
 import dev.gaens.filmory.resources.action_more
 import dev.gaens.filmory.resources.detail_add_collection
@@ -77,6 +80,7 @@ import dev.gaens.filmory.resources.detail_delete_title
 import dev.gaens.filmory.resources.detail_delete_title_message
 import dev.gaens.filmory.resources.detail_directed_by
 import dev.gaens.filmory.resources.detail_edit_title
+import dev.gaens.filmory.resources.detail_episodes_marked
 import dev.gaens.filmory.resources.detail_no_notes
 import dev.gaens.filmory.resources.detail_notes
 import dev.gaens.filmory.resources.detail_runtime
@@ -103,6 +107,7 @@ import dev.gaens.filmory.resources.ic_watched
 import dev.gaens.filmory.resources.note_count
 import dev.gaens.filmory.resources.note_copied
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getPluralString
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
@@ -132,6 +137,16 @@ fun TitleDetailScreenRoot(
             TitleDetailEvent.TitleDeleted -> onBackClick()
             is TitleDetailEvent.ShowMessage -> scope.launch {
                 snackbarHostState.showSnackbar(event.message.asStringAsync())
+            }
+            is TitleDetailEvent.SeasonMarked -> scope.launch {
+                // A newer Mark all replaces the older snackbar, so Undo always means the latest one.
+                snackbarHostState.currentSnackbarData?.dismiss()
+                val result = snackbarHostState.showSnackbar(
+                    message = getPluralString(Res.plurals.detail_episodes_marked, event.count, event.count),
+                    actionLabel = getString(Res.string.action_undo),
+                    duration = SnackbarDuration.Long,
+                )
+                if (result == SnackbarResult.ActionPerformed) viewModel.onAction(TitleDetailAction.OnUndoMarkSeasonClick)
             }
         }
     }

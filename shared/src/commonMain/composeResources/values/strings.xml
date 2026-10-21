@@ -17,6 +17,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_done">Done</string>
     <string name="action_discard">Discard</string>
+    <string name="action_undo">Undo</string>
 
     <!-- Statuses and types -->
     <string name="status_not_watched">Not watched</string>
@@ -169,6 +170,10 @@
     <plurals name="detail_season_count">
         <item quantity="one">%1$d season</item>
         <item quantity="other">%1$d seasons</item>
+    </plurals>
+    <plurals name="detail_episodes_marked">
+        <item quantity="one">%1$d episode marked as watched</item>
+        <item quantity="other">%1$d episodes marked as watched</item>
     </plurals>
     <string name="detail_directed_by">Directed by %1$s</string>
     <string name="detail_created_by">Created by %1$s</string>

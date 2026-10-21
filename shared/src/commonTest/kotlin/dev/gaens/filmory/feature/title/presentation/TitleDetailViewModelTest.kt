@@ -161,6 +161,48 @@ class TitleDetailViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `mark all can be undone, which unchecks its episodes and puts the marker back`() = runTest {
+        followTicks()
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            expectMostRecentItem()
+            viewModel.events.test {
+                viewModel.onAction(TitleDetailAction.OnEpisodeCheckClick("e2"))
+                viewModel.onAction(TitleDetailAction.OnMarkSeasonClick)
+                assertEquals(TitleDetailEvent.SeasonMarked(1), awaitItem())
+            }
+            assertEquals("e3", watchings.getWatching("w")?.currentEpisodeId)
+
+            viewModel.onAction(TitleDetailAction.OnUndoMarkSeasonClick)
+            val series = expectMostRecentItem().series
+            // Only e1 was marked by Mark all; e2 was ticked by hand and stays.
+            assertEquals(1, series?.watchedCount)
+            assertEquals("e3", watchings.getWatching("w")?.currentEpisodeId)
+        }
+    }
+
+    @Test
+    fun `undoing mark all leaves a marker the user moved since`() = runTest {
+        followTicks()
+        watchings.upsertWatching(aWatching(id = "w", currentEpisodeId = "e1"))
+        val viewModel = viewModel()
+        viewModel.state.test {
+            expectMostRecentItem()
+            viewModel.events.test {
+                viewModel.onAction(TitleDetailAction.OnMarkSeasonClick)
+                awaitItem()
+            }
+            viewModel.onAction(TitleDetailAction.OnEpisodeClick("e1"))
+            expectMostRecentItem()
+
+            viewModel.onAction(TitleDetailAction.OnUndoMarkSeasonClick)
+            assertEquals(0, expectMostRecentItem().series?.checkedCount)
+            assertEquals("e1", watchings.getWatching("w")?.currentEpisodeId)
+        }
+    }
+
+    @Test
     fun `next episode moves the pointer and marking a season checks the rest`() = runTest {
         watchings.upsertWatching(aWatching(currentEpisodeId = "e1"))
         val viewModel = viewModel()

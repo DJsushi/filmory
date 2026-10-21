@@ -36,6 +36,9 @@ sealed interface TitleDetailAction {
     data class OnSeasonClick(val seasonNumber: Int) : TitleDetailAction
     data object OnMarkSeasonClick : TitleDetailAction
 
+    /** From the snackbar that follows Mark all, within its time limit. */
+    data object OnUndoMarkSeasonClick : TitleDetailAction
+
     data class OnNoteWatchingToggle(val watchingId: String) : TitleDetailAction
     data object OnNoteWatchingFilterClear : TitleDetailAction
     data class OnNoteEpisodeFilterChange(val filter: NoteEpisodeFilter) : TitleDetailAction
@@ -50,4 +53,7 @@ sealed interface TitleDetailAction {
 sealed interface TitleDetailEvent {
     data object TitleDeleted : TitleDetailEvent
     data class ShowMessage(val message: UiText) : TitleDetailEvent
+
+    /** Mark all checked [count] episodes; the screen offers to undo it for a while. */
+    data class SeasonMarked(val count: Int) : TitleDetailEvent
 }

@@ -88,6 +88,16 @@ class TitleDetailViewModel(
     private val eventChannel = Channel<TitleDetailEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    /** What the last Mark all changed, kept so its snackbar can undo it. */
+    private class SeasonMark(
+        val watchingId: String,
+        val episodeIds: List<String>,
+        val markerBefore: String?,
+        val markerAfter: String?,
+    )
+
+    private var lastSeasonMark: SeasonMark? = null
+
     @Suppress("CyclomaticComplexMethod")
     fun onAction(action: TitleDetailAction) {
         when (action) {
@@ -118,6 +128,7 @@ class TitleDetailViewModel(
             }
             is TitleDetailAction.OnSeasonClick -> _state.update { it.copy(selectedSeasonNumber = action.seasonNumber) }
             TitleDetailAction.OnMarkSeasonClick -> markSelectedSeason()
+            TitleDetailAction.OnUndoMarkSeasonClick -> undoSeasonMark()
             is TitleDetailAction.OnNoteWatchingToggle -> _state.update {
                 val filter = it.noteWatchingFilter
                 it.copy(noteWatchingFilter = if (action.watchingId in filter) filter - action.watchingId else filter + action.watchingId)
@@ -250,11 +261,39 @@ class TitleDetailViewModel(
     private fun markSelectedSeason() {
         val season = state.value.series?.seasons?.find { it.number == state.value.selectedSeasonNumber } ?: return
         withActiveWatching { watching ->
-            season.episodes.filter { it.mark == EpisodeMark.NOT_WATCHED }.forEach { episode ->
+            val marked = season.episodes.filter { it.mark == EpisodeMark.NOT_WATCHED }
+            marked.forEach { episode ->
                 val checked = episodeRepository.checkEpisode(EpisodeCheck(idGenerator.newId(), watching.id, episode.id, clock.now()))
                 if (checked is Result.Error) return@withActiveWatching checked
             }
-            moveMarker(watching, season.episodes.last().id)
+            val moved = moveMarker(watching, season.episodes.last().id)
+            if (moved is Result.Success && marked.isNotEmpty()) {
+                val markerAfter = watchingRepository.getWatching(watching.id)?.currentEpisodeId
+                lastSeasonMark = SeasonMark(watching.id, marked.map { it.id }, watching.currentEpisodeId, markerAfter)
+                eventChannel.send(TitleDetailEvent.SeasonMarked(marked.size))
+            }
+            moved
+        }
+    }
+
+    /**
+     * Unchecks what Mark all checked and puts the marker back, unless the user moved it since. A watching
+     * that Mark all had to start stays, since the user may have meant to start it.
+     */
+    private fun undoSeasonMark() {
+        val mark = lastSeasonMark ?: return
+        lastSeasonMark = null
+        launchReporting {
+            mark.episodeIds.forEach { episodeId ->
+                val unchecked = episodeRepository.uncheckEpisode(mark.watchingId, episodeId)
+                if (unchecked is Result.Error) return@launchReporting unchecked
+            }
+            val watching = watchingRepository.getWatching(mark.watchingId)
+            if (watching != null && watching.currentEpisodeId == mark.markerAfter) {
+                watchingRepository.upsertWatching(watching.copy(currentEpisodeId = mark.markerBefore))
+            } else {
+                Result.Success(Unit)
+            }
         }
     }
 
