@@ -1,6 +1,5 @@
 package dev.gaens.filmory.feature.note.presentation.list
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,18 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +29,6 @@ import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryChip
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryFab
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryTile
 import dev.gaens.filmory.core.presentation.designsystem.components.HeroHeader
-import dev.gaens.filmory.core.presentation.designsystem.components.PosterArt
 import dev.gaens.filmory.core.presentation.designsystem.rise
 import dev.gaens.filmory.core.presentation.ui.ObserveAsEvents
 import dev.gaens.filmory.core.presentation.ui.label
@@ -49,8 +43,6 @@ import dev.gaens.filmory.resources.note_count
 import dev.gaens.filmory.resources.notes_all_types
 import dev.gaens.filmory.resources.notes_empty
 import dev.gaens.filmory.resources.notes_favorites
-import dev.gaens.filmory.resources.notes_pick_title
-import dev.gaens.filmory.resources.notes_pick_title_empty
 import dev.gaens.filmory.resources.notes_random
 import dev.gaens.filmory.resources.notes_random_subtitle
 import dev.gaens.filmory.resources.notes_sort_newest
@@ -200,38 +192,6 @@ private fun NotesFilters(state: NotesState, onAction: (NotesAction) -> Unit) {
                 selected = false,
                 onClick = { onAction(NotesAction.OnSortClick) },
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun TitlePickerSheet(state: NotesState, onAction: (NotesAction) -> Unit) {
-    ModalBottomSheet(
-        onDismissRequest = { onAction(NotesAction.OnTitlePickerDismiss) },
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-    ) {
-        LazyColumn(Modifier.padding(bottom = 24.dp)) {
-            item {
-                Text(
-                    text = stringResource(if (state.titles.isEmpty()) Res.string.notes_pick_title_empty else Res.string.notes_pick_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(horizontal = ScreenPadding, vertical = 8.dp),
-                )
-            }
-            itemsIndexed(state.titles, key = { _, title -> title.id }) { _, title ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onAction(NotesAction.OnTitlePicked(title.id)) }
-                        .padding(horizontal = ScreenPadding, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    PosterArt(title.id, title.name, title.posterUrl, Modifier.width(40.dp), showName = false)
-                    Text(title.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-            }
         }
     }
 }

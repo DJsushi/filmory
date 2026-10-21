@@ -36,7 +36,7 @@ val presentationModule = module {
     viewModelOf(::BackupViewModel)
     viewModelOf(::SearchViewModel)
     viewModel { (titleId: String?) -> TitleFormViewModel(titleId, get(), get(), get()) }
-    viewModel { NotesViewModel(get(), get(), get(), get()) }
+    viewModel { NotesViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { (titleId: String?, episodeId: String?, noteId: String?) ->
         NoteEditorViewModel(titleId, episodeId, noteId, get(), get(), get(), get(), get(), get(), get())
     }

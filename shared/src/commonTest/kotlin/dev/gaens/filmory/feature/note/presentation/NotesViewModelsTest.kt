@@ -1,12 +1,18 @@
 package dev.gaens.filmory.feature.note.presentation
 
 import app.cash.turbine.test
+import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.library.domain.BuildLibrary
+import dev.gaens.filmory.feature.library.presentation.components.CollectionOptionUi
 import dev.gaens.filmory.feature.note.domain.AddNote
 import dev.gaens.filmory.feature.note.domain.NoteType
 import dev.gaens.filmory.feature.note.presentation.editor.NoteEditorAction
 import dev.gaens.filmory.feature.note.presentation.editor.NoteEditorViewModel
 import dev.gaens.filmory.feature.note.presentation.list.NotesAction
 import dev.gaens.filmory.feature.note.presentation.list.NotesViewModel
+import dev.gaens.filmory.feature.note.presentation.list.TitlePickerFilters
+import dev.gaens.filmory.feature.title.domain.TitleType
+import dev.gaens.filmory.testing.FakeCollectionRepository
 import dev.gaens.filmory.testing.FakeEpisodeRepository
 import dev.gaens.filmory.testing.FakeNoteImageStorage
 import dev.gaens.filmory.testing.FakeNoteRepository
@@ -18,6 +24,7 @@ import dev.gaens.filmory.testing.ViewModelTest
 import dev.gaens.filmory.testing.aNote
 import dev.gaens.filmory.testing.aTitle
 import dev.gaens.filmory.testing.aWatching
+import dev.gaens.filmory.testing.at
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,7 +51,7 @@ class NotesViewModelsTest : ViewModelTest() {
 
     @Test
     fun `the notes tab filters by type and favorites`() = runTest {
-        val viewModel = NotesViewModel(notes, titles, watchings, episodes)
+        val viewModel = NotesViewModel(notes, titles, watchings, episodes, FakeCollectionRepository(), BuildLibrary())
         viewModel.state.test {
             assertEquals(2, expectMostRecentItem().totalCount)
 
@@ -56,6 +63,39 @@ class NotesViewModelsTest : ViewModelTest() {
             val state = expectMostRecentItem()
             assertEquals(listOf("scene"), state.notes.map { it.id })
             assertEquals(1, state.favoriteCount)
+        }
+    }
+
+    @Test
+    fun `the add note picker searches and filters titles like the library`() = runTest {
+        val pickable = FakeTitleRepository(
+            listOf(
+                aTitle(id = "show").copy(name = "Severance"),
+                aTitle(id = "movie", type = TitleType.MOVIE).copy(name = "Arrival"),
+                aTitle(id = "other", type = TitleType.MOVIE).copy(name = "Alien"),
+            ),
+        )
+        val collections = FakeCollectionRepository(listOf(TitleCollection("c", "Mine", listOf("movie"), at(0))))
+        val viewModel = NotesViewModel(notes, pickable, watchings, episodes, collections, BuildLibrary())
+        viewModel.state.test {
+            viewModel.onAction(NotesAction.OnAddNoteClick)
+            assertEquals(listOf("other", "movie", "show"), expectMostRecentItem().titles.map { it.id })
+
+            viewModel.onAction(NotesAction.OnPickerSearchChange("ar"))
+            assertEquals(listOf("movie"), expectMostRecentItem().titles.map { it.id })
+
+            viewModel.onAction(NotesAction.OnPickerSearchChange(""))
+            viewModel.onAction(NotesAction.OnPickerTypeClick(TitleType.MOVIE))
+            assertEquals(listOf("other", "movie"), expectMostRecentItem().titles.map { it.id })
+
+            viewModel.onAction(NotesAction.OnPickerCollectionChange("c"))
+            val state = expectMostRecentItem()
+            assertEquals(listOf("movie"), state.titles.map { it.id })
+            assertEquals(listOf(CollectionOptionUi("c", "Mine")), state.pickerCollections)
+
+            viewModel.onAction(NotesAction.OnTitlePickerDismiss)
+            viewModel.onAction(NotesAction.OnAddNoteClick)
+            assertEquals(TitlePickerFilters(), expectMostRecentItem().pickerFilters)
         }
     }
 

@@ -2,11 +2,19 @@ package dev.gaens.filmory.feature.note.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.gaens.filmory.feature.collection.domain.CollectionRepository
+import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.collection.domain.inDisplayOrder
 import dev.gaens.filmory.feature.episode.domain.EpisodeRepository
-import dev.gaens.filmory.feature.home.presentation.toThumbUi
+import dev.gaens.filmory.feature.library.domain.BuildLibrary
+import dev.gaens.filmory.feature.library.domain.LibraryQuery
+import dev.gaens.filmory.feature.library.presentation.components.CollectionOptionUi
+import dev.gaens.filmory.feature.library.presentation.toUi
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.note.presentation.NoteUi
 import dev.gaens.filmory.feature.note.presentation.buildNoteUis
+import dev.gaens.filmory.feature.settings.domain.LibrarySort
+import dev.gaens.filmory.feature.title.domain.Title
 import dev.gaens.filmory.feature.title.domain.TitleRepository
 import dev.gaens.filmory.feature.watching.domain.WatchingRepository
 import kotlinx.coroutines.channels.Channel
@@ -27,14 +35,20 @@ class NotesViewModel(
     private val titleRepository: TitleRepository,
     private val watchingRepository: WatchingRepository,
     private val episodeRepository: EpisodeRepository,
+    private val collectionRepository: CollectionRepository,
+    private val buildLibrary: BuildLibrary,
     private val random: Random = Random.Default,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
     private val allNotes = MutableStateFlow<List<NoteUi>>(emptyList())
+    private val allTitles = MutableStateFlow<List<Title>>(emptyList())
+    private val allCollections = MutableStateFlow<List<TitleCollection>>(emptyList())
     private val _state = MutableStateFlow(NotesState())
 
-    val state = combine(_state, allNotes) { ui, notes -> ui.withNotes(notes) }
+    val state = combine(_state, allNotes, allTitles, allCollections) { ui, notes, titles, collections ->
+        ui.withNotes(notes).withTitlePicker(titles, collections)
+    }
         .onStart {
             if (!hasLoadedInitialData) {
                 hasLoadedInitialData = true
@@ -53,12 +67,18 @@ class NotesViewModel(
             is NotesAction.OnTypeFilterChange -> _state.update { it.copy(typeFilter = action.type) }
             NotesAction.OnSortClick -> _state.update { it.copy(isNewestFirst = !it.isNewestFirst) }
             is NotesAction.OnFavoriteToggle -> toggleFavorite(action.noteId)
-            NotesAction.OnAddNoteClick -> _state.update { it.copy(isTitlePickerOpen = true) }
+            NotesAction.OnAddNoteClick -> _state.update { it.copy(isTitlePickerOpen = true, pickerFilters = TitlePickerFilters()) }
             NotesAction.OnTitlePickerDismiss -> _state.update { it.copy(isTitlePickerOpen = false) }
             is NotesAction.OnTitlePicked -> {
                 _state.update { it.copy(isTitlePickerOpen = false) }
                 viewModelScope.launch { eventChannel.send(NotesEvent.AddNoteTo(action.titleId)) }
             }
+            is NotesAction.OnPickerSearchChange -> updatePickerFilters { it.copy(searchText = action.text) }
+            is NotesAction.OnPickerTypeClick -> updatePickerFilters {
+                it.copy(type = if (it.type == action.type) null else action.type)
+            }
+            is NotesAction.OnPickerStatusChange -> updatePickerFilters { it.copy(status = action.status) }
+            is NotesAction.OnPickerCollectionChange -> updatePickerFilters { it.copy(collectionId = action.collectionId) }
             else -> Unit
         }
     }
@@ -69,10 +89,35 @@ class NotesViewModel(
             titleRepository.observeTitles(),
             watchingRepository.observeAllWatchings(),
             episodeRepository.observeAllSeasons(),
-        ) { notes, titles, watchings, seasons ->
+            collectionRepository.observeCollections(),
+        ) { notes, titles, watchings, seasons, collections ->
             allNotes.value = buildNoteUis(notes, titles, watchings, seasons)
-            _state.update { state -> state.copy(titles = titles.sortedBy { it.name.lowercase() }.map { it.toThumbUi() }) }
+            allTitles.value = titles
+            allCollections.value = collections
         }.launchIn(viewModelScope)
+    }
+
+    private fun updatePickerFilters(transform: (TitlePickerFilters) -> TitlePickerFilters) =
+        _state.update { it.copy(pickerFilters = transform(it.pickerFilters)) }
+
+    /** The picker lists titles the way the library does, by name, narrowed by its search and filters. */
+    private fun NotesState.withTitlePicker(titles: List<Title>, collections: List<TitleCollection>): NotesState {
+        if (!isTitlePickerOpen) return this
+        // A deleted collection no longer filters anything.
+        val collection = collections.find { it.id == pickerFilters.collectionId }
+        val query = LibraryQuery(
+            status = pickerFilters.status,
+            type = pickerFilters.type,
+            onlyTitleIds = collection?.titleIds?.toSet(),
+            searchText = pickerFilters.searchText,
+            sort = LibrarySort.NAME,
+        )
+        return copy(
+            // Ratings and activity are for other sorts, so no watchings are needed here.
+            titles = buildLibrary(titles, emptyList(), query).map { it.toUi() },
+            hasTitles = titles.isNotEmpty(),
+            pickerCollections = collections.inDisplayOrder().map { CollectionOptionUi(it.id, it.name) },
+        )
     }
 
     private fun openRandomNote() {
