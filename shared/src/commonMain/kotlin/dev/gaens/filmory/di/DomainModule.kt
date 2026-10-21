@@ -1,5 +1,6 @@
 package dev.gaens.filmory.di
 
+import dev.gaens.filmory.feature.calendar.domain.BuildCalendarMonth
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
 import dev.gaens.filmory.feature.library.domain.BuildLibrary
 import dev.gaens.filmory.feature.note.domain.AddNote
@@ -37,5 +38,6 @@ val domainModule = module {
     factoryOf(::DeleteNote)
     factoryOf(::DeleteTitle)
     factoryOf(::BuildWatchedList)
+    factoryOf(::BuildCalendarMonth)
     factoryOf(::EnsureActiveWatching)
 }

@@ -183,6 +183,28 @@
     <string name="watched_all">All</string>
     <string name="watched_sort_finished">Finished</string>
 
+    <!-- Calendar -->
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_subtitle">What did you watch this month?</string>
+    <string name="calendar_finish_dates">Finish dates</string>
+    <string name="calendar_ranges">Start ~ finish</string>
+    <string name="calendar_logged_dates">Logged dates</string>
+    <string name="calendar_previous_month">Previous month</string>
+    <string name="calendar_next_month">Next month</string>
+    <string name="calendar_settings">Calendar settings</string>
+    <string name="calendar_export">Export calendar</string>
+    <string name="calendar_legend">Posters mark finish and logged dates. A shaded band is a start to finish span.</string>
+    <string name="calendar_show_stars">Stars on the finish date</string>
+    <string name="calendar_vertical_border">Vertical border</string>
+    <string name="calendar_state_badge">Completed or dropped badge</string>
+    <string name="calendar_layout">Several titles on one day</string>
+    <string name="calendar_layout_stack">Stack</string>
+    <string name="calendar_layout_grid">Grid</string>
+    <string name="calendar_week_start">Week starts on</string>
+    <string name="calendar_monday">Monday</string>
+    <string name="calendar_sunday">Sunday</string>
+    <string name="calendar_day_empty">Nothing logged on this day.</string>
+
     <!-- Notes tab -->
     <string name="notes_title">Notes</string>
     <string name="notes_subtitle">%1$s across %2$s.</string>

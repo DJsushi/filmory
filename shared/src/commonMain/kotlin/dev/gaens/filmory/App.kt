@@ -19,6 +19,7 @@ import androidx.navigation.toRoute
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
 import dev.gaens.filmory.core.presentation.designsystem.components.BottomBarItem
 import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryBottomBar
+import dev.gaens.filmory.feature.calendar.presentation.CalendarScreenRoot
 import dev.gaens.filmory.feature.collection.presentation.CollectionsScreenRoot
 import dev.gaens.filmory.feature.home.presentation.HomeScreenRoot
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
@@ -155,6 +156,11 @@ private fun FilmoryNavHost(navController: NavHostController) {
                 onEditTitleClick = {},
             )
         }
-        composable<Route.Calendar> {}
+        composable<Route.Calendar> {
+            CalendarScreenRoot(
+                onBackClick = navController::navigateUp,
+                onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
+            )
+        }
     }
 }
