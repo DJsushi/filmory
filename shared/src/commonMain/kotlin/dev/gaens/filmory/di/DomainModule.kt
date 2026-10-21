@@ -9,6 +9,8 @@ import dev.gaens.filmory.feature.title.domain.ToggleWatchLater
 import dev.gaens.filmory.feature.watching.domain.ChangeWatchingState
 import dev.gaens.filmory.feature.watching.domain.DeleteWatching
 import dev.gaens.filmory.feature.watching.domain.DetermineTitleStatus
+import dev.gaens.filmory.feature.watching.domain.EnsureActiveWatching
+import dev.gaens.filmory.feature.watching.domain.SaveWatching
 import dev.gaens.filmory.feature.watching.domain.FindContinueWatching
 import dev.gaens.filmory.feature.watching.domain.StartWatching
 import dev.gaens.filmory.feature.watching.domain.SyncTitleStatus
@@ -28,4 +30,6 @@ val domainModule = module {
     factoryOf(::ToggleWatchLater)
     factoryOf(::MoveWatchLater)
     factoryOf(::BuildLibrary)
+    factoryOf(::SaveWatching)
+    factoryOf(::EnsureActiveWatching)
 }

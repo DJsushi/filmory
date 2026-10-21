@@ -104,4 +104,79 @@
     <string name="collections_title">Collections</string>
     <string name="collections_add">Add collection</string>
     <string name="collections_default_name">Favorites</string>
+
+    <!-- Errors -->
+    <string name="error_disk_full">Your device is out of storage.</string>
+    <string name="error_not_found">That item no longer exists.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
+    <string name="error_no_internet">No internet connection.</string>
+    <string name="error_request_timeout">The request timed out.</string>
+    <string name="error_too_many_requests">Too many requests. Please wait a moment.</string>
+    <string name="error_server">The server had a problem. Please try again later.</string>
+    <string name="error_unauthorized">The TMDB API key was rejected.</string>
+    <string name="error_serialization">The server sent data we could not read.</string>
+    <string name="error_movie_cannot_be_watching">Movies have no Watching status.</string>
+    <string name="error_finish_before_start">The finish date is before the start date.</string>
+
+    <!-- Title detail -->
+    <string name="detail_watch_later_add">Add to watch later</string>
+    <string name="detail_watch_later_remove">Remove from watch later</string>
+    <string name="detail_wishlist_add">Add to wishlist</string>
+    <string name="detail_wishlist_remove">Remove from wishlist</string>
+    <string name="detail_delete_title">Delete title</string>
+    <string name="detail_delete_title_message">This deletes the title with all its watchings, notes and comments.</string>
+    <string name="detail_edit_title">Edit details</string>
+    <string name="detail_runtime">%1$d h %2$d min</string>
+    <string name="detail_runtime_minutes">%1$d min</string>
+    <plurals name="detail_season_count">
+        <item quantity="one">%1$d season</item>
+        <item quantity="other">%1$d seasons</item>
+    </plurals>
+    <string name="detail_directed_by">Directed by %1$s</string>
+    <string name="detail_created_by">Created by %1$s</string>
+    <string name="detail_add_collection">+ Collection</string>
+    <string name="detail_collections_title">Collections</string>
+    <string name="detail_watchings">Watchings</string>
+    <string name="detail_add_watching">Add watching</string>
+    <string name="detail_watching_number">Watching %1$d</string>
+    <string name="detail_watching_not_started">Not started</string>
+    <string name="detail_currently_on">Currently on</string>
+    <string name="detail_not_started_yet">Not started yet</string>
+    <string name="detail_episodes_checked">%1$d of %2$d episodes checked</string>
+    <string name="detail_finish_and_next">Finish E%1$d and go to next</string>
+    <string name="detail_finish_last">Finish E%1$d</string>
+    <string name="detail_start_watching">Start watching</string>
+    <string name="detail_seasons">Seasons</string>
+    <string name="detail_mark_all">Mark all</string>
+    <string name="detail_season_chip">Season %1$d · %2$d/%3$d</string>
+    <string name="detail_season_episode_short">S%1$d · E%2$d</string>
+    <string name="detail_you_are_here">You are here</string>
+    <string name="detail_episode_checked">Episode %1$d watched</string>
+    <string name="detail_notes">Notes</string>
+    <string name="detail_all_watchings">All watchings</string>
+    <string name="detail_all_episodes">All episodes</string>
+    <string name="detail_series_notes">Series</string>
+    <string name="detail_no_notes">No notes yet. Tap Add note to write one.</string>
+    <string name="detail_add_note">Add note</string>
+    <string name="detail_no_episodes">No episodes yet.</string>
+
+    <!-- Watching editor -->
+    <string name="watching_editor_title">Edit watching</string>
+    <string name="watching_started">Started</string>
+    <string name="watching_finished">Finished</string>
+    <string name="watching_no_date">No date</string>
+    <string name="watching_clear_date">Clear</string>
+    <string name="watching_rating">Rating</string>
+    <string name="watching_rating_description">Rating, %1$s of 5 stars</string>
+    <string name="watching_clear_rating">Clear rating</string>
+    <string name="watching_review">Review</string>
+    <string name="watching_delete">Delete watching</string>
+    <string name="watching_delete_message">Notes on this watching are deleted too.</string>
+
+    <!-- Notes -->
+    <string name="note_favorite">Favorite</string>
+    <string name="note_unfavorite">Remove from favorites</string>
+    <string name="note_copy">Copy</string>
+    <string name="note_copied">Note copied</string>
+    <string name="note_add_comment">Add a comment</string>
 </resources>

@@ -34,8 +34,8 @@ fun SectionHeader(
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
+            maxLines = 1,
             modifier = Modifier
-                .weight(1f, fill = false)
                 .drawBehind {
                     val height = 11.dp.toPx()
                     drawRoundRect(

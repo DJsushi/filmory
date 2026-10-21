@@ -23,6 +23,7 @@ import dev.gaens.filmory.feature.collection.presentation.CollectionsScreenRoot
 import dev.gaens.filmory.feature.home.presentation.HomeScreenRoot
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
 import dev.gaens.filmory.feature.library.presentation.LibraryScreenRoot
+import dev.gaens.filmory.feature.title.presentation.TitleDetailScreenRoot
 import dev.gaens.filmory.navigation.Route
 import dev.gaens.filmory.resources.Res
 import dev.gaens.filmory.resources.ic_home
@@ -106,7 +107,16 @@ private fun FilmoryNavHost(navController: NavHostController) {
                 onCollectionClick = { navController.navigate(Route.Library(LibraryPreset.COLLECTION, it)) },
             )
         }
-        composable<Route.TitleDetail> {}
+        composable<Route.TitleDetail> { entry ->
+            val titleId = entry.toRoute<Route.TitleDetail>().titleId
+            TitleDetailScreenRoot(
+                titleId = titleId,
+                onBackClick = navController::navigateUp,
+                onNoteClick = { navController.navigate(Route.NoteDetail(it)) },
+                onAddNoteClick = { episodeId -> navController.navigate(Route.AddNote(titleId, episodeId)) },
+                onEditTitleClick = {},
+            )
+        }
         composable<Route.Calendar> {}
     }
 }
