@@ -40,11 +40,9 @@ class LibraryViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `a collection lists its titles and shows its name`() = runTest {
+    fun `a collection lists its titles`() = runTest {
         viewModel(LibraryPreset.COLLECTION, "c").state.test {
-            val state = expectMostRecentItem()
-            assertEquals(listOf("show"), state.items.map { it.id })
-            assertEquals("Mine", state.collectionName)
+            assertEquals(listOf("show"), expectMostRecentItem().items.map { it.id })
         }
     }
 

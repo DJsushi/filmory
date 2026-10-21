@@ -1,6 +1,7 @@
 package dev.gaens.filmory.di
 
 import dev.gaens.filmory.feature.collection.presentation.CollectionsViewModel
+import dev.gaens.filmory.feature.collection.presentation.detail.CollectionDetailViewModel
 import dev.gaens.filmory.feature.home.presentation.HomeViewModel
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
 import dev.gaens.filmory.feature.library.presentation.LibraryViewModel
@@ -25,6 +26,7 @@ val presentationModule = module {
         LibraryViewModel(preset, collectionId, get(), get(), get(), get(), get())
     }
     viewModelOf(::CollectionsViewModel)
+    viewModel { (collectionId: String) -> CollectionDetailViewModel(collectionId, get()) }
     viewModelOf(::WatchedViewModel)
     viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)

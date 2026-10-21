@@ -2,7 +2,6 @@ package dev.gaens.filmory.feature.library.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.gaens.filmory.core.domain.util.onSuccess
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.library.domain.BuildLibrary
 import dev.gaens.filmory.feature.library.domain.LibraryEntry
@@ -13,17 +12,14 @@ import dev.gaens.filmory.feature.title.domain.TitleRepository
 import dev.gaens.filmory.feature.title.domain.TitleStatus
 import dev.gaens.filmory.feature.title.domain.TitleType
 import dev.gaens.filmory.feature.watching.domain.WatchingRepository
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -50,9 +46,6 @@ class LibraryViewModel(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000L), LibraryState(preset = preset))
 
-    private val eventChannel = Channel<LibraryEvent>()
-    val events = eventChannel.receiveAsFlow()
-
     fun onAction(action: LibraryAction) {
         when (action) {
             is LibraryAction.OnStatusFilterChange -> _state.update { it.copy(statusFilter = action.status) }
@@ -65,8 +58,6 @@ class LibraryViewModel(
             is LibraryAction.OnDialogOpen -> _state.update { it.copy(dialog = action.dialog) }
             LibraryAction.OnDialogDismiss -> _state.update { it.copy(dialog = null) }
             is LibraryAction.OnSettingsChange -> updateSettings { action.settings }
-            is LibraryAction.OnRenameCollection -> renameCollection(action.name)
-            LibraryAction.OnDeleteCollection -> deleteCollection()
             else -> Unit
         }
     }
@@ -92,12 +83,7 @@ class LibraryViewModel(
             )
             val items = buildLibrary(titles, watchings, query).map { it.toUi() }
             _state.update {
-                it.copy(
-                    items = items,
-                    settings = settings.library,
-                    collectionName = collection?.name,
-                    isDefaultCollection = collection?.isDefault == true,
-                )
+                it.copy(items = items, settings = settings.library)
             }
         }.launchIn(viewModelScope)
     }
@@ -110,23 +96,6 @@ class LibraryViewModel(
 
     private fun updateSettings(transform: (LibrarySettings) -> LibrarySettings) {
         viewModelScope.launch { settingsRepository.update { it.copy(library = transform(it.library)) } }
-    }
-
-    private fun renameCollection(name: String) {
-        val id = collectionId ?: return
-        _state.update { it.copy(dialog = null) }
-        viewModelScope.launch {
-            val collection = collectionRepository.observeCollections().first().find { it.id == id } ?: return@launch
-            collectionRepository.upsertCollection(collection.copy(name = name))
-        }
-    }
-
-    private fun deleteCollection() {
-        val id = collectionId ?: return
-        _state.update { it.copy(dialog = null) }
-        viewModelScope.launch {
-            collectionRepository.deleteCollection(id).onSuccess { eventChannel.send(LibraryEvent.CollectionDeleted) }
-        }
     }
 
     private data class Filters(val status: TitleStatus?, val type: TitleType?, val searchText: String)

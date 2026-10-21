@@ -6,8 +6,6 @@ import dev.gaens.filmory.feature.title.domain.TitleType
 
 data class LibraryState(
     val preset: LibraryPreset = LibraryPreset.ALL,
-    val collectionName: String? = null,
-    val isDefaultCollection: Boolean = false,
     val items: List<LibraryItemUi> = emptyList(),
     val statusFilter: TitleStatus? = null,
     val typeFilter: TitleType? = null,
@@ -18,10 +16,9 @@ data class LibraryState(
 ) {
     val canFilterStatus: Boolean get() = preset == LibraryPreset.ALL || preset == LibraryPreset.WISHLIST ||
         preset == LibraryPreset.COLLECTION
-    val canEditCollection: Boolean get() = preset == LibraryPreset.COLLECTION && !isDefaultCollection
 }
 
-enum class LibraryDialog { SETTINGS, RENAME_COLLECTION, DELETE_COLLECTION }
+enum class LibraryDialog { SETTINGS }
 
 data class LibraryItemUi(
     val id: String,

@@ -17,13 +17,13 @@ sealed interface Route {
     data object Profile : Route
 
     @Serializable
-    data class Library(
-        val preset: LibraryPreset = LibraryPreset.ALL,
-        val collectionId: String? = null,
-    ) : Route
+    data class Library(val preset: LibraryPreset = LibraryPreset.ALL) : Route
 
     @Serializable
     data object Collections : Route
+
+    @Serializable
+    data class CollectionDetail(val collectionId: String) : Route
 
     @Serializable
     data class TitleDetail(val titleId: String) : Route

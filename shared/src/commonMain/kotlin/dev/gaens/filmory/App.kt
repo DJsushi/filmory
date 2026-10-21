@@ -28,6 +28,7 @@ import dev.gaens.filmory.core.presentation.designsystem.components.FilmoryBottom
 import dev.gaens.filmory.feature.backup.presentation.BackupSection
 import dev.gaens.filmory.feature.calendar.presentation.CalendarScreenRoot
 import dev.gaens.filmory.feature.collection.presentation.CollectionsScreenRoot
+import dev.gaens.filmory.feature.collection.presentation.detail.CollectionDetailScreenRoot
 import dev.gaens.filmory.feature.home.presentation.HomeScreenRoot
 import dev.gaens.filmory.feature.library.presentation.LibraryPreset
 import dev.gaens.filmory.feature.library.presentation.LibraryScreenRoot
@@ -103,7 +104,15 @@ private fun FilmoryNavHost(navController: NavHostController) {
         composable<Route.Home> {
             HomeScreenRoot(
                 onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
-                onLibraryClick = { preset, collectionId -> navController.navigate(Route.Library(preset, collectionId)) },
+                onLibraryClick = { preset, collectionId ->
+                    navController.navigate(
+                        if (preset == LibraryPreset.COLLECTION && collectionId != null) {
+                            Route.CollectionDetail(collectionId)
+                        } else {
+                            Route.Library(preset)
+                        },
+                    )
+                },
                 onCalendarClick = { navController.navigate(Route.Calendar) },
                 onCollectionsClick = { navController.navigate(Route.Collections) },
             )
@@ -150,7 +159,6 @@ private fun FilmoryNavHost(navController: NavHostController) {
             val route = entry.toRoute<Route.Library>()
             LibraryScreenRoot(
                 preset = route.preset,
-                collectionId = route.collectionId,
                 onBackClick = navController::navigateUp,
                 onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
                 onAddTitleClick = { navController.navigate(Route.Search) },
@@ -159,7 +167,15 @@ private fun FilmoryNavHost(navController: NavHostController) {
         composable<Route.Collections> {
             CollectionsScreenRoot(
                 onBackClick = navController::navigateUp,
-                onCollectionClick = { navController.navigate(Route.Library(LibraryPreset.COLLECTION, it)) },
+                onCollectionClick = { navController.navigate(Route.CollectionDetail(it)) },
+            )
+        }
+        composable<Route.CollectionDetail> { entry ->
+            CollectionDetailScreenRoot(
+                collectionId = entry.toRoute<Route.CollectionDetail>().collectionId,
+                onBackClick = navController::navigateUp,
+                onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
+                onAddTitleClick = { navController.navigate(Route.Search) },
             )
         }
         composable<Route.TitleDetail> { entry ->

@@ -17,6 +17,4 @@ sealed interface LibraryAction {
     data class OnDialogOpen(val dialog: LibraryDialog) : LibraryAction
     data object OnDialogDismiss : LibraryAction
     data class OnSettingsChange(val settings: LibrarySettings) : LibraryAction
-    data class OnRenameCollection(val name: String) : LibraryAction
-    data object OnDeleteCollection : LibraryAction
 }
