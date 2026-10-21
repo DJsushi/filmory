@@ -67,7 +67,7 @@ fun TitleDetailState.withData(data: TitleDetailData): TitleDetailState {
         selectedSeasonNumber = selectedSeasonNumber ?: data.currentSeasonNumber() ?: data.seasons.firstOrNull()?.number,
         noteCount = allNotes.size,
         notes = allNotes
-            .filter { noteWatchingFilter == null || notesWithWatchings[it.id] == noteWatchingFilter }
+            .filter { noteWatchingFilter.isEmpty() || notesWithWatchings[it.id] in noteWatchingFilter }
             .filter { note ->
                 when (episodeFilter) {
                     NoteEpisodeFilter.All -> true

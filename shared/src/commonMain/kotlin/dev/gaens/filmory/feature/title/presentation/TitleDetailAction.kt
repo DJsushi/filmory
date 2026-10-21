@@ -36,7 +36,8 @@ sealed interface TitleDetailAction {
     data class OnSeasonClick(val seasonNumber: Int) : TitleDetailAction
     data object OnMarkSeasonClick : TitleDetailAction
 
-    data class OnNoteWatchingFilterChange(val watchingId: String?) : TitleDetailAction
+    data class OnNoteWatchingToggle(val watchingId: String) : TitleDetailAction
+    data object OnNoteWatchingFilterClear : TitleDetailAction
     data class OnNoteEpisodeFilterChange(val filter: NoteEpisodeFilter) : TitleDetailAction
     data class OnNoteClick(val noteId: String) : TitleDetailAction
     data class OnNoteFavoriteClick(val noteId: String) : TitleDetailAction

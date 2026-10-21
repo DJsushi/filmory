@@ -16,7 +16,8 @@ data class TitleDetailState(
     val selectedSeasonNumber: Int? = null,
     val notes: List<NoteUi> = emptyList(),
     val noteCount: Int = 0,
-    val noteWatchingFilter: String? = null,
+    /** The watchings whose notes show. Empty means all of them. */
+    val noteWatchingFilter: Set<String> = emptySet(),
     val noteEpisodeFilter: NoteEpisodeFilter = NoteEpisodeFilter.All,
     val noteEpisodeChips: List<EpisodeChipUi> = emptyList(),
     val isOverviewExpanded: Boolean = false,

@@ -408,14 +408,14 @@ private fun NoteFilters(state: TitleDetailState, onAction: (TitleDetailAction) -
         ChipRow(Modifier.padding(bottom = 8.dp)) {
             FilmoryChip(
                 label = stringResource(Res.string.detail_all_watchings),
-                selected = state.noteWatchingFilter == null,
-                onClick = { onAction(TitleDetailAction.OnNoteWatchingFilterChange(null)) },
+                selected = state.noteWatchingFilter.isEmpty(),
+                onClick = { onAction(TitleDetailAction.OnNoteWatchingFilterClear) },
             )
             state.watchings.forEach { watching ->
                 FilmoryChip(
                     label = stringResource(Res.string.detail_watching_number, watching.number),
-                    selected = state.noteWatchingFilter == watching.id,
-                    onClick = { onAction(TitleDetailAction.OnNoteWatchingFilterChange(watching.id)) },
+                    selected = watching.id in state.noteWatchingFilter,
+                    onClick = { onAction(TitleDetailAction.OnNoteWatchingToggle(watching.id)) },
                 )
             }
         }

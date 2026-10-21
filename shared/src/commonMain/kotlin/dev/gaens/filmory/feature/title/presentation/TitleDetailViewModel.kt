@@ -118,8 +118,11 @@ class TitleDetailViewModel(
             }
             is TitleDetailAction.OnSeasonClick -> _state.update { it.copy(selectedSeasonNumber = action.seasonNumber) }
             TitleDetailAction.OnMarkSeasonClick -> markSelectedSeason()
-            is TitleDetailAction.OnNoteWatchingFilterChange ->
-                _state.update { it.copy(noteWatchingFilter = action.watchingId) }
+            is TitleDetailAction.OnNoteWatchingToggle -> _state.update {
+                val filter = it.noteWatchingFilter
+                it.copy(noteWatchingFilter = if (action.watchingId in filter) filter - action.watchingId else filter + action.watchingId)
+            }
+            TitleDetailAction.OnNoteWatchingFilterClear -> _state.update { it.copy(noteWatchingFilter = emptySet()) }
             is TitleDetailAction.OnNoteEpisodeFilterChange -> _state.update { it.copy(noteEpisodeFilter = action.filter) }
             is TitleDetailAction.OnNoteFavoriteClick -> toggleNoteFavorite(action.noteId)
             TitleDetailAction.OnSheetDismiss -> _state.update { it.copy(sheet = null) }

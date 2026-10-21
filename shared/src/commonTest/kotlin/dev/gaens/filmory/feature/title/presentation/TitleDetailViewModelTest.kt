@@ -174,17 +174,28 @@ class TitleDetailViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `notes filter by watching`() = runTest {
+    fun `notes filter by several watchings and all watchings clears the selection`() = runTest {
         watchings.upsertWatching(aWatching(id = "w1", createdAt = at(1)))
         watchings.upsertWatching(aWatching(id = "w2", createdAt = at(2)))
         val viewModel = viewModel()
         viewModel.state.test {
             assertEquals(2, expectMostRecentItem().notes.size)
 
-            viewModel.onAction(TitleDetailAction.OnNoteWatchingFilterChange("w1"))
+            viewModel.onAction(TitleDetailAction.OnNoteWatchingToggle("w1"))
             val state = expectMostRecentItem()
             assertEquals(listOf("n1"), state.notes.map { it.id })
             assertEquals(2, state.noteCount)
+
+            viewModel.onAction(TitleDetailAction.OnNoteWatchingToggle("w2"))
+            assertEquals(setOf("w1", "w2"), expectMostRecentItem().noteWatchingFilter)
+
+            viewModel.onAction(TitleDetailAction.OnNoteWatchingToggle("w1"))
+            assertEquals(listOf("n2"), expectMostRecentItem().notes.map { it.id })
+
+            viewModel.onAction(TitleDetailAction.OnNoteWatchingFilterClear)
+            val cleared = expectMostRecentItem()
+            assertEquals(emptySet(), cleared.noteWatchingFilter)
+            assertEquals(2, cleared.notes.size)
         }
     }
 
