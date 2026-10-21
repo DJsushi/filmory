@@ -3,6 +3,7 @@ package dev.gaens.filmory.core.presentation.designsystem.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,14 @@ private fun BottomBarEntry(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.selectable(selected = isSelected, onClick = onClick, role = Role.Tab),
+        modifier = modifier.selectable(
+            selected = isSelected,
+            interactionSource = remember { MutableInteractionSource() },
+            // The circular active item is the feedback; a ripple behind it looks like a stray splash.
+            indication = null,
+            role = Role.Tab,
+            onClick = onClick,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
