@@ -20,6 +20,9 @@ kotlin {
 
         androidResources { enable = true }
         withHostTest { }
+        withDeviceTest {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
     }
 
     listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
@@ -30,6 +33,11 @@ kotlin {
     }
 
     sourceSets {
+        getByName("androidDeviceTest").dependencies {
+            implementation(libs.androidx.test.runner)
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.kotlinx.coroutines.test)
+        }
         commonMain.dependencies {
             api(libs.compose.runtime)
             api(libs.compose.foundation)
