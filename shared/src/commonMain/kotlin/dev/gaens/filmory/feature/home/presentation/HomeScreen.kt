@@ -233,7 +233,7 @@ private fun HomeBlockItem(
             scaleY = scale
         }
         .then(if (isEditing) wholeBlockDrag else Modifier)
-        .semantics {
+        .semantics(mergeDescendants = isEditing) {
             if (isEditing) {
                 customActions = listOf(
                     CustomAccessibilityAction(moveUp) { onAction(HomeAction.OnNudgeBlock(block, -1)); true },
