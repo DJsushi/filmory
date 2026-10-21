@@ -60,6 +60,7 @@ kotlin {
             implementation(libs.sqlite.bundled)
             implementation(libs.kotlinx.datetime)
             implementation(libs.coil.compose)
+            implementation(libs.reorderable)
             implementation(libs.coil.network.ktor3)
             implementation(libs.datastore.preferences)
             implementation(libs.okio)
