@@ -32,6 +32,17 @@ android {
                 packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
             }
         }
+        // Temporary: fully optimized (R8 over all packages, resources shrunk), signed with the debug key
+        // until a release key exists. Do not publish it. Install with `installOptimized`.
+        create("optimized") {
+            initWith(getByName("release"))
+            matchingFallbacks += "release"
+            signingConfig = signingConfigs.getByName("debug")
+            optimization {
+                enable = true
+                packageScope = setOf("**")
+            }
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

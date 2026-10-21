@@ -76,5 +76,6 @@ The user has given standing permission to commit in this repository. Do not wait
 - Room tests on a device: `./gradlew :shared:connectedAndroidDeviceTest`
 - Sample data (debug builds only, empty database): `adb shell am start -n dev.gaens.filmory/.SeedActivity`
 - Install on device: `./gradlew :androidApp:installDebug`
+- Fully optimized build (R8 over the whole app), temporarily signed with the debug key until a release key exists, not for publishing: `./gradlew :androidApp:assembleOptimized` or `installOptimized`. Keep rules are in `androidApp/src/main/keepRules/rules.keep`.
 
 Gradle needs network access (outside the Claude sandbox).
