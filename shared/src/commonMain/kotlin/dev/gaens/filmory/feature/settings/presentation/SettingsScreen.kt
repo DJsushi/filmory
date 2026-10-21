@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.gaens.filmory.core.presentation.designsystem.FilmoryTheme
@@ -140,11 +141,14 @@ fun SettingsScreen(
     }
 }
 
-/** A card holding a group of settings. */
+/**
+ * A card holding a group of settings. A card with parts that animate in and out sets [spacing] to zero and
+ * pads each part itself: spacing between children disappears in one frame when an animated part leaves.
+ */
 @Composable
-fun SettingsCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun SettingsCard(modifier: Modifier = Modifier, spacing: Dp = 12.dp, content: @Composable () -> Unit) {
     FilmoryCard(modifier.fillMaxWidth().padding(horizontal = ScreenPadding)) {
-        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) { content() }
+        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(spacing)) { content() }
     }
 }
 

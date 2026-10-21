@@ -65,6 +65,8 @@ import org.jetbrains.compose.resources.stringResource
 
 private const val EXAMPLE_EPISODES = 5
 
+private val PartGap = 12.dp
+
 /**
  * The Series card on the Profile tab: what ticking an episode does to the "You are here" marker.
  * Choosing "Marker moves" reveals the details, and a live example shows what the choices do.
@@ -72,14 +74,20 @@ private const val EXAMPLE_EPISODES = 5
 @Composable
 fun SeriesSettingsSection(series: SeriesSettings, onAction: (SettingsAction) -> Unit) {
     SectionHeader(stringResource(Res.string.settings_series))
-    SettingsCard(Modifier.rise(3)) {
+    // No card spacing: parts that animate in and out carry their own gap, so it shrinks with them instead of
+    // vanishing in one frame when they leave the layout.
+    SettingsCard(Modifier.rise(3), spacing = 0.dp) {
         Text(stringResource(Res.string.settings_marker_when), style = MaterialTheme.typography.bodyLarge)
         FilmorySegmentedRow(
             options = listOf(stringResource(Res.string.settings_marker_stays), stringResource(Res.string.settings_marker_moves)),
             selectedIndex = if (series.markerFollowsTicks) 1 else 0,
             onSelect = { onAction(SettingsAction.OnMarkerFollowsTicksChange(it == 1)) },
+            modifier = Modifier.padding(top = PartGap),
         )
-        Hint(stringResource(if (series.markerFollowsTicks) Res.string.settings_marker_moves_hint else Res.string.settings_marker_stays_hint))
+        Hint(
+            stringResource(if (series.markerFollowsTicks) Res.string.settings_marker_moves_hint else Res.string.settings_marker_stays_hint),
+            Modifier.padding(top = PartGap),
+        )
 
         val isReduced = LocalReducedMotion.current
         AnimatedVisibility(
@@ -87,7 +95,7 @@ fun SeriesSettingsSection(series: SeriesSettings, onAction: (SettingsAction) -> 
             enter = if (isReduced) EnterTransition.None else expandVertically() + fadeIn(),
             exit = if (isReduced) ExitTransition.None else shrinkVertically() + fadeOut(),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.padding(top = PartGap), verticalArrangement = Arrangement.spacedBy(PartGap)) {
                 Text(stringResource(Res.string.settings_marker_target), style = MaterialTheme.typography.bodyLarge)
                 val targets = MarkerTarget.entries
                 FilmorySegmentedRow(
@@ -114,20 +122,34 @@ fun SeriesSettingsSection(series: SeriesSettings, onAction: (SettingsAction) -> 
                 )
             }
         }
-        Example(stringResource(Res.string.settings_marker_example_ahead), series, markerOn = 3, ticked = 3, alreadyTicked = setOf(1, 2))
+        Example(
+            title = stringResource(Res.string.settings_marker_example_ahead),
+            series = series,
+            markerOn = 3,
+            ticked = 3,
+            alreadyTicked = setOf(1, 2),
+            modifier = Modifier.padding(top = PartGap),
+        )
         AnimatedVisibility(
             visible = series.markerFollowsTicks,
             enter = if (isReduced) EnterTransition.None else expandVertically() + fadeIn(),
             exit = if (isReduced) ExitTransition.None else shrinkVertically() + fadeOut(),
         ) {
-            Example(stringResource(Res.string.settings_marker_example_behind), series, markerOn = 4, ticked = 1, alreadyTicked = setOf(2, 3))
+            Example(
+                title = stringResource(Res.string.settings_marker_example_behind),
+                series = series,
+                markerOn = 4,
+                ticked = 1,
+                alreadyTicked = setOf(2, 3),
+                modifier = Modifier.padding(top = PartGap),
+            )
         }
     }
 }
 
 @Composable
-private fun Hint(text: String) {
-    Text(text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun Hint(text: String, modifier: Modifier = Modifier) {
+    Text(text, modifier, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
 /**
@@ -135,13 +157,20 @@ private fun Hint(text: String) {
  * [ticked]. The result comes from the same rule the title screen uses.
  */
 @Composable
-private fun Example(title: String, series: SeriesSettings, markerOn: Int, ticked: Int, alreadyTicked: Set<Int>) {
+private fun Example(
+    title: String,
+    series: SeriesSettings,
+    markerOn: Int,
+    ticked: Int,
+    alreadyTicked: Set<Int>,
+    modifier: Modifier = Modifier,
+) {
     val ids = (1..EXAMPLE_EPISODES).map { it.toString() }
     val markerAfter = placeMarker(ids, markerOn.toString(), ticked.toString(), series)?.toInt() ?: markerOn
     val checked = alreadyTicked + ticked
     val result = stringResource(Res.string.settings_marker_example_result, markerAfter)
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceContainerHigh, RoundedCornerShape(16.dp))
             .padding(14.dp)
