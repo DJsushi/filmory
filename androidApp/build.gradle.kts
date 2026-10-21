@@ -9,6 +9,12 @@ val tmdbApiKey: String = Properties()
     .apply { rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use(::load) }
     .getProperty("TMDB_API_KEY", "")
 
+// version.txt is owned by release-please. Do not edit it by hand.
+val appVersion: String = rootProject.file("version.txt").readText().trim()
+val appVersionCode: Int = appVersion.split(".").map(String::toInt)
+    .let { (major, minor, patch) -> major * 1_000_000 + minor * 1_000 + patch }
+    .coerceAtLeast(1)
+
 android {
     namespace = "dev.gaens.filmory"
     compileSdk {
@@ -19,8 +25,8 @@ android {
         applicationId = "dev.gaens.filmory"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = appVersionCode
+        versionName = appVersion
 
         buildConfigField("String", "TMDB_API_KEY", "\"$tmdbApiKey\"")
     }
@@ -32,8 +38,8 @@ android {
                 packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
             }
         }
-        // Temporary: fully optimized (R8 over all packages, resources shrunk), signed with the debug key
-        // until a release key exists. Do not publish it. Install with `installOptimized`.
+        // Fully optimized (R8 over all packages, resources shrunk). This is the build the release workflow
+        // publishes. Signed with the debug key until a release key exists. Install with `installOptimized`.
         create("optimized") {
             initWith(getByName("release"))
             matchingFallbacks += "release"
