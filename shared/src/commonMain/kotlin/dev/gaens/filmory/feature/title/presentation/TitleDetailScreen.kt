@@ -97,6 +97,7 @@ import dev.gaens.filmory.resources.ic_clock
 import dev.gaens.filmory.resources.ic_folder
 import dev.gaens.filmory.resources.ic_heart
 import dev.gaens.filmory.resources.ic_heart_filled
+import dev.gaens.filmory.resources.ic_edit
 import dev.gaens.filmory.resources.ic_more
 import dev.gaens.filmory.resources.ic_watched
 import dev.gaens.filmory.resources.note_count
@@ -215,7 +216,8 @@ private fun DetailHero(title: TitleDetailUi, onAction: (TitleDetailAction) -> Un
                     ),
                     onClick = { onAction(TitleDetailAction.OnWishlistClick) },
                 )
-                MoreMenu(onAction, onEditTitleClick)
+                FilmoryIconButton(Res.drawable.ic_edit, stringResource(Res.string.detail_edit_title), onEditTitleClick)
+                MoreMenu(onAction)
             },
         )
         Row(
@@ -259,18 +261,11 @@ private fun TitleDetailUi.factsLine(): String = listOfNotNull(
 ).joinToString(" · ")
 
 @Composable
-private fun MoreMenu(onAction: (TitleDetailAction) -> Unit, onEditTitleClick: () -> Unit) {
+private fun MoreMenu(onAction: (TitleDetailAction) -> Unit) {
     var isOpen by remember { mutableStateOf(false) }
     Box {
         FilmoryIconButton(Res.drawable.ic_more, stringResource(Res.string.action_more), { isOpen = true })
         DropdownMenu(expanded = isOpen, onDismissRequest = { isOpen = false }) {
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.detail_edit_title)) },
-                onClick = {
-                    isOpen = false
-                    onEditTitleClick()
-                },
-            )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.detail_delete_title)) },
                 onClick = {
