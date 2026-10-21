@@ -3,10 +3,13 @@ package dev.gaens.filmory.feature.calendar.presentation
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -98,21 +101,27 @@ fun DaySheet(date: LocalDate, entries: List<CalendarEntry>, onAction: (CalendarA
         onDismissRequest = { onAction(CalendarAction.OnSheetDismiss) },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        Column(Modifier.padding(bottom = 32.dp)) {
-            Text(
-                text = date.formatDayMonthYear(),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(horizontal = ScreenPadding, vertical = 8.dp),
-            )
-            if (entries.isEmpty()) {
+        // Lazy, so a long day scrolls inside the sheet. A plain Column taller than the sheet squeezed its last
+        // row and made the sheet fight the drag.
+        LazyColumn(contentPadding = PaddingValues(bottom = 32.dp)) {
+            item(key = "date") {
                 Text(
-                    text = stringResource(Res.string.calendar_day_empty),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = ScreenPadding),
+                    text = date.formatDayMonthYear(),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(horizontal = ScreenPadding, vertical = 8.dp),
                 )
             }
-            entries.forEach { entry ->
+            if (entries.isEmpty()) {
+                item(key = "empty") {
+                    Text(
+                        text = stringResource(Res.string.calendar_day_empty),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = ScreenPadding),
+                    )
+                }
+            }
+            items(entries, key = { it.title.id }) { entry ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
