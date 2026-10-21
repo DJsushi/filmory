@@ -10,7 +10,10 @@ interface EpisodeRepository {
     suspend fun getSeasons(titleId: String): List<Season>
     fun observeAllSeasons(): Flow<List<Season>>
 
-    /** Replaces a series' whole structure. Checks on removed episodes are removed too. */
+    /**
+     * Replaces a series' whole structure. Episodes keep their checks when their id is unchanged;
+     * checks on removed episodes are removed too.
+     */
     suspend fun replaceSeasons(titleId: String, seasons: List<Season>): EmptyResult<DataError.Local>
 
     fun observeChecks(watchingId: String): Flow<List<EpisodeCheck>>

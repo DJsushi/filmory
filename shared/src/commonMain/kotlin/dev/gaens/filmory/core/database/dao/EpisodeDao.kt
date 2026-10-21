@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import dev.gaens.filmory.core.database.entity.EpisodeCheckEntity
 import dev.gaens.filmory.core.database.entity.EpisodeEntity
 import dev.gaens.filmory.core.database.entity.SeasonEntity
@@ -39,21 +40,32 @@ abstract class EpisodeDao {
     @Query("DELETE FROM seasons WHERE titleId = :titleId")
     abstract suspend fun deleteSeasons(titleId: String)
 
-    @Insert
-    abstract suspend fun insertSeasons(seasons: List<SeasonEntity>)
+    @Upsert
+    abstract suspend fun upsertSeasons(seasons: List<SeasonEntity>)
 
-    @Insert
-    abstract suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
+    @Upsert
+    abstract suspend fun upsertEpisodes(episodes: List<EpisodeEntity>)
 
+    @Query("DELETE FROM seasons WHERE titleId = :titleId AND id NOT IN (:keepIds)")
+    abstract suspend fun deleteOtherSeasons(titleId: String, keepIds: List<String>)
+
+    @Query(
+        "DELETE FROM episodes WHERE seasonId IN (SELECT id FROM seasons WHERE titleId = :titleId) " +
+            "AND id NOT IN (:keepIds)",
+    )
+    abstract suspend fun deleteOtherEpisodes(titleId: String, keepIds: List<String>)
+
+    /** Replaces a series' structure. Rows with unchanged ids are updated in place, so their checks stay. */
     @Transaction
     open suspend fun replaceSeasons(
         titleId: String,
         seasons: List<SeasonEntity>,
         episodes: List<EpisodeEntity>,
     ) {
-        deleteSeasons(titleId)
-        insertSeasons(seasons)
-        insertEpisodes(episodes)
+        deleteOtherEpisodes(titleId, episodes.map { it.id })
+        deleteOtherSeasons(titleId, seasons.map { it.id })
+        upsertSeasons(seasons)
+        upsertEpisodes(episodes)
     }
 
     @Query("SELECT * FROM episode_checks WHERE watchingId = :watchingId")

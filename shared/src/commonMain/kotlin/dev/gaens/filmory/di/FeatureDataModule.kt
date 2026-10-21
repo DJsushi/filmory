@@ -12,6 +12,8 @@ import dev.gaens.filmory.feature.title.data.OfflineFirstTitleRepository
 import dev.gaens.filmory.feature.title.domain.TitleRepository
 import dev.gaens.filmory.feature.watching.data.OfflineFirstWatchingRepository
 import dev.gaens.filmory.feature.watching.domain.WatchingRepository
+import dev.gaens.filmory.feature.search.data.TmdbRemoteTitleDataSource
+import dev.gaens.filmory.feature.search.domain.RemoteTitleDataSource
 import dev.gaens.filmory.feature.settings.data.DataStoreSettingsRepository
 import dev.gaens.filmory.feature.settings.domain.SettingsRepository
 import org.koin.core.module.dsl.singleOf
@@ -25,5 +27,6 @@ val featureDataModule = module {
     singleOf(::OfflineFirstNoteRepository).bind<NoteRepository>()
     singleOf(::OfflineFirstCollectionRepository).bind<CollectionRepository>()
     singleOf(::FileNoteImageStorage).bind<NoteImageStorage>()
+    singleOf(::TmdbRemoteTitleDataSource).bind<RemoteTitleDataSource>()
     singleOf(::DataStoreSettingsRepository).bind<SettingsRepository>()
 }

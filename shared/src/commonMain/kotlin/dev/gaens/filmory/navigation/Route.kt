@@ -39,4 +39,10 @@ sealed interface Route {
 
     @Serializable
     data object Calendar : Route
+
+    @Serializable
+    data object Search : Route
+
+    @Serializable
+    data class TitleForm(val titleId: String? = null) : Route
 }

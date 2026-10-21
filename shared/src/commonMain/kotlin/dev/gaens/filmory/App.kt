@@ -33,7 +33,9 @@ import dev.gaens.filmory.feature.library.presentation.LibraryScreenRoot
 import dev.gaens.filmory.feature.note.presentation.detail.NoteDetailScreenRoot
 import dev.gaens.filmory.feature.note.presentation.editor.NoteEditorScreenRoot
 import dev.gaens.filmory.feature.note.presentation.list.NotesScreenRoot
+import dev.gaens.filmory.feature.search.presentation.SearchScreenRoot
 import dev.gaens.filmory.feature.title.presentation.TitleDetailScreenRoot
+import dev.gaens.filmory.feature.title.presentation.form.TitleFormScreenRoot
 import dev.gaens.filmory.feature.watched.presentation.WatchedScreenRoot
 import dev.gaens.filmory.navigation.Route
 import dev.gaens.filmory.resources.Res
@@ -150,7 +152,7 @@ private fun FilmoryNavHost(navController: NavHostController) {
                 collectionId = route.collectionId,
                 onBackClick = navController::navigateUp,
                 onTitleClick = { navController.navigate(Route.TitleDetail(it)) },
-                onAddTitleClick = {},
+                onAddTitleClick = { navController.navigate(Route.Search) },
             )
         }
         composable<Route.Collections> {
@@ -166,7 +168,30 @@ private fun FilmoryNavHost(navController: NavHostController) {
                 onBackClick = navController::navigateUp,
                 onNoteClick = { navController.navigate(Route.NoteDetail(it)) },
                 onAddNoteClick = { episodeId -> navController.navigate(Route.AddNote(titleId, episodeId)) },
-                onEditTitleClick = {},
+                onEditTitleClick = { navController.navigate(Route.TitleForm(titleId)) },
+            )
+        }
+        composable<Route.Search> {
+            SearchScreenRoot(
+                onBackClick = navController::navigateUp,
+                onTitleAdded = { titleId ->
+                    navController.navigate(Route.TitleDetail(titleId)) { popUpTo<Route.Search> { inclusive = true } }
+                },
+                onAddManuallyClick = { navController.navigate(Route.TitleForm()) },
+            )
+        }
+        composable<Route.TitleForm> { entry ->
+            val titleId = entry.toRoute<Route.TitleForm>().titleId
+            TitleFormScreenRoot(
+                titleId = titleId,
+                onClose = navController::navigateUp,
+                onSaved = { savedId ->
+                    if (titleId != null) {
+                        navController.navigateUp()
+                    } else {
+                        navController.navigate(Route.TitleDetail(savedId)) { popUpTo<Route.Search> { inclusive = true } }
+                    }
+                },
             )
         }
         composable<Route.Calendar> {

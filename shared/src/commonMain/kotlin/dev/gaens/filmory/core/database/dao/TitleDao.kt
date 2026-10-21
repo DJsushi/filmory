@@ -17,6 +17,9 @@ interface TitleDao {
     @Query("SELECT * FROM titles WHERE id = :id")
     suspend fun getTitle(id: String): TitleEntity?
 
+    @Query("SELECT * FROM titles WHERE tmdbId = :tmdbId AND type = :type LIMIT 1")
+    suspend fun getTitleByTmdbId(tmdbId: Long, type: String): TitleEntity?
+
     @Upsert
     suspend fun upsertTitle(title: TitleEntity)
 

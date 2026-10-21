@@ -220,6 +220,37 @@
     <string name="settings_version">Filmory %1$s</string>
     <string name="settings_local_first">Everything you add stays on this device.</string>
 
+    <!-- Search and add -->
+    <string name="search_title">Add a title</string>
+    <string name="search_hint">Search movies and series</string>
+    <string name="search_clear">Clear search</string>
+    <string name="search_prompt">Search TMDB, or add a title by hand if you are offline.</string>
+    <string name="search_no_results">No matches. You can add it by hand.</string>
+    <string name="search_add_manually">Add manually</string>
+    <string name="search_in_library">In library</string>
+    <string name="tmdb_notice">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
+    <string name="tmdb_logo">TMDB logo</string>
+
+    <!-- Title form -->
+    <string name="title_form_add">New title</string>
+    <string name="title_form_edit">Edit title</string>
+    <string name="title_form_name">Name</string>
+    <string name="title_form_year">Year</string>
+    <string name="title_form_genre">Genre</string>
+    <string name="title_form_director">Director</string>
+    <string name="title_form_creator">Created by</string>
+    <string name="title_form_runtime">Runtime in minutes</string>
+    <string name="title_form_overview">Description</string>
+    <string name="title_form_seasons">Seasons</string>
+    <string name="title_form_season_episodes">Season %1$d episodes</string>
+    <string name="title_form_add_season">Add season</string>
+    <string name="title_form_remove_season">Remove last season</string>
+    <string name="title_form_error_name">Enter a name.</string>
+    <string name="title_form_error_year">Enter a year between 1870 and 2100.</string>
+    <string name="title_form_error_runtime">Enter the runtime in minutes.</string>
+    <string name="title_form_error_seasons">Add at least one season.</string>
+    <string name="title_form_error_episodes">Each season needs 1 to 999 episodes.</string>
+
     <!-- Notes tab -->
     <string name="notes_title">Notes</string>
     <string name="notes_subtitle">%1$s across %2$s.</string>

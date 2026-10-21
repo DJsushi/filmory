@@ -6,6 +6,7 @@ import dev.gaens.filmory.core.domain.util.DataError
 import dev.gaens.filmory.core.domain.util.EmptyResult
 import dev.gaens.filmory.feature.title.domain.Title
 import dev.gaens.filmory.feature.title.domain.TitleRepository
+import dev.gaens.filmory.feature.title.domain.TitleType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,6 +21,9 @@ class OfflineFirstTitleRepository(
         titleDao.observeTitle(id).map { it?.toTitle() }
 
     override suspend fun getTitle(id: String): Title? = titleDao.getTitle(id)?.toTitle()
+
+    override suspend fun getTitleByTmdbId(tmdbId: Long, type: TitleType): Title? =
+        titleDao.getTitleByTmdbId(tmdbId, type.name)?.toTitle()
 
     override suspend fun upsertTitle(title: Title): EmptyResult<DataError.Local> =
         safeDatabaseWrite { titleDao.upsertTitle(title.toTitleEntity()) }

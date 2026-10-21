@@ -153,6 +153,19 @@ class DatabaseTest {
     }
 
     @Test
+    fun replacing_seasons_keeps_checks_on_kept_episodes() = runBlocking {
+        seed()
+        episodes.checkEpisode(EpisodeCheck("c1", "w", "e1", now))
+
+        val grown = Season("s1", "t", 1, seasons.single().episodes + Episode("e3", "s1", 3, null, null))
+        episodes.replaceSeasons("t", listOf(grown))
+
+        assertEquals(listOf("e1", "e2", "e3"), episodes.getSeasons("t").single().episodes.map { it.id })
+        assertEquals(1, episodes.observeChecks("w").first().size)
+        assertEquals("e1", notes.observeNote("n").first()?.episodeId)
+    }
+
+    @Test
     fun collection_membership_is_added_and_removed() = runBlocking {
         seed()
 

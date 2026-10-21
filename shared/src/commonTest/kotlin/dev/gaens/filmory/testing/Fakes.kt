@@ -16,6 +16,7 @@ import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import dev.gaens.filmory.feature.note.domain.NoteRepository
 import dev.gaens.filmory.feature.title.domain.Title
 import dev.gaens.filmory.feature.title.domain.TitleRepository
+import dev.gaens.filmory.feature.title.domain.TitleType
 import dev.gaens.filmory.feature.watching.domain.Watching
 import dev.gaens.filmory.feature.watching.domain.WatchingRepository
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,8 @@ class FakeTitleRepository(titles: List<Title> = emptyList()) : TitleRepository {
     override fun observeTitles(): Flow<List<Title>> = titles
     override fun observeTitle(id: String): Flow<Title?> = titles.map { list -> list.find { it.id == id } }
     override suspend fun getTitle(id: String): Title? = titles.value.find { it.id == id }
+    override suspend fun getTitleByTmdbId(tmdbId: Long, type: TitleType): Title? =
+        titles.value.find { it.tmdbId == tmdbId && it.type == type }
     override suspend fun upsertTitle(title: Title): EmptyResult<DataError.Local> {
         titles.update { list -> list.filterNot { it.id == title.id } + title }
         return Saved

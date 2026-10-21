@@ -4,8 +4,10 @@ import dev.gaens.filmory.feature.calendar.domain.BuildCalendarMonth
 import dev.gaens.filmory.feature.episode.domain.AdvanceEpisode
 import dev.gaens.filmory.feature.library.domain.BuildLibrary
 import dev.gaens.filmory.feature.note.domain.AddNote
+import dev.gaens.filmory.feature.search.domain.AddTitleFromRemote
 import dev.gaens.filmory.feature.note.domain.DeleteNote
 import dev.gaens.filmory.feature.title.domain.DeleteTitle
+import dev.gaens.filmory.feature.title.domain.SaveTitleForm
 import dev.gaens.filmory.feature.watched.domain.BuildWatchedList
 import dev.gaens.filmory.feature.title.domain.ChangeTitleStatus
 import dev.gaens.filmory.feature.title.domain.MoveWatchLater
@@ -39,5 +41,7 @@ val domainModule = module {
     factoryOf(::DeleteTitle)
     factoryOf(::BuildWatchedList)
     factoryOf(::BuildCalendarMonth)
+    factoryOf(::AddTitleFromRemote)
+    factoryOf(::SaveTitleForm)
     factoryOf(::EnsureActiveWatching)
 }
