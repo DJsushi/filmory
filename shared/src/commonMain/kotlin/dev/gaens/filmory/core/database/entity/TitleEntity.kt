@@ -9,6 +9,9 @@ data class TitleEntity(
     val type: String,
     val name: String,
     val year: Int?,
+    val genre: String?,
+    val runtimeMinutes: Int?,
+    val creator: String?,
     val overview: String?,
     val posterUrl: String?,
     val tmdbId: Long?,
@@ -16,4 +19,5 @@ data class TitleEntity(
     val isWishlisted: Boolean,
     val watchLaterPosition: Int?,
     val addedAtEpochMillis: Long,
+    val updatedAtEpochMillis: Long,
 )

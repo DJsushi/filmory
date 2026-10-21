@@ -22,4 +22,5 @@ data class EpisodeEntity(
     val seasonId: String,
     val number: Int,
     val name: String?,
+    val runtimeMinutes: Int?,
 )

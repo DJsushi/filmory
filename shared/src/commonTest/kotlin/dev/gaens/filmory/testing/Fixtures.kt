@@ -33,6 +33,9 @@ fun aTitle(
     type = type,
     name = "Name",
     year = 2020,
+    genre = null,
+    runtimeMinutes = null,
+    creator = null,
     overview = null,
     posterUrl = null,
     tmdbId = null,
@@ -40,6 +43,7 @@ fun aTitle(
     isWishlisted = false,
     watchLaterPosition = null,
     addedAt = at(0),
+    updatedAt = at(0),
 )
 
 fun aWatching(
@@ -78,6 +82,6 @@ fun aNote(id: String = "note", watchingId: String = "watching", titleId: String 
 
 /** Season 1 with episodes e1 and e2, season 2 with episode e3. */
 fun aSeriesStructure(titleId: String = "title") = listOf(
-    Season("s1", titleId, 1, listOf(Episode("e1", "s1", 1, null), Episode("e2", "s1", 2, null))),
-    Season("s2", titleId, 2, listOf(Episode("e3", "s2", 1, null))),
+    Season("s1", titleId, 1, listOf(Episode("e1", "s1", 1, null, null), Episode("e2", "s1", 2, null, null))),
+    Season("s2", titleId, 2, listOf(Episode("e3", "s2", 1, null, null))),
 )

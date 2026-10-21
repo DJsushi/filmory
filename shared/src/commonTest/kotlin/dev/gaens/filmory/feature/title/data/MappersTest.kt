@@ -24,7 +24,7 @@ class MappersTest {
     @Test
     fun `title survives a round trip through its entity`() {
         val title = aTitle(type = TitleType.MOVIE, status = TitleStatus.ON_HOLD)
-            .copy(isWishlisted = true, watchLaterPosition = 2, tmdbId = 603)
+            .copy(isWishlisted = true, watchLaterPosition = 2, tmdbId = 603, genre = "Sci-fi", runtimeMinutes = 116)
 
         assertEquals(title, title.toTitleEntity().toTitle())
     }
@@ -50,9 +50,9 @@ class MappersTest {
         val seasons = toSeasons(
             seasons = listOf(SeasonEntity("s1", "t", 1), SeasonEntity("s2", "t", 2)),
             episodes = listOf(
-                EpisodeEntity("e1", "s1", 1, "Pilot"),
-                EpisodeEntity("e2", "s1", 2, null),
-                EpisodeEntity("e3", "s2", 1, null),
+                EpisodeEntity("e1", "s1", 1, "Pilot", 48),
+                EpisodeEntity("e2", "s1", 2, null, null),
+                EpisodeEntity("e3", "s2", 1, null, null),
             ),
         )
 

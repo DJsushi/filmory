@@ -9,10 +9,11 @@ import dev.gaens.filmory.feature.episode.domain.Episode
 import dev.gaens.filmory.feature.episode.domain.EpisodeCheck
 import dev.gaens.filmory.feature.episode.domain.Season
 
-fun EpisodeEntity.toEpisode(): Episode = Episode(id = id, seasonId = seasonId, number = number, name = name)
+fun EpisodeEntity.toEpisode(): Episode =
+    Episode(id = id, seasonId = seasonId, number = number, name = name, runtimeMinutes = runtimeMinutes)
 
 fun Episode.toEpisodeEntity(): EpisodeEntity =
-    EpisodeEntity(id = id, seasonId = seasonId, number = number, name = name)
+    EpisodeEntity(id = id, seasonId = seasonId, number = number, name = name, runtimeMinutes = runtimeMinutes)
 
 fun Season.toSeasonEntity(): SeasonEntity = SeasonEntity(id = id, titleId = titleId, number = number)
 

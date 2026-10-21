@@ -7,6 +7,9 @@ data class Title(
     val type: TitleType,
     val name: String,
     val year: Int?,
+    val genre: String?,
+    val runtimeMinutes: Int?,
+    val creator: String?,
     val overview: String?,
     val posterUrl: String?,
     val tmdbId: Long?,
@@ -14,6 +17,7 @@ data class Title(
     val isWishlisted: Boolean,
     val watchLaterPosition: Int?,
     val addedAt: Instant,
+    val updatedAt: Instant,
 )
 
 enum class TitleType { MOVIE, SERIES }

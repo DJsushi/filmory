@@ -9,6 +9,7 @@ import dev.gaens.filmory.core.domain.IdGenerator
 import dev.gaens.filmory.feature.collection.data.CreateDefaultCollectionCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlin.time.Clock
 import org.koin.core.module.dsl.singleOf

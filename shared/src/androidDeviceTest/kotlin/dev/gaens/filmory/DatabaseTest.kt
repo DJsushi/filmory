@@ -61,16 +61,17 @@ class DatabaseTest {
     fun tearDown() = database.close()
 
     private val title = Title(
-        id = "t", type = TitleType.SERIES, name = "Show", year = 2020, overview = null, posterUrl = null,
+        id = "t", type = TitleType.SERIES, name = "Show", year = 2020, genre = null, runtimeMinutes = null,
+        creator = null, overview = null, posterUrl = null,
         tmdbId = null, status = TitleStatus.NOT_WATCHED, isWishlisted = false, watchLaterPosition = null,
-        addedAt = now,
+        addedAt = now, updatedAt = now,
     )
     private val watching = Watching(
         id = "w", titleId = "t", state = WatchingState.IN_PROGRESS, startedAt = now, finishedAt = null,
         rating = Rating(9), review = null, currentEpisodeId = null, createdAt = now,
     )
     private val seasons = listOf(
-        Season("s1", "t", 1, listOf(Episode("e1", "s1", 1, "Pilot"), Episode("e2", "s1", 2, null))),
+        Season("s1", "t", 1, listOf(Episode("e1", "s1", 1, "Pilot", 48), Episode("e2", "s1", 2, null, null))),
     )
     private val note = Note(
         id = "n", watchingId = "w", titleId = "t", episodeId = "e1", type = NoteType.SCENE, text = "x",
@@ -144,7 +145,7 @@ class DatabaseTest {
         watchings.upsertWatching(watching.copy(currentEpisodeId = "e1"))
         episodes.checkEpisode(EpisodeCheck("c1", "w", "e1", now))
 
-        episodes.replaceSeasons("t", listOf(Season("s9", "t", 1, listOf(Episode("e9", "s9", 1, null)))))
+        episodes.replaceSeasons("t", listOf(Season("s9", "t", 1, listOf(Episode("e9", "s9", 1, null, null)))))
 
         assertNull(watchings.getWatching("w")?.currentEpisodeId)
         assertTrue(episodes.observeAllChecks().first().isEmpty())

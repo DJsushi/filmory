@@ -12,6 +12,9 @@ fun TitleEntity.toTitle(): Title = Title(
     type = TitleType.valueOf(type),
     name = name,
     year = year,
+    genre = genre,
+    runtimeMinutes = runtimeMinutes,
+    creator = creator,
     overview = overview,
     posterUrl = posterUrl,
     tmdbId = tmdbId,
@@ -19,6 +22,7 @@ fun TitleEntity.toTitle(): Title = Title(
     isWishlisted = isWishlisted,
     watchLaterPosition = watchLaterPosition,
     addedAt = addedAtEpochMillis.toInstant(),
+    updatedAt = updatedAtEpochMillis.toInstant(),
 )
 
 fun Title.toTitleEntity(): TitleEntity = TitleEntity(
@@ -26,6 +30,9 @@ fun Title.toTitleEntity(): TitleEntity = TitleEntity(
     type = type.name,
     name = name,
     year = year,
+    genre = genre,
+    runtimeMinutes = runtimeMinutes,
+    creator = creator,
     overview = overview,
     posterUrl = posterUrl,
     tmdbId = tmdbId,
@@ -33,4 +40,5 @@ fun Title.toTitleEntity(): TitleEntity = TitleEntity(
     isWishlisted = isWishlisted,
     watchLaterPosition = watchLaterPosition,
     addedAtEpochMillis = addedAt.toEpochMillis(),
+    updatedAtEpochMillis = updatedAt.toEpochMillis(),
 )
