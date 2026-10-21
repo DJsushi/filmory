@@ -3,7 +3,11 @@ package dev.gaens.filmory.feature.collection.presentation.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gaens.filmory.core.domain.util.onSuccess
+import dev.gaens.filmory.core.domain.ImageResizer
+import dev.gaens.filmory.feature.collection.domain.CollectionIcon
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
+import dev.gaens.filmory.feature.collection.domain.TitleCollection
+import dev.gaens.filmory.feature.collection.domain.collectionIconOf
 import dev.gaens.filmory.feature.collection.presentation.toLook
 import dev.gaens.filmory.feature.note.domain.NoteImageStorage
 import kotlinx.coroutines.channels.Channel
@@ -19,6 +23,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val ICON_PHOTO_SIZE_PX = 256
+
 /**
  * The collection itself: its name and what can be done to it. Its titles are listed by the library
  * part. A [isNew] collection opens with its name already being edited.
@@ -28,6 +34,7 @@ class CollectionDetailViewModel(
     isNew: Boolean,
     private val collectionRepository: CollectionRepository,
     private val imageStorage: NoteImageStorage,
+    private val imageResizer: ImageResizer,
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -53,6 +60,30 @@ class CollectionDetailViewModel(
             CollectionDetailAction.OnDeleteClick -> _state.update { it.copy(isDeleteDialogOpen = true) }
             CollectionDetailAction.OnDeleteDismiss -> _state.update { it.copy(isDeleteDialogOpen = false) }
             CollectionDetailAction.OnDeleteConfirm -> delete()
+            CollectionDetailAction.OnAppearanceClick -> _state.update { it.copy(isAppearanceSheetOpen = true) }
+            CollectionDetailAction.OnAppearanceDismiss -> _state.update { it.copy(isAppearanceSheetOpen = false) }
+            is CollectionDetailAction.OnIconChange -> changeAppearance { it.copy(iconKey = action.icon?.key) }
+            is CollectionDetailAction.OnColorChange -> changeAppearance { it.copy(colorArgb = action.colorArgb) }
+            is CollectionDetailAction.OnPhotoPicked -> savePhoto(action.bytes)
+        }
+    }
+
+    private fun changeAppearance(transform: (TitleCollection) -> TitleCollection) {
+        viewModelScope.launch {
+            val collection = collectionRepository.observeCollections().first().find { it.id == collectionId } ?: return@launch
+            val changed = transform(collection)
+            if (changed.iconKey == collection.iconKey && changed.colorArgb == collection.colorArgb) return@launch
+            collectionRepository.upsertCollection(changed)
+            // A replaced or removed photo is no longer used by anything.
+            val oldPhoto = collectionIconOf(collection.iconKey) as? CollectionIcon.Photo
+            if (oldPhoto != null && changed.iconKey != collection.iconKey) imageStorage.delete(oldPhoto.path)
+        }
+    }
+
+    private fun savePhoto(bytes: ByteArray) {
+        viewModelScope.launch {
+            val icon = imageResizer.centerCropSquare(bytes, ICON_PHOTO_SIZE_PX) ?: return@launch
+            imageStorage.save(icon).onSuccess { path -> onAction(CollectionDetailAction.OnIconChange(CollectionIcon.Photo(path))) }
         }
     }
 

@@ -2,7 +2,23 @@ package dev.gaens.filmory.feature.collection.presentation.detail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import org.jetbrains.compose.resources.painterResource
+import dev.gaens.filmory.feature.collection.presentation.CollectionIconView
+import dev.gaens.filmory.feature.collection.presentation.CollectionLook
+import dev.gaens.filmory.feature.collection.presentation.collectionBackground
+import dev.gaens.filmory.feature.collection.presentation.collectionContentColor
+import dev.gaens.filmory.resources.collection_appearance_open
+import dev.gaens.filmory.resources.ic_folder
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -94,15 +110,23 @@ fun CollectionDetailScreenRoot(
                     CollectionMenu(state.isDefault, viewModel::onAction)
                 },
                 titleContent = {
-                    CollectionTitle(
-                        name = state.name.orEmpty(),
-                        isEditing = state.isEditingName && state.name != null,
-                        onAction = viewModel::onAction,
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        CollectionBadge(state.look, state.name != null) { viewModel.onAction(CollectionDetailAction.OnAppearanceClick) }
+                        Box(Modifier.weight(1f)) {
+                            CollectionTitle(
+                                name = state.name.orEmpty(),
+                                isEditing = state.isEditingName && state.name != null,
+                                onAction = viewModel::onAction,
+                            )
+                        }
+                    }
                 },
             )
         }
         SnackbarHost(snackbarHostState, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 96.dp))
+    }
+    if (state.isAppearanceSheetOpen) {
+        CollectionAppearanceSheet(collectionId, state.name.orEmpty(), state.look, viewModel::onAction)
     }
     if (state.isDeleteDialogOpen) {
         ConfirmDialog(
@@ -112,6 +136,27 @@ fun CollectionDetailScreenRoot(
             onConfirm = { viewModel.onAction(CollectionDetailAction.OnDeleteConfirm) },
             onDismiss = { viewModel.onAction(CollectionDetailAction.OnDeleteDismiss) },
         )
+    }
+}
+
+/** The collection's icon on its color, in front of the name. Tapping it opens the icon and color sheet. */
+@Composable
+private fun CollectionBadge(look: CollectionLook, isEnabled: Boolean, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(14.dp)
+    val contentColor = collectionContentColor(look)
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(shape)
+            .background(collectionBackground(look, ""))
+            .clickable(enabled = isEnabled, onClickLabel = stringResource(Res.string.collection_appearance_open), role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (look.iconKey != null) {
+            CollectionIconView(look, contentColor, 28.dp)
+        } else {
+            Icon(painterResource(Res.drawable.ic_folder), null, Modifier.size(26.dp), contentColor)
+        }
     }
 }
 

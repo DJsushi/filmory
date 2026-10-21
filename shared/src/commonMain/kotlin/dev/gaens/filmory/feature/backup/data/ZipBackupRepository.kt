@@ -6,6 +6,8 @@ import dev.gaens.filmory.core.database.entity.DatabaseSnapshot
 import dev.gaens.filmory.core.domain.util.EmptyResult
 import dev.gaens.filmory.core.domain.util.Result
 import dev.gaens.filmory.feature.backup.domain.BackupError
+import dev.gaens.filmory.feature.collection.domain.CollectionIcon
+import dev.gaens.filmory.feature.collection.domain.collectionIconOf
 import dev.gaens.filmory.feature.backup.domain.BackupRepository
 import dev.gaens.filmory.feature.note.data.NOTE_IMAGES_DIRECTORY
 import kotlinx.coroutines.CancellationException
@@ -57,7 +59,7 @@ class ZipBackupRepository(
                 StoredZipWriter(this).apply {
                     add(MANIFEST_ENTRY, json.encodeToString(BackupManifest(BACKUP_FORMAT_VERSION, now.toEpochMilliseconds())).encodeToByteArray())
                     add(DATA_ENTRY, json.encodeToString(snapshot).encodeToByteArray())
-                    snapshot.notes.mapNotNull { it.imagePath }.distinct().forEach { path ->
+                    snapshot.imagePaths().forEach { path ->
                         val file = directories.files / path
                         if (fileSystem.exists(file)) add(path, fileSystem.read(file) { readByteArray() })
                     }
@@ -77,7 +79,7 @@ class ZipBackupRepository(
             if (manifest.formatVersion > BACKUP_FORMAT_VERSION) return@withContext Result.Error(BackupError.UNSUPPORTED_VERSION)
             val snapshot = readJson<DatabaseSnapshot>(zip, DATA_ENTRY) ?: return@withContext Result.Error(BackupError.INVALID_FILE)
 
-            val images = snapshot.notes.mapNotNull { it.imagePath }.distinct().filter { isSafeImagePath(it) }
+            val images = snapshot.imagePaths().filter { isSafeImagePath(it) }
             val imageBytes = images.mapNotNull { name -> readBytes(zip, name)?.let { name to it } }
             backupDao.replaceAll(snapshot)
             replaceImages(imageBytes)
@@ -93,6 +95,13 @@ class ZipBackupRepository(
         } catch (e: Exception) {
             Result.Error(BackupError.STORAGE)
         }
+    }
+
+    /** Every image file the data points to: note pictures and the photos used as collection icons. */
+    private fun DatabaseSnapshot.imagePaths(): List<String> {
+        val notePaths = notes.mapNotNull { it.imagePath }
+        val iconPaths = collections.mapNotNull { (collectionIconOf(it.iconKey) as? CollectionIcon.Photo)?.path }
+        return (notePaths + iconPaths).distinct()
     }
 
     private inline fun <reified T> readJson(zip: FileSystem, name: String): T? =

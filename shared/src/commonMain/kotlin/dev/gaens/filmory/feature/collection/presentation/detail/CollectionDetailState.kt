@@ -1,5 +1,6 @@
 package dev.gaens.filmory.feature.collection.presentation.detail
 
+import dev.gaens.filmory.feature.collection.domain.CollectionIcon
 import dev.gaens.filmory.feature.collection.presentation.CollectionLook
 
 data class CollectionDetailState(
@@ -9,6 +10,7 @@ data class CollectionDetailState(
     /** The name is a text field right now. */
     val isEditingName: Boolean = false,
     val isDeleteDialogOpen: Boolean = false,
+    val isAppearanceSheetOpen: Boolean = false,
 )
 
 sealed interface CollectionDetailAction {
@@ -20,6 +22,15 @@ sealed interface CollectionDetailAction {
     data object OnDeleteClick : CollectionDetailAction
     data object OnDeleteDismiss : CollectionDetailAction
     data object OnDeleteConfirm : CollectionDetailAction
+    data object OnAppearanceClick : CollectionDetailAction
+    data object OnAppearanceDismiss : CollectionDetailAction
+
+    /** Null for no icon. */
+    data class OnIconChange(val icon: CollectionIcon?) : CollectionDetailAction
+
+    /** Null for the default gradient. */
+    data class OnColorChange(val colorArgb: Long?) : CollectionDetailAction
+    data class OnPhotoPicked(val bytes: ByteArray) : CollectionDetailAction
 }
 
 sealed interface CollectionDetailEvent {

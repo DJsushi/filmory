@@ -110,6 +110,22 @@
     <string name="collections_title">Collections</string>
     <string name="collections_add">Add collection</string>
     <string name="collection_new_name">New collection</string>
+    <string name="collection_appearance_title">Icon and color</string>
+    <string name="collection_appearance_open">Change icon and color</string>
+    <string name="collection_appearance_icon">Icon</string>
+    <string name="collection_appearance_icon_symbols">Symbols</string>
+    <string name="collection_appearance_icon_emoji">Emoji</string>
+    <string name="collection_appearance_icon_photo">Photo</string>
+    <string name="collection_appearance_icon_none">No icon</string>
+    <string name="collection_appearance_emoji_hint">Or type any emoji</string>
+    <string name="collection_appearance_choose_photo">Choose photo</string>
+    <string name="collection_appearance_remove_photo">Remove</string>
+    <string name="collection_appearance_color">Color</string>
+    <string name="collection_appearance_color_default">Default color</string>
+    <string name="collection_appearance_color_custom">Custom color</string>
+    <string name="collection_appearance_hue">Hue</string>
+    <string name="collection_appearance_saturation">Saturation</string>
+    <string name="collection_appearance_brightness">Brightness</string>
     <string name="collection_rename_hint">To rename the collection, press and hold its name.</string>
 
     <!-- Errors -->

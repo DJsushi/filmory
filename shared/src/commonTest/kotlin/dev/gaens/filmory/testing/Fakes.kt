@@ -3,6 +3,7 @@ package dev.gaens.filmory.testing
 import dev.gaens.filmory.core.domain.util.DataError
 import dev.gaens.filmory.core.domain.util.EmptyResult
 import dev.gaens.filmory.core.domain.util.Result
+import dev.gaens.filmory.core.domain.ImageResizer
 import dev.gaens.filmory.feature.collection.domain.CollectionRepository
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
 import dev.gaens.filmory.feature.collection.domain.inDisplayOrder
@@ -178,4 +179,9 @@ class FakeNoteImageStorage : NoteImageStorage {
         files.remove(relativePath)
     }
     override fun resolve(relativePath: String): String = "/files/$relativePath"
+}
+
+class FakeImageResizer : ImageResizer {
+    var result: ByteArray? = byteArrayOf(1, 2, 3)
+    override suspend fun centerCropSquare(bytes: ByteArray, sizePx: Int): ByteArray? = result
 }

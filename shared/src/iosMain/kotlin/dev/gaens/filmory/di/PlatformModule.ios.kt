@@ -9,6 +9,8 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import dev.gaens.filmory.feature.settings.data.SETTINGS_FILE_NAME
 import dev.gaens.filmory.core.data.AppDirectories
+import dev.gaens.filmory.core.data.IosImageResizer
+import dev.gaens.filmory.core.domain.ImageResizer
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
@@ -34,6 +36,7 @@ actual val platformModule = module {
     }
     single { AppDirectories(documentsPath().toPath(), NSTemporaryDirectory().toPath()) }
     single { FileSystem.SYSTEM }
+    single<ImageResizer> { IosImageResizer() }
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.createWithPath(produceFile = { (documentsPath() + "/$SETTINGS_FILE_NAME").toPath() })
     }

@@ -1,8 +1,10 @@
 package dev.gaens.filmory.feature.collection.presentation.detail
 
 import app.cash.turbine.test
+import dev.gaens.filmory.feature.collection.domain.CollectionIcon
 import dev.gaens.filmory.feature.collection.domain.TitleCollection
 import dev.gaens.filmory.testing.FakeCollectionRepository
+import dev.gaens.filmory.testing.FakeImageResizer
 import dev.gaens.filmory.testing.FakeNoteImageStorage
 import dev.gaens.filmory.testing.ViewModelTest
 import dev.gaens.filmory.testing.at
@@ -10,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class CollectionDetailViewModelTest : ViewModelTest() {
@@ -20,7 +23,12 @@ class CollectionDetailViewModelTest : ViewModelTest() {
         ),
     )
 
-    private fun viewModel(id: String = "c", isNew: Boolean = false) = CollectionDetailViewModel(id, isNew, collections, FakeNoteImageStorage())
+    private val storage = FakeNoteImageStorage()
+
+    private fun viewModel(id: String = "c", isNew: Boolean = false) =
+        CollectionDetailViewModel(id, isNew, collections, storage, FakeImageResizer())
+
+    private fun saved(id: String = "c") = collections.collections.value.single { it.id == id }
 
     @Test
     fun `it shows the collection name and whether it is the default one`() = runTest {
@@ -82,6 +90,51 @@ class CollectionDetailViewModelTest : ViewModelTest() {
             viewModel.onAction(CollectionDetailAction.OnEditNameStart)
 
             assertTrue(expectMostRecentItem().isEditingName)
+        }
+    }
+
+    @Test
+    fun `an icon and a color are saved and can be cleared again`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(CollectionDetailAction.OnIconChange(CollectionIcon.Emoji("🍿")))
+            viewModel.onAction(CollectionDetailAction.OnColorChange(0xFF346A97))
+            assertEquals("emoji:🍿", saved().iconKey)
+            assertEquals(0xFF346A97, saved().colorArgb)
+            assertEquals(0xFF346A97, expectMostRecentItem().look.colorArgb)
+
+            viewModel.onAction(CollectionDetailAction.OnIconChange(null))
+            viewModel.onAction(CollectionDetailAction.OnColorChange(null))
+            assertNull(saved().iconKey)
+            assertNull(saved().colorArgb)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `a picked photo becomes the icon and replacing it deletes the old file`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(CollectionDetailAction.OnPhotoPicked(byteArrayOf(9)))
+            assertEquals("photo:note_images/1.jpg", saved().iconKey)
+            assertEquals("/files/note_images/1.jpg", expectMostRecentItem().look.photoPath)
+
+            viewModel.onAction(CollectionDetailAction.OnIconChange(CollectionIcon.Symbol("moon")))
+            assertEquals("symbol:moon", saved().iconKey)
+            assertFalse("note_images/1.jpg" in storage.files)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `the appearance sheet opens and closes`() = runTest {
+        val viewModel = viewModel()
+        viewModel.state.test {
+            viewModel.onAction(CollectionDetailAction.OnAppearanceClick)
+            assertTrue(expectMostRecentItem().isAppearanceSheetOpen)
+
+            viewModel.onAction(CollectionDetailAction.OnAppearanceDismiss)
+            assertFalse(expectMostRecentItem().isAppearanceSheetOpen)
         }
     }
 
